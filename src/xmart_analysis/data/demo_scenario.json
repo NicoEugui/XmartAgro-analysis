@@ -1,0 +1,22 @@
+{
+  "field_id": "demo-la-estanzuela",
+  "readings": [
+    {"sensor_id": "node-01", "moisture": 0.24, "sensor_type": "simulated", "received_at": "2026-11-14T10:30:00Z"}
+  ],
+  "inputs": {
+    "farmer": {
+      "crop": "Cebada", "sowing_date": "2026-06-10",
+      "seasons": [
+        {"season": "2025/26", "crop": "Soja", "rating": 3, "yield_kg_ha": 2900},
+        {"season": "2024/25", "crop": "Trigo + soja de segunda", "rating": 4, "yield_kg_ha": 3100},
+        {"season": "2023/24", "crop": "Maiz", "rating": 4, "yield_kg_ha": 9200},
+        {"season": "2022/23", "crop": "Soja", "rating": 1, "yield_kg_ha": 580}
+      ]
+    },
+    "agronomist": {
+      "soil_test": {"date": "2026-07", "om_pct": 2.6, "p_bray_ppm": 16, "ph": 6.0},
+      "erosion_t_ha_yr": 2.7,
+      "soil_type": {"coneat": "10.8b", "name": "Brunosol", "confirmed": true}
+    }
+  }
+}

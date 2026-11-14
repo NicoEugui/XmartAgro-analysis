@@ -1,0 +1,1259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XmartAgro frontend data",
+  "description": "Static data for the XmartAgro panel in the shape of its API contract (summary, inputs, scenarios): one exploratory analysis at one NASA POWER point. Text fields are {key, en, es}. Nothing here is a forecast, a yield prediction or a recommendation. Every field has `x-used-in`: where the panel shows it.",
+  "x-used-in": "The whole document: one file the panel reads, with no API call",
+  "type": "object",
+  "$defs": {
+    "text": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Stable id of the text.",
+          "x-used-in": "Every text"
+        },
+        "en": {
+          "type": "string",
+          "description": "English text.",
+          "x-used-in": "Every text"
+        },
+        "es": {
+          "type": "string",
+          "description": "Spanish text.",
+          "x-used-in": "Every text"
+        }
+      },
+      "required": [
+        "key",
+        "en",
+        "es"
+      ],
+      "additionalProperties": false,
+      "description": "A text in both languages. Show `en` or `es`; `key` is a stable id of the sentence in the label catalog.",
+      "x-used-in": "Every text"
+    },
+    "season_counts": {
+      "type": "object",
+      "properties": {
+        "low_deficit": {
+          "type": "integer",
+          "description": "Seasons with low deficit.",
+          "x-used-in": "Main screen · option card"
+        },
+        "moderate_deficit": {
+          "type": "integer",
+          "description": "Seasons with moderate deficit.",
+          "x-used-in": "Main screen · option card"
+        },
+        "high_deficit": {
+          "type": "integer",
+          "description": "Seasons with high deficit.",
+          "x-used-in": "Main screen · option card"
+        }
+      },
+      "required": [
+        "low_deficit",
+        "moderate_deficit",
+        "high_deficit"
+      ],
+      "additionalProperties": false,
+      "description": "Number of historical seasons (or crop-years of a rotation) in each deficit class. A season is classed by the share of the crop's water demand left unmet in its critical stage: low below 10 %, moderate from 10 % to 30 %, high from 30 % (provisional team convention).",
+      "x-used-in": "Main screen · option card"
+    },
+    "drops": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "integer",
+          "description": "Drops of low deficit: the water was enough (legend «tuvo agua»).",
+          "x-used-in": "Main screen · option card"
+        },
+        "tight": {
+          "type": "integer",
+          "description": "Drops of moderate deficit (legend «justa»).",
+          "x-used-in": "Main screen · option card"
+        },
+        "out": {
+          "type": "integer",
+          "description": "Drops of high deficit: the water ran short (legend «sin agua»).",
+          "x-used-in": "Main screen · option card"
+        }
+      },
+      "required": [
+        "ok",
+        "tight",
+        "out"
+      ],
+      "additionalProperties": false,
+      "description": "The same counts split into ten parts by largest remainder: one drop each, light to dark. It is a share of historical seasons, not a probability.",
+      "x-used-in": "Main screen · option card"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.0",
+      "description": "Version of this schema.",
+      "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the analysis was run, ISO 8601.",
+      "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+    },
+    "site": {
+      "type": "object",
+      "properties": {
+        "climate": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "enum": [
+                "nasa_power"
+              ],
+              "description": "Where the climate comes from.",
+              "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+            },
+            "first_day": {
+              "type": "string",
+              "description": "First day of the record, YYYY-MM-DD.",
+              "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+            },
+            "last_day": {
+              "type": "string",
+              "description": "Last day of the record, YYYY-MM-DD.",
+              "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+            },
+            "seasons": {
+              "type": "integer",
+              "description": "Number of historical seasons built from it (the length of every `years` list).",
+              "x-used-in": "Agronomist chart · yearly result of each option"
+            }
+          },
+          "required": [
+            "source",
+            "first_day",
+            "last_day",
+            "seasons"
+          ],
+          "additionalProperties": false,
+          "description": "The daily climate the model runs on.",
+          "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+        },
+        "has_station": {
+          "type": "boolean",
+          "description": "Whether a weather station at the same place was used to check the climate.",
+          "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+        },
+        "soil_calibration": {
+          "type": "object",
+          "properties": {
+            "current": {
+              "type": "boolean",
+              "description": "True when fitted at this point with the demand in force; false when borrowed from another point (pending).",
+              "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+            },
+            "fitted_at": {
+              "description": "The point where the soil parameters were fitted.",
+              "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation",
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "latitude": {
+                      "type": "number",
+                      "description": "Latitude, degrees.",
+                      "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+                    },
+                    "longitude": {
+                      "type": "number",
+                      "description": "Longitude, degrees.",
+                      "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "current",
+            "fitted_at"
+          ],
+          "additionalProperties": false,
+          "description": "State of the soil parameters (fitted to NASA SMAP L4).",
+          "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+        },
+        "note": {
+          "$ref": "#/$defs/text",
+          "description": "Warning that the model describes this point only.",
+          "x-used-in": "Footer of the main screen"
+        }
+      },
+      "required": [
+        "climate",
+        "has_station",
+        "soil_calibration",
+        "note"
+      ],
+      "additionalProperties": false,
+      "description": "Where the model runs and what it is built on. Results describe this point only.",
+      "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "exploratory": {
+          "type": "boolean",
+          "description": "Always true: scenarios from historical climate, not forecasts.",
+          "x-used-in": "Footer of the main screen"
+        },
+        "validated_for_field": {
+          "type": "boolean",
+          "description": "Always false: nothing here is validated for a particular field.",
+          "x-used-in": "Footer of the main screen"
+        },
+        "disclaimer": {
+          "$ref": "#/$defs/text",
+          "description": "Sentence to show with the results.",
+          "x-used-in": "Footer of the main screen"
+        },
+        "simulated_reading": {
+          "type": "boolean",
+          "description": "True while the soil-moisture reading is simulated, not measured: show a «datos de ejemplo» banner.",
+          "x-used-in": "Banner of the main screen"
+        },
+        "values_by_status": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "description": "Number of values with that status.",
+            "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+          },
+          "description": "Count of the model's values by status: data, fitted, source, assumption (a team decision) or pending (waiting for a dataset).",
+          "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Source id.",
+                "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+              },
+              "title": {
+                "type": "string",
+                "description": "Title.",
+                "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+              },
+              "publisher": {
+                "type": "string",
+                "description": "Publisher.",
+                "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "publisher"
+            ],
+            "additionalProperties": false,
+            "description": "A source the model cites.",
+            "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+          },
+          "description": "The sources the model cites.",
+          "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+        }
+      },
+      "required": [
+        "exploratory",
+        "validated_for_field",
+        "disclaimer",
+        "simulated_reading",
+        "values_by_status",
+        "sources"
+      ],
+      "additionalProperties": false,
+      "description": "How far the results can be trusted. Always show the disclaimer.",
+      "x-used-in": "Footer of the main screen and the presentation"
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Site id.",
+              "x-used-in": "Main screen · field name"
+            },
+            "name": {
+              "type": "string",
+              "description": "Site name.",
+              "x-used-in": "Main screen · field name"
+            },
+            "department": {
+              "type": "string",
+              "description": "Uruguayan department.",
+              "x-used-in": "Main screen · field name"
+            },
+            "lat": {
+              "type": "number",
+              "description": "Latitude, degrees.",
+              "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+            },
+            "lon": {
+              "type": "number",
+              "description": "Longitude, degrees.",
+              "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "department",
+            "lat",
+            "lon"
+          ],
+          "additionalProperties": false,
+          "description": "The place the analysis is for.",
+          "x-used-in": "Main screen · field name"
+        },
+        "mock": {
+          "type": "boolean",
+          "description": "Always false: these are the model's results, not placeholder data. (`status.simulated_reading` says whether the reading is simulated.)",
+          "x-used-in": "Banner of the main screen"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the analysis was run, ISO 8601.",
+          "x-used-in": "Main screen · «actualizado»"
+        },
+        "water": {
+          "type": "object",
+          "properties": {
+            "mm": {
+              "type": "number",
+              "description": "Available water in mm that the scenarios start from, derived from the reading with assumed soil parameters. Show it as an estimate, never as measured water.",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+            },
+            "capacity_mm": {
+              "type": "number",
+              "description": "Water the modelled soil can hold, mm.",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "sensor",
+                "smap_corrected",
+                "balance"
+              ],
+              "description": "Where the number comes from, in the API's vocabulary: always `sensor` here.",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+            },
+            "reliability": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ],
+              "description": "How far to trust it: always `low` until the sensor is calibrated.",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+            },
+            "updated_at": {
+              "type": "string",
+              "description": "When the reading was taken, ISO 8601.",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+            },
+            "mm_status": {
+              "type": "string",
+              "description": "derived_from_assumptions: the millimetres come from assumed soil parameters.",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+            },
+            "is_simulated": {
+              "type": "boolean",
+              "description": "True when the reading is simulated.",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+            },
+            "volumetric_moisture": {
+              "type": "number",
+              "description": "The reading itself, volumetric moisture in m3/m3 (0 to 0.6).",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+            }
+          },
+          "required": [
+            "mm",
+            "capacity_mm",
+            "source",
+            "reliability",
+            "updated_at",
+            "mm_status",
+            "is_simulated",
+            "volumetric_moisture"
+          ],
+          "additionalProperties": false,
+          "description": "Water in the soil.",
+          "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+        },
+        "soil": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "description": "good, fair or poor; null while there is no diagnosis.",
+              "x-used-in": "Main screen · card «Tu suelo»",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "good",
+                    "fair",
+                    "poor"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "trend": {
+              "description": "improving, stable or declining; null while there is no diagnosis.",
+              "x-used-in": "Main screen · card «Tu suelo»",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "improving",
+                    "stable",
+                    "declining"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "precision": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ],
+              "description": "How precise the estimate is: always `low` for now.",
+              "x-used-in": "Main screen · card «Tu suelo»"
+            },
+            "reasons": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/text",
+                "description": "A reason for the soil state.",
+                "x-used-in": "Main screen · card «Tu suelo»"
+              },
+              "description": "Reasons for the state; empty while there is no diagnosis.",
+              "x-used-in": "Main screen · card «Tu suelo»"
+            },
+            "missing": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/text",
+                "description": "A datum that would improve the estimate.",
+                "x-used-in": "Main screen · card «Tu suelo»"
+              },
+              "description": "What is missing, for the line «Estimación de precisión baja: falta …».",
+              "x-used-in": "Main screen · card «Tu suelo»"
+            }
+          },
+          "required": [
+            "state",
+            "trend",
+            "precision",
+            "reasons",
+            "missing"
+          ],
+          "additionalProperties": false,
+          "description": "Soil health. The model has no soil diagnosis yet, so the state is null.",
+          "x-used-in": "Main screen · card «Tu suelo»"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Stable id, e.g. survey_03 or barley@06-10.",
+                "x-used-in": "Main screen · option card"
+              },
+              "name": {
+                "$ref": "#/$defs/text",
+                "description": "Name of the option, e.g. «Rotación observada 3».",
+                "x-used-in": "Main screen · option card · title"
+              },
+              "is_current": {
+                "type": "boolean",
+                "description": "True for the crop the producer has sown now: «Tu rotación actual», red outline.",
+                "x-used-in": "Main screen · option card · badge"
+              },
+              "water_risk": {
+                "description": "low, medium or high, from the number of high-deficit drops (provisional thresholds); null when nothing was simulated.",
+                "x-used-in": "Main screen · option card · pill «Agua: riesgo …»",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "drops": {
+                "description": "The ten drops to draw; null when nothing was simulated (e.g. the cycle already ended).",
+                "x-used-in": "Main screen · option card · ten drops",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/drops"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sentence": {
+                "$ref": "#/$defs/text",
+                "description": "One sentence for the card, e.g. «En 4 de cada 10 zafras históricas faltó agua en la etapa crítica».",
+                "x-used-in": "Main screen · option card · sentence"
+              },
+              "soil_effect": {
+                "description": "improves, stays or worsens; always null: the model does not estimate it.",
+                "x-used-in": "Main screen · option card · «Suelo: …»",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "improves",
+                      "stays",
+                      "worsens"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "soil_reason": {
+                "description": "Why the soil effect; always null.",
+                "x-used-in": "Main screen · option card · «Suelo: …»",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/text"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "why": {
+                "description": "Longer explanation; always null.",
+                "x-used-in": "Option detail view",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/text"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/text",
+                  "description": "Evidence.",
+                  "x-used-in": "Option detail view"
+                },
+                "description": "Evidence for the option; empty for now.",
+                "x-used-in": "Option detail view"
+              },
+              "benefits": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/text",
+                  "description": "A benefit.",
+                  "x-used-in": "Option detail view"
+                },
+                "description": "Benefits; empty for now.",
+                "x-used-in": "Option detail view"
+              },
+              "gaps": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/text",
+                  "description": "A caveat about the option.",
+                  "x-used-in": "Option detail view"
+                },
+                "description": "What the evaluation does not cover (fixed cycle length, far sowing date...).",
+                "x-used-in": "Option detail view"
+              },
+              "risks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/text",
+                  "description": "A risk.",
+                  "x-used-in": "Option detail view"
+                },
+                "description": "Risks; empty for now.",
+                "x-used-in": "Option detail view"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "crop",
+                  "rotation"
+                ],
+                "description": "What the option is.",
+                "x-used-in": "Main screen · option card"
+              },
+              "detail": {
+                "$ref": "#/$defs/text",
+                "description": "The exact counts as a sentence, e.g. «104 de 280 combinaciones año-zafra con déficit alto».",
+                "x-used-in": "Option detail view"
+              },
+              "sowing": {
+                "description": "Sowing day of a crop, MM-DD; null for a rotation.",
+                "x-used-in": "Main screen · option card · subtitle",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "critical_window": {
+                "description": "Critical stage of the crop.",
+                "x-used-in": "Main screen · option card · subtitle",
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "start": {
+                        "type": "string",
+                        "description": "DD/MM.",
+                        "x-used-in": "Main screen · option card · subtitle"
+                      },
+                      "end": {
+                        "type": "string",
+                        "description": "DD/MM.",
+                        "x-used-in": "Main screen · option card · subtitle"
+                      }
+                    },
+                    "required": [
+                      "start",
+                      "end"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cycle_status": {
+                "description": "For the crop already sown: where it is in its cycle.",
+                "x-used-in": "Main screen · option card · sentence",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "cycle_ended",
+                      "critical_stage_passed",
+                      "critical_stage_ahead",
+                      "in_critical_stage"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "evaluated": {
+                "type": "integer",
+                "description": "Seasons (crop) or season-crop combinations (rotation) evaluated; 0 when nothing can be simulated.",
+                "x-used-in": "Option detail view"
+              },
+              "high_deficit": {
+                "description": "How many of the evaluated ones fell in high deficit.",
+                "x-used-in": "Option detail view",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "season_counts": {
+                "description": "Counts per deficit class; null when nothing was simulated.",
+                "x-used-in": "Option detail view",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/season_counts"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "crops": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "$ref": "#/$defs/text",
+                      "description": "Crop name, as modelled (e.g. «Soja de segunda»).",
+                      "x-used-in": "Main screen · option card · crops line"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "modelled",
+                        "cover_without_risk",
+                        "not_modelled"
+                      ],
+                      "description": "modelled: its stress is reported; cover_without_risk: a cover crop with no stress of its own; not_modelled: no parameters yet.",
+                      "x-used-in": "Main screen · option card · crops line"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "status"
+                  ],
+                  "additionalProperties": false,
+                  "description": "A crop of a rotation as the producer wrote it.",
+                  "x-used-in": "Main screen · option card · crops line"
+                },
+                "description": "Crops of a rotation in the written order; empty for a crop.",
+                "x-used-in": "Main screen · option card · crops line"
+              },
+              "note": {
+                "description": "How a rotation is evaluated: each crop-year on its own, order not simulated.",
+                "x-used-in": "Option detail view",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/text"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "is_current",
+              "water_risk",
+              "drops",
+              "sentence",
+              "soil_effect",
+              "soil_reason",
+              "why",
+              "evidence",
+              "benefits",
+              "gaps",
+              "risks",
+              "kind",
+              "detail",
+              "sowing",
+              "critical_window",
+              "cycle_status",
+              "evaluated",
+              "high_deficit",
+              "season_counts",
+              "crops",
+              "note"
+            ],
+            "additionalProperties": false,
+            "description": "One option to compare: the crop already sown or a rotation reported by the surveyed producers. Options are never ranked.",
+            "x-used-in": "Main screen · option card"
+          },
+          "description": "Options to compare, in the order to show them. The current crop comes first.",
+          "x-used-in": "Main screen · option card"
+        }
+      },
+      "required": [
+        "field",
+        "mock",
+        "generated_at",
+        "water",
+        "soil",
+        "options"
+      ],
+      "additionalProperties": false,
+      "description": "Everything the main screen needs, in the shape of the API's summary.",
+      "x-used-in": "Main screen"
+    },
+    "inputs": {
+      "type": "object",
+      "properties": {
+        "farmer": {
+          "type": "object",
+          "properties": {
+            "current_crop": {
+              "type": "object",
+              "properties": {
+                "crop": {
+                  "description": "Crop id from catalog.crops; null if none was entered.",
+                  "x-used-in": "Data screen · Productor «Tu campo» · crop chips",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "sowing_day": {
+                  "description": "Day it was sown, MM-DD.",
+                  "x-used-in": "Data screen · Productor «Tu campo» · «¿Cuándo lo sembraste?»",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "crop",
+                "sowing_day"
+              ],
+              "additionalProperties": false,
+              "description": "The crop sown now.",
+              "x-used-in": "Data screen · Productor «Tu campo» · «¿Qué tienes sembrado ahora?»"
+            },
+            "seasons": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "season": {
+                    "type": "string",
+                    "description": "Season, e.g. 2025/26.",
+                    "x-used-in": "Data screen · Productor «Tu campo» · season title"
+                  },
+                  "crops": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Crop id from catalog.history_crops.",
+                      "x-used-in": "Data screen · Productor «Tu campo» · season crops"
+                    },
+                    "description": "Crops grown in the season (e.g. barley + soybean_2nd), shown joined by « + ».",
+                    "x-used-in": "Data screen · Productor «Tu campo» · season crops"
+                  },
+                  "rating": {
+                    "description": "How the season went, 1 (muy mal) to 5 (excelente).",
+                    "x-used-in": "Data screen · Productor «Tu campo» · rating buttons",
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 5
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "yield_kg_ha": {
+                    "description": "Yield in kg/ha, optional, used instead of the scale.",
+                    "x-used-in": "Data screen · Productor «Tu campo» · «puedes escribirlo»",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "confirmed": {
+                    "type": "boolean",
+                    "description": "False while the season is only a suggestion (e.g. from satellite).",
+                    "x-used-in": "Data screen · Productor «Tu campo» · chip «sugeridas»"
+                  }
+                },
+                "required": [
+                  "season",
+                  "crops",
+                  "rating",
+                  "yield_kg_ha",
+                  "confirmed"
+                ],
+                "additionalProperties": false,
+                "description": "One past season.",
+                "x-used-in": "Data screen · Productor «Tu campo» · «Tus últimas zafras»"
+              },
+              "description": "The producer's last seasons.",
+              "x-used-in": "Data screen · Productor «Tu campo» · «Tus últimas zafras»"
+            }
+          },
+          "required": [
+            "current_crop",
+            "seasons"
+          ],
+          "additionalProperties": false,
+          "description": "The producer's part of the form.",
+          "x-used-in": "Data screen · Productor «Tu campo»"
+        },
+        "agronomist": {
+          "type": "object",
+          "properties": {
+            "soil_test": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "description": "Date of the analysis, YYYY-MM.",
+                  "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo» · «Fecha del análisis»",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "om_pct": {
+                  "description": "Organic matter, %.",
+                  "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo» · «Materia orgánica (%)»",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "p_bray_ppm": {
+                  "description": "Phosphorus (Bray), ppm.",
+                  "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo» · «Fósforo Bray (ppm)»",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ph": {
+                  "description": "pH.",
+                  "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo» · «pH»",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "date",
+                "om_pct",
+                "p_bray_ppm",
+                "ph"
+              ],
+              "additionalProperties": false,
+              "description": "The soil analysis.",
+              "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo» · «Análisis de suelo»"
+            },
+            "erosion_t_ha_yr": {
+              "description": "Estimated erosion, t/ha/year.",
+              "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo» · «Erosión estimada»",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "soil_type": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "description": "CONEAT code and soil name, e.g. «CONEAT 10.8b, Brunosol».",
+                  "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo» · soil card",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "confirmed": {
+                  "description": "Whether the agronomist confirmed it (buttons «Confirmar» / «Corregir»).",
+                  "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo» · soil card",
+                  "anyOf": [
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "description",
+                "confirmed"
+              ],
+              "additionalProperties": false,
+              "description": "The soil type.",
+              "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo» · «Tipo de suelo»"
+            }
+          },
+          "required": [
+            "soil_test",
+            "erosion_t_ha_yr",
+            "soil_type"
+          ],
+          "additionalProperties": false,
+          "description": "The agronomist's part of the form; every datum is optional.",
+          "x-used-in": "Data screen · Agrónomo «Datos técnicos del campo»"
+        }
+      },
+      "required": [
+        "farmer",
+        "agronomist"
+      ],
+      "additionalProperties": false,
+      "description": "What the producer and the agronomist entered, normalised: crops as ids, days as MM-DD.",
+      "x-used-in": "Data screen"
+    },
+    "scenarios": {
+      "type": "object",
+      "properties": {
+        "from_year": {
+          "type": "integer",
+          "description": "Start year of the first season.",
+          "x-used-in": "Agronomist chart · yearly result of each option"
+        },
+        "to_year": {
+          "type": "integer",
+          "description": "Start year of the last season.",
+          "x-used-in": "Agronomist chart · yearly result of each option"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Same id as in summary.options.",
+                "x-used-in": "Agronomist chart · yearly result of each option"
+              },
+              "name": {
+                "$ref": "#/$defs/text",
+                "description": "Name of the option.",
+                "x-used-in": "Agronomist chart · yearly result of each option"
+              },
+              "years": {
+                "type": "array",
+                "items": {
+                  "description": "ok, tight or out for that season; null when the season could not be evaluated.",
+                  "x-used-in": "Agronomist chart · yearly result of each option",
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "tight",
+                        "out"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "description": "One result per season from `from_year` to `to_year`, in order; for a rotation, the class of the mean unmet demand of its modelled crops that season; empty when nothing was simulated.",
+                "x-used-in": "Agronomist chart · yearly result of each option"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "years"
+            ],
+            "additionalProperties": false,
+            "description": "One option.",
+            "x-used-in": "Agronomist chart · yearly result of each option"
+          },
+          "description": "Options, in the same order as summary.options.",
+          "x-used-in": "Agronomist chart · yearly result of each option"
+        }
+      },
+      "required": [
+        "from_year",
+        "to_year",
+        "options"
+      ],
+      "additionalProperties": false,
+      "description": "The result of every historical season for every option, in the shape of the API's scenarios.",
+      "x-used-in": "Agronomist chart · yearly result of each option"
+    },
+    "catalog": {
+      "type": "object",
+      "properties": {
+        "crops": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Crop id.",
+                "x-used-in": "Data screen · Productor «Tu campo» · crop chips"
+              },
+              "name": {
+                "$ref": "#/$defs/text",
+                "description": "Name to show.",
+                "x-used-in": "Data screen · Productor «Tu campo» · crop chips"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "additionalProperties": false,
+            "description": "A crop the producer can pick as sown now.",
+            "x-used-in": "Data screen · Productor «Tu campo» · crop chips"
+          },
+          "description": "Crops that can be sown on a date.",
+          "x-used-in": "Data screen · Productor «Tu campo» · crop chips"
+        },
+        "history_crops": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Crop id.",
+                "x-used-in": "Data screen · Productor «Tu campo» · season crops"
+              },
+              "name": {
+                "$ref": "#/$defs/text",
+                "description": "Name to show.",
+                "x-used-in": "Data screen · Productor «Tu campo» · season crops"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "additionalProperties": false,
+            "description": "A crop that can be part of a past season.",
+            "x-used-in": "Data screen · Productor «Tu campo» · season crops"
+          },
+          "description": "Crops valid in the history, including ones the model cannot simulate yet.",
+          "x-used-in": "Data screen · Productor «Tu campo» · season crops"
+        },
+        "ratings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer",
+                "description": "1 to 5.",
+                "x-used-in": "Data screen · Productor «Tu campo» · rating buttons"
+              },
+              "label": {
+                "$ref": "#/$defs/text",
+                "description": "Button text, e.g. «Muy mal».",
+                "x-used-in": "Data screen · Productor «Tu campo» · rating buttons"
+              }
+            },
+            "required": [
+              "value",
+              "label"
+            ],
+            "additionalProperties": false,
+            "description": "A point of the rating scale.",
+            "x-used-in": "Data screen · Productor «Tu campo» · rating buttons"
+          },
+          "description": "The rating scale.",
+          "x-used-in": "Data screen · Productor «Tu campo» · rating buttons"
+        },
+        "seasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Season, e.g. 2025/26.",
+            "x-used-in": "Data screen · Productor «Tu campo» · season selector"
+          },
+          "description": "Seasons the history can cover, newest first.",
+          "x-used-in": "Data screen · Productor «Tu campo» · season selector"
+        }
+      },
+      "required": [
+        "crops",
+        "history_crops",
+        "ratings",
+        "seasons"
+      ],
+      "additionalProperties": false,
+      "description": "The closed lists the forms offer: nothing is typed as free text.",
+      "x-used-in": "Data screen"
+    }
+  },
+  "required": [
+    "schema_version",
+    "generated_at",
+    "site",
+    "status",
+    "summary",
+    "inputs",
+    "scenarios",
+    "catalog"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,1968 @@
+{
+  "schema_version": "2.0",
+  "generated_at": "2026-11-14T10:30:00+00:00",
+  "site": {
+    "climate": {
+      "source": "nasa_power",
+      "first_day": "1986-01-01",
+      "last_day": "2026-11-11",
+      "seasons": 40
+    },
+    "has_station": true,
+    "soil_calibration": {
+      "current": false,
+      "fitted_at": {
+        "latitude": -33.3578,
+        "longitude": -58.0788
+      }
+    },
+    "note": {
+      "key": "location.note",
+      "en": "The model runs at the NASA data point; its results do not describe other places.",
+      "es": "El modelo corre en el punto de datos de NASA; sus resultados no describen otros lugares."
+    }
+  },
+  "status": {
+    "exploratory": true,
+    "validated_for_field": false,
+    "disclaimer": {
+      "key": "screen.footer",
+      "en": "Exploratory simulation, not validated. Not a forecast, a yield prediction or a recommendation.",
+      "es": "Simulación exploratoria, no validada. No es un pronóstico, una predicción de rendimiento ni una recomendación."
+    },
+    "simulated_reading": true,
+    "values_by_status": {
+      "pending": 19,
+      "assumption": 50,
+      "source": 1,
+      "data": 10,
+      "fitted": 1
+    },
+    "sources": [
+      {
+        "id": "nasa_power",
+        "title": "NASA POWER daily data at each site's point",
+        "publisher": "NASA"
+      },
+      {
+        "id": "smap_l4",
+        "title": "SMAP L4 SPL4SMGP.008 root-zone soil moisture",
+        "publisher": "NASA"
+      },
+      {
+        "id": "smap_l3",
+        "title": "SMAP L3 SPL3SMP-E.006 surface soil moisture",
+        "publisher": "NASA"
+      },
+      {
+        "id": "producer_survey",
+        "title": "XmartAgro producer survey, Nov 2026 (12 respondents: Soriano, Rio Negro, Paysandu)",
+        "publisher": "XmartAgro team"
+      },
+      {
+        "id": "inia_la_estanzuela",
+        "title": "INIA La Estanzuela agroclimatic station, daily record (supplied by the team)",
+        "publisher": "INIA"
+      },
+      {
+        "id": "modis_ndvi",
+        "title": "MODIS MOD13Q1.061 vegetation index, 250 m pixel at the site",
+        "publisher": "NASA"
+      }
+    ]
+  },
+  "summary": {
+    "field": {
+      "id": "la_estanzuela",
+      "name": "INIA La Estanzuela (station point)",
+      "department": "Colonia",
+      "lat": -34.34,
+      "lon": -57.69
+    },
+    "mock": false,
+    "generated_at": "2026-11-14T10:30:00+00:00",
+    "water": {
+      "mm": 49.9,
+      "capacity_mm": 162.4,
+      "source": "sensor",
+      "reliability": "low",
+      "updated_at": "2026-11-14T10:30:00+00:00",
+      "mm_status": "derived_from_assumptions",
+      "is_simulated": true,
+      "volumetric_moisture": 0.24
+    },
+    "soil": {
+      "state": null,
+      "trend": null,
+      "precision": "low",
+      "reasons": [],
+      "missing": [
+        {
+          "key": "front.missing.calibrated_sensor",
+          "en": "calibrated sensor",
+          "es": "sensor calibrado"
+        },
+        {
+          "key": "front.missing.soil_diagnosis",
+          "en": "diagnosis of the field's soil",
+          "es": "diagnóstico del suelo del lote"
+        }
+      ]
+    },
+    "options": [
+      {
+        "id": "barley@06-10",
+        "name": {
+          "key": "crops.barley.name",
+          "en": "Barley",
+          "es": "Cebada"
+        },
+        "is_current": true,
+        "water_risk": null,
+        "drops": null,
+        "sentence": {
+          "key": "card.cycle_ended",
+          "en": "Day 157 of a 150-day cycle: the cycle of this sowing has already ended; there is no deficit scenario to show.",
+          "es": "Día 157 de un ciclo de 150 días: el ciclo de esta siembra ya terminó; no hay escenario de déficit para mostrar."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "crop",
+        "detail": {
+          "key": "card.cycle_ended",
+          "en": "Day 157 of a 150-day cycle: the cycle of this sowing has already ended; there is no deficit scenario to show.",
+          "es": "Día 157 de un ciclo de 150 días: el ciclo de esta siembra ya terminó; no hay escenario de déficit para mostrar."
+        },
+        "sowing": "06-10",
+        "critical_window": null,
+        "cycle_status": "cycle_ended",
+        "evaluated": 0,
+        "high_deficit": null,
+        "season_counts": null,
+        "crops": [],
+        "note": null
+      },
+      {
+        "id": "survey_01",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 1",
+          "es": "Rotación observada 1"
+        },
+        "is_current": false,
+        "water_risk": "medium",
+        "drops": {
+          "ok": 5,
+          "tight": 1,
+          "out": 4
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "7 modelled crops: 104 of 280 year-season combinations with high deficit",
+          "es": "7 cultivos modelados: 104 de 280 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 280,
+        "high_deficit": 104,
+        "season_counts": {
+          "low_deficit": 130,
+          "moderate_deficit": 46,
+          "high_deficit": 104
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.rapeseed.name",
+              "en": "Rapeseed (canola)",
+              "es": "Colza (canola)"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.barley.name",
+              "en": "Barley",
+              "es": "Cebada"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.wheat.name",
+              "en": "Wheat",
+              "es": "Trigo"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.maize.name",
+              "en": "Maize (1st sowing)",
+              "es": "Maíz de primera"
+            },
+            "status": "modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      },
+      {
+        "id": "survey_02",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 2",
+          "es": "Rotación observada 2"
+        },
+        "is_current": false,
+        "water_risk": "medium",
+        "drops": {
+          "ok": 5,
+          "tight": 1,
+          "out": 4
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "7 modelled crops: 104 of 280 year-season combinations with high deficit",
+          "es": "7 cultivos modelados: 104 de 280 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 280,
+        "high_deficit": 104,
+        "season_counts": {
+          "low_deficit": 130,
+          "moderate_deficit": 46,
+          "high_deficit": 104
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.maize.name",
+              "en": "Maize (1st sowing)",
+              "es": "Maíz de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops_known.vetch",
+              "en": "Vetch",
+              "es": "Vicia"
+            },
+            "status": "not_modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.rapeseed.name",
+              "en": "Rapeseed (canola)",
+              "es": "Colza (canola)"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.barley.name",
+              "en": "Barley",
+              "es": "Cebada"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.wheat.name",
+              "en": "Wheat",
+              "es": "Trigo"
+            },
+            "status": "modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      },
+      {
+        "id": "survey_03",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 3",
+          "es": "Rotación observada 3"
+        },
+        "is_current": false,
+        "water_risk": "low",
+        "drops": {
+          "ok": 5,
+          "tight": 2,
+          "out": 3
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 3 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 3 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "4 modelled crops: 53 of 160 year-season combinations with high deficit",
+          "es": "4 cultivos modelados: 53 de 160 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 160,
+        "high_deficit": 53,
+        "season_counts": {
+          "low_deficit": 82,
+          "moderate_deficit": 25,
+          "high_deficit": 53
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.wheat.name",
+              "en": "Wheat",
+              "es": "Trigo"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.maize.name",
+              "en": "Maize (1st sowing)",
+              "es": "Maíz de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.rapeseed.name",
+              "en": "Rapeseed (canola)",
+              "es": "Colza (canola)"
+            },
+            "status": "modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      },
+      {
+        "id": "survey_04",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 4",
+          "es": "Rotación observada 4"
+        },
+        "is_current": false,
+        "water_risk": "low",
+        "drops": {
+          "ok": 5,
+          "tight": 2,
+          "out": 3
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 3 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 3 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "4 modelled crops: 53 of 160 year-season combinations with high deficit",
+          "es": "4 cultivos modelados: 53 de 160 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 160,
+        "high_deficit": 53,
+        "season_counts": {
+          "low_deficit": 85,
+          "moderate_deficit": 22,
+          "high_deficit": 53
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.barley.name",
+              "en": "Barley",
+              "es": "Cebada"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.wheat.name",
+              "en": "Wheat",
+              "es": "Trigo"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops_known.alfalfa",
+              "en": "Alfalfa",
+              "es": "Alfalfa"
+            },
+            "status": "not_modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      },
+      {
+        "id": "survey_07",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 7",
+          "es": "Rotación observada 7"
+        },
+        "is_current": false,
+        "water_risk": "low",
+        "drops": {
+          "ok": 5,
+          "tight": 2,
+          "out": 3
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 3 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 3 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "6 modelled crops: 79 of 240 year-season combinations with high deficit",
+          "es": "6 cultivos modelados: 79 de 240 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 240,
+        "high_deficit": 79,
+        "season_counts": {
+          "low_deficit": 122,
+          "moderate_deficit": 39,
+          "high_deficit": 79
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.wheat.name",
+              "en": "Wheat",
+              "es": "Trigo"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.barley.name",
+              "en": "Barley",
+              "es": "Cebada"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.maize.name",
+              "en": "Maize (1st sowing)",
+              "es": "Maíz de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.rapeseed.name",
+              "en": "Rapeseed (canola)",
+              "es": "Colza (canola)"
+            },
+            "status": "modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      },
+      {
+        "id": "survey_08",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 8",
+          "es": "Rotación observada 8"
+        },
+        "is_current": false,
+        "water_risk": "medium",
+        "drops": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "5 modelled crops: 79 of 200 year-season combinations with high deficit",
+          "es": "5 cultivos modelados: 79 de 200 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 200,
+        "high_deficit": 79,
+        "season_counts": {
+          "low_deficit": 83,
+          "moderate_deficit": 38,
+          "high_deficit": 79
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.wheat.name",
+              "en": "Wheat",
+              "es": "Trigo"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.barley.name",
+              "en": "Barley",
+              "es": "Cebada"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.maize.name",
+              "en": "Maize (1st sowing)",
+              "es": "Maíz de primera"
+            },
+            "status": "modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      },
+      {
+        "id": "survey_09",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 9",
+          "es": "Rotación observada 9"
+        },
+        "is_current": false,
+        "water_risk": "medium",
+        "drops": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "8 modelled crops: 128 of 320 year-season combinations with high deficit",
+          "es": "8 cultivos modelados: 128 de 320 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 320,
+        "high_deficit": 128,
+        "season_counts": {
+          "low_deficit": 130,
+          "moderate_deficit": 62,
+          "high_deficit": 128
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.rapeseed.name",
+              "en": "Rapeseed (canola)",
+              "es": "Colza (canola)"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.wheat.name",
+              "en": "Wheat",
+              "es": "Trigo"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.maize.name",
+              "en": "Maize (1st sowing)",
+              "es": "Maíz de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.oat_cover.name",
+              "en": "Oat cover crop",
+              "es": "Avena de cobertura"
+            },
+            "status": "cover_without_risk"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.rapeseed.name",
+              "en": "Rapeseed (canola)",
+              "es": "Colza (canola)"
+            },
+            "status": "modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      },
+      {
+        "id": "survey_10",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 10",
+          "es": "Rotación observada 10"
+        },
+        "is_current": false,
+        "water_risk": "medium",
+        "drops": {
+          "ok": 3,
+          "tight": 2,
+          "out": 5
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 5 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 5 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "4 modelled crops: 78 of 160 year-season combinations with high deficit",
+          "es": "4 cultivos modelados: 78 de 160 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 160,
+        "high_deficit": 78,
+        "season_counts": {
+          "low_deficit": 46,
+          "moderate_deficit": 36,
+          "high_deficit": 78
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.wheat.name",
+              "en": "Wheat",
+              "es": "Trigo"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.maize.name",
+              "en": "Maize (1st sowing)",
+              "es": "Maíz de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      },
+      {
+        "id": "survey_11",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 11",
+          "es": "Rotación observada 11"
+        },
+        "is_current": false,
+        "water_risk": "medium",
+        "drops": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "3 modelled crops: 50 of 120 year-season combinations with high deficit",
+          "es": "3 cultivos modelados: 50 de 120 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 120,
+        "high_deficit": 50,
+        "season_counts": {
+          "low_deficit": 50,
+          "moderate_deficit": 20,
+          "high_deficit": 50
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.rapeseed.name",
+              "en": "Rapeseed (canola)",
+              "es": "Colza (canola)"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.oat_cover.name",
+              "en": "Oat cover crop",
+              "es": "Avena de cobertura"
+            },
+            "status": "cover_without_risk"
+          },
+          {
+            "name": {
+              "key": "crops_known.sunflower",
+              "en": "Sunflower",
+              "es": "Girasol"
+            },
+            "status": "not_modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      },
+      {
+        "id": "survey_12",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 12",
+          "es": "Rotación observada 12"
+        },
+        "is_current": false,
+        "water_risk": "medium",
+        "drops": {
+          "ok": 3,
+          "tight": 2,
+          "out": 5
+        },
+        "sentence": {
+          "key": "front.sentence",
+          "en": "In 5 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 5 de cada 10 zafras históricas faltó agua en la etapa crítica."
+        },
+        "soil_effect": null,
+        "soil_reason": null,
+        "why": null,
+        "evidence": [],
+        "benefits": [],
+        "gaps": [],
+        "risks": [],
+        "kind": "rotation",
+        "detail": {
+          "key": "card.rotation_detail",
+          "en": "4 modelled crops: 76 of 160 year-season combinations with high deficit",
+          "es": "4 cultivos modelados: 76 de 160 combinaciones año-zafra con déficit alto"
+        },
+        "sowing": null,
+        "critical_window": null,
+        "cycle_status": null,
+        "evaluated": 160,
+        "high_deficit": 76,
+        "season_counts": {
+          "low_deficit": 53,
+          "moderate_deficit": 31,
+          "high_deficit": 76
+        },
+        "crops": [
+          {
+            "name": {
+              "key": "crops.maize.name",
+              "en": "Maize (1st sowing)",
+              "es": "Maíz de primera"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.rapeseed.name",
+              "en": "Rapeseed (canola)",
+              "es": "Colza (canola)"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_2nd.name",
+              "en": "Soybean (2nd sowing)",
+              "es": "Soja de segunda"
+            },
+            "status": "modelled"
+          },
+          {
+            "name": {
+              "key": "crops_known.cover_crop",
+              "en": "Cover crop (green bridge)",
+              "es": "Cultivo de cobertura (puente verde)"
+            },
+            "status": "not_modelled"
+          },
+          {
+            "name": {
+              "key": "crops.soybean_1st.name",
+              "en": "Soybean (1st sowing)",
+              "es": "Soja de primera"
+            },
+            "status": "modelled"
+          }
+        ],
+        "note": {
+          "key": "rotation.note",
+          "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+          "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+        }
+      }
+    ]
+  },
+  "inputs": {
+    "farmer": {
+      "current_crop": {
+        "crop": "barley",
+        "sowing_day": "06-10"
+      },
+      "seasons": [
+        {
+          "season": "2025/26",
+          "crops": [
+            "soybean_1st"
+          ],
+          "rating": 3,
+          "yield_kg_ha": 2900,
+          "confirmed": true
+        },
+        {
+          "season": "2024/25",
+          "crops": [
+            "wheat",
+            "soybean_2nd"
+          ],
+          "rating": 4,
+          "yield_kg_ha": 3100,
+          "confirmed": true
+        },
+        {
+          "season": "2023/24",
+          "crops": [
+            "maize"
+          ],
+          "rating": 4,
+          "yield_kg_ha": 9200,
+          "confirmed": true
+        },
+        {
+          "season": "2022/23",
+          "crops": [
+            "soybean_1st"
+          ],
+          "rating": 1,
+          "yield_kg_ha": 580,
+          "confirmed": true
+        }
+      ]
+    },
+    "agronomist": {
+      "soil_test": {
+        "date": "2026-07",
+        "om_pct": 2.6,
+        "p_bray_ppm": 16,
+        "ph": 6.0
+      },
+      "erosion_t_ha_yr": 2.7,
+      "soil_type": {
+        "description": "CONEAT 10.8b, Brunosol",
+        "confirmed": true
+      }
+    }
+  },
+  "scenarios": {
+    "from_year": 1986,
+    "to_year": 2025,
+    "options": [
+      {
+        "id": "barley@06-10",
+        "name": {
+          "key": "crops.barley.name",
+          "en": "Barley",
+          "es": "Cebada"
+        },
+        "years": []
+      },
+      {
+        "id": "survey_01",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 1",
+          "es": "Rotación observada 1"
+        },
+        "years": [
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "ok",
+          "ok",
+          "out",
+          "ok",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      },
+      {
+        "id": "survey_02",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 2",
+          "es": "Rotación observada 2"
+        },
+        "years": [
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "ok",
+          "ok",
+          "out",
+          "ok",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      },
+      {
+        "id": "survey_03",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 3",
+          "es": "Rotación observada 3"
+        },
+        "years": [
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "ok",
+          "ok",
+          "out",
+          "ok",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      },
+      {
+        "id": "survey_04",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 4",
+          "es": "Rotación observada 4"
+        },
+        "years": [
+          "tight",
+          "ok",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "ok",
+          "out",
+          "ok",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "ok",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      },
+      {
+        "id": "survey_07",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 7",
+          "es": "Rotación observada 7"
+        },
+        "years": [
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "ok",
+          "ok",
+          "out",
+          "ok",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      },
+      {
+        "id": "survey_08",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 8",
+          "es": "Rotación observada 8"
+        },
+        "years": [
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "ok",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "ok",
+          "out",
+          "out",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      },
+      {
+        "id": "survey_09",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 9",
+          "es": "Rotación observada 9"
+        },
+        "years": [
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "tight",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "ok",
+          "out",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      },
+      {
+        "id": "survey_10",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 10",
+          "es": "Rotación observada 10"
+        },
+        "years": [
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "tight",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "ok",
+          "out",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "out",
+          "ok",
+          "out",
+          "out",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      },
+      {
+        "id": "survey_11",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 11",
+          "es": "Rotación observada 11"
+        },
+        "years": [
+          "tight",
+          "tight",
+          "out",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "tight",
+          "ok",
+          "out",
+          "ok",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      },
+      {
+        "id": "survey_12",
+        "name": {
+          "key": "rotation.title",
+          "en": "Observed rotation 12",
+          "es": "Rotación observada 12"
+        },
+        "years": [
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "tight",
+          "ok",
+          "out",
+          "tight",
+          "tight",
+          "ok",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "ok",
+          "out",
+          "out",
+          "tight",
+          "tight",
+          "tight",
+          "out",
+          "tight",
+          "out",
+          "ok",
+          "out",
+          "out",
+          "tight",
+          "out",
+          "out",
+          "out",
+          "out"
+        ]
+      }
+    ]
+  },
+  "catalog": {
+    "crops": [
+      {
+        "id": "soybean_1st",
+        "name": {
+          "key": "crops.soybean_1st.name",
+          "en": "Soybean (1st sowing)",
+          "es": "Soja de primera"
+        }
+      },
+      {
+        "id": "soybean_2nd",
+        "name": {
+          "key": "crops.soybean_2nd.name",
+          "en": "Soybean (2nd sowing)",
+          "es": "Soja de segunda"
+        }
+      },
+      {
+        "id": "maize",
+        "name": {
+          "key": "crops.maize.name",
+          "en": "Maize (1st sowing)",
+          "es": "Maíz de primera"
+        }
+      },
+      {
+        "id": "maize_2nd",
+        "name": {
+          "key": "crops.maize_2nd.name",
+          "en": "Maize (2nd sowing)",
+          "es": "Maíz de segunda"
+        }
+      },
+      {
+        "id": "sorghum_1st",
+        "name": {
+          "key": "crops.sorghum_1st.name",
+          "en": "Sorghum (1st sowing)",
+          "es": "Sorgo de primera"
+        }
+      },
+      {
+        "id": "sorghum_2nd",
+        "name": {
+          "key": "crops.sorghum_2nd.name",
+          "en": "Sorghum (2nd sowing)",
+          "es": "Sorgo de segunda"
+        }
+      },
+      {
+        "id": "wheat",
+        "name": {
+          "key": "crops.wheat.name",
+          "en": "Wheat",
+          "es": "Trigo"
+        }
+      },
+      {
+        "id": "barley",
+        "name": {
+          "key": "crops.barley.name",
+          "en": "Barley",
+          "es": "Cebada"
+        }
+      },
+      {
+        "id": "rapeseed",
+        "name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        }
+      }
+    ],
+    "history_crops": [
+      {
+        "id": "soybean_1st",
+        "name": {
+          "key": "crops.soybean_1st.name",
+          "en": "Soybean (1st sowing)",
+          "es": "Soja de primera"
+        }
+      },
+      {
+        "id": "soybean_2nd",
+        "name": {
+          "key": "crops.soybean_2nd.name",
+          "en": "Soybean (2nd sowing)",
+          "es": "Soja de segunda"
+        }
+      },
+      {
+        "id": "maize",
+        "name": {
+          "key": "crops.maize.name",
+          "en": "Maize (1st sowing)",
+          "es": "Maíz de primera"
+        }
+      },
+      {
+        "id": "maize_2nd",
+        "name": {
+          "key": "crops.maize_2nd.name",
+          "en": "Maize (2nd sowing)",
+          "es": "Maíz de segunda"
+        }
+      },
+      {
+        "id": "sorghum_1st",
+        "name": {
+          "key": "crops.sorghum_1st.name",
+          "en": "Sorghum (1st sowing)",
+          "es": "Sorgo de primera"
+        }
+      },
+      {
+        "id": "sorghum_2nd",
+        "name": {
+          "key": "crops.sorghum_2nd.name",
+          "en": "Sorghum (2nd sowing)",
+          "es": "Sorgo de segunda"
+        }
+      },
+      {
+        "id": "wheat",
+        "name": {
+          "key": "crops.wheat.name",
+          "en": "Wheat",
+          "es": "Trigo"
+        }
+      },
+      {
+        "id": "barley",
+        "name": {
+          "key": "crops.barley.name",
+          "en": "Barley",
+          "es": "Cebada"
+        }
+      },
+      {
+        "id": "rapeseed",
+        "name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        }
+      },
+      {
+        "id": "oat_cover",
+        "name": {
+          "key": "crops.oat_cover.name",
+          "en": "Oat cover crop",
+          "es": "Avena de cobertura"
+        }
+      },
+      {
+        "id": "lotus",
+        "name": {
+          "key": "crops.lotus.name",
+          "en": "Lotus (perennial pasture)",
+          "es": "Lotus (pastura perenne)"
+        }
+      },
+      {
+        "id": "red_clover",
+        "name": {
+          "key": "crops.red_clover.name",
+          "en": "Red clover (biennial pasture)",
+          "es": "Trébol rojo (pastura bianual)"
+        }
+      },
+      {
+        "id": "pasture_mix",
+        "name": {
+          "key": "crops.pasture_mix.name",
+          "en": "Pasture mix (lotus, fescue and white clover)",
+          "es": "Pradera (lotus, festuca y trébol blanco)"
+        }
+      },
+      {
+        "id": "sunflower",
+        "name": {
+          "key": "crops_known.sunflower",
+          "en": "Sunflower",
+          "es": "Girasol"
+        }
+      },
+      {
+        "id": "carinata",
+        "name": {
+          "key": "crops_known.carinata",
+          "en": "Carinata",
+          "es": "Carinata"
+        }
+      },
+      {
+        "id": "vetch",
+        "name": {
+          "key": "crops_known.vetch",
+          "en": "Vetch",
+          "es": "Vicia"
+        }
+      },
+      {
+        "id": "alfalfa",
+        "name": {
+          "key": "crops_known.alfalfa",
+          "en": "Alfalfa",
+          "es": "Alfalfa"
+        }
+      },
+      {
+        "id": "fallow",
+        "name": {
+          "key": "crops_known.fallow",
+          "en": "Fallow",
+          "es": "Barbecho"
+        }
+      }
+    ],
+    "ratings": [
+      {
+        "value": 1,
+        "label": {
+          "key": "screen.sheet.rating.1",
+          "en": "Very bad",
+          "es": "Muy mal"
+        }
+      },
+      {
+        "value": 2,
+        "label": {
+          "key": "screen.sheet.rating.2",
+          "en": "Bad",
+          "es": "Mal"
+        }
+      },
+      {
+        "value": 3,
+        "label": {
+          "key": "screen.sheet.rating.3",
+          "en": "Good",
+          "es": "Bien"
+        }
+      },
+      {
+        "value": 4,
+        "label": {
+          "key": "screen.sheet.rating.4",
+          "en": "Very good",
+          "es": "Muy bien"
+        }
+      },
+      {
+        "value": 5,
+        "label": {
+          "key": "screen.sheet.rating.5",
+          "en": "Excellent",
+          "es": "Excelente"
+        }
+      }
+    ],
+    "seasons": [
+      "2025/26",
+      "2024/25",
+      "2023/24",
+      "2022/23",
+      "2021/22",
+      "2020/21",
+      "2019/20",
+      "2018/19",
+      "2017/18",
+      "2016/17",
+      "2015/16"
+    ]
+  }
+}

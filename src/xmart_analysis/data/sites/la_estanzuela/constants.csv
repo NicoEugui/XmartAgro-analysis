@@ -1,0 +1,6 @@
+name,value,status,source_ref,note
+latitude,-34.34,data,nasa_power,model point latitude (degrees): the NASA POWER point at INIA La Estanzuela; used by the Hargreaves ET0
+longitude,-57.69,data,nasa_power,model point longitude (degrees): the NASA POWER point at INIA La Estanzuela; the model runs only here
+season_first_year,1986,data,nasa_power,first season whose window lies inside the POWER record (record starts 1 Jan 1986)
+season_last_year,2025,data,nasa_power,last season whose window lies inside the POWER record (record ends 11 Nov 2026)
+et0_scale,1.1716,fitted,inia_la_estanzuela,"multiplies Hargreaves ET0 so it matches the station's Penman ET on average (ratio of totals, 1986-2026, same location as the model point); refit the soil parameters after changing it"

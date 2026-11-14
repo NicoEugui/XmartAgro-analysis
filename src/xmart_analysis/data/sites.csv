@@ -1,0 +1,3 @@
+site_id,name,department,kind,active,calibration_site,note
+la_estanzuela,INIA La Estanzuela (station point),Colonia,station,1,soriano,soil parameters borrowed from soriano until SMAP L4 at this point is fitted
+soriano,Soriano field (original demo coordinate),Soriano,field,0,soriano,kept as a reference; not used by the model while inactive

@@ -1,0 +1,378 @@
+{
+ "deficit_class.low_deficit": {
+  "en": "Low deficit",
+  "es": "Déficit bajo"
+ },
+ "deficit_class.moderate_deficit": {
+  "en": "Moderate deficit",
+  "es": "Déficit moderado"
+ },
+ "deficit_class.high_deficit": {
+  "en": "High deficit",
+  "es": "Déficit alto"
+ },
+ "crops.maize.name": {
+  "en": "Maize (1st sowing)",
+  "es": "Maíz de primera"
+ },
+ "crops.barley.name": {
+  "en": "Barley",
+  "es": "Cebada"
+ },
+ "crops.wheat.name": {
+  "en": "Wheat",
+  "es": "Trigo"
+ },
+ "crops.sorghum_2nd.name": {
+  "en": "Sorghum (2nd sowing)",
+  "es": "Sorgo de segunda"
+ },
+ "crops.soybean_2nd.name": {
+  "en": "Soybean (2nd sowing)",
+  "es": "Soja de segunda"
+ },
+ "crops.soybean_1st.name": {
+  "en": "Soybean (1st sowing)",
+  "es": "Soja de primera"
+ },
+ "crops.oat_cover.name": {
+  "en": "Oat cover crop",
+  "es": "Avena de cobertura"
+ },
+ "crops.lotus.name": {
+  "en": "Lotus (perennial pasture)",
+  "es": "Lotus (pastura perenne)"
+ },
+ "method.limit.single_capacity": {
+  "en": "the balance uses a single water capacity; it does not distinguish the rooting depth of each crop",
+  "es": "el balde usa una sola capacidad de agua; no distingue la profundidad de raíces de cada cultivo"
+ },
+ "method.limit.correlations": {
+  "en": "the correlation with SMAP L4 does not prove that the model predicts the stress of each crop",
+  "es": "la correlación con SMAP L4 no prueba que el modelo prediga el estrés de cada cultivo"
+ },
+ "crops.window_note": {
+  "en": "example dates using the year 2000; the window shifts with each season",
+  "es": "fechas de ejemplo con el año 2000; la ventana se corre con cada zafra"
+ },
+ "soil_water.note": {
+  "en": "Simulated sensor reading: an illustrative value, not a field measurement. It will be replaced by real ESP32 readings without changing the architecture.",
+  "es": "Lectura de sensor simulada: valor ilustrativo, no una medición del campo. Se reemplazará por lecturas reales del ESP32 sin cambiar la arquitectura."
+ },
+ "soil_water.conversion_note": {
+  "en": "A sensor measures volumetric moisture, not available water in mm. Converting needs field capacity, wilting point and the soil depth the sensors represent; until then no millimetre figure is shown.",
+  "es": "El sensor mide humedad volumétrica, no agua útil en mm. Convertirla exige conocer la capacidad de campo, el punto de marchitez y la profundidad de suelo que representan los sensores; hasta entonces no se muestra una cifra en mm."
+ },
+ "scenarios.note": {
+  "en": "Scenarios apply the real climate of each historical season to today's soil water. They are not a forecast and the fractions are not probabilities.",
+  "es": "Los escenarios aplican el clima real de cada zafra histórica al agua del suelo de hoy. No son un pronóstico y las fracciones no son probabilidades."
+ },
+ "scenarios.initial_state": {
+  "en": "Initial state: the (simulated) sensor reading converted with assumed soil parameters; conversion pending calibration.",
+  "es": "Estado inicial: la lectura del sensor (simulada) convertida con parámetros de suelo supuestos; conversión pendiente de calibración."
+ },
+ "scenarios.limit.fallow": {
+  "en": "The balance uses the calibrated mixed-cover Kc; it does not represent a specific crop.",
+  "es": "El balde usa el Kc de cobertura mixta calibrado; no representa un cultivo específico."
+ },
+ "soil_water.requirements.depth": {
+  "en": "known and documented measurement depth, comparable with the 0-100 cm root zone",
+  "es": "profundidad de medición conocida y documentada, comparable con la zona radicular de 0 a 100 cm"
+ },
+ "soil_water.requirements.calibration": {
+  "en": "soil-specific calibration of the sensor (field capacity and wilting point)",
+  "es": "calibración del sensor para el suelo del campo (capacidad de campo y punto de marchitez)"
+ },
+ "soil_water.requirements.quality": {
+  "en": "reading quality checks: valid range, drift, gaps and outliers",
+  "es": "controles de calidad de las lecturas: rango válido, deriva, faltantes y valores atípicos"
+ },
+ "soil_water.requirements.representativeness": {
+  "en": "spatial representativeness of the sensor location within the field",
+  "es": "representatividad espacial de la ubicación del sensor dentro del campo"
+ },
+ "soil_water.requirements.note": {
+  "en": "Setting is_simulated to false is not enough: real readings must also be validated for quality, depth, calibration and representativeness before they feed the model.",
+  "es": "Cambiar is_simulated a false no alcanza: las lecturas reales también deben validarse en calidad, profundidad, calibración y representatividad antes de alimentar el modelo."
+ },
+ "scenarios.display_rule": {
+  "en": "Do not show the scenario initial water (mm) as the real available water of the field.",
+  "es": "No mostrar el agua inicial del escenario (mm) como el agua disponible real del campo."
+ },
+ "scenarios.spread_label": {
+  "en": "Range of historical scenarios, with provisional parameters.",
+  "es": "Rango de escenarios históricos, con parámetros provisionales."
+ },
+ "scenarios.uncertainty_note": {
+  "en": "The band is the spread between historical climate seasons. It does not include uncertainty in the soil parameters, the sensor reading (simulated or typed) or the model parameters, and it is not a confidence interval.",
+  "es": "La banda es la dispersión entre zafras climáticas históricas. No incluye la incertidumbre de los parámetros del suelo, de la lectura del sensor (simulada o escrita) ni del modelo, y no es un intervalo de confianza."
+ },
+ "scenarios.structural_note": {
+  "en": "Second sensitivity test: the same climate seasons with a shifted wilting point and with water capacity scaled (a proxy for field capacity and soil depth). The envelope shows how much the band moves with those assumptions; it is not a confidence interval.",
+  "es": "Segunda prueba de sensibilidad: las mismas zafras climáticas con el punto de marchitez desplazado y la capacidad de agua escalada (equivale a variar la capacidad de campo y la profundidad del suelo). La envolvente muestra cuánto se mueve la banda con esos supuestos; no es un intervalo de confianza."
+ },
+ "scenarios.level.volumetric": {
+  "en": "Current volumetric moisture: simulated sensor reading",
+  "es": "Humedad volumétrica actual: lectura de sensor simulada"
+ },
+ "scenarios.level.available": {
+  "en": "Current available water: not determined (no calibration)",
+  "es": "Agua disponible actual: no determinada (sin calibración)"
+ },
+ "scenarios.level.scenario": {
+  "en": "Scenario initial water: derived from assumed soil parameters",
+  "es": "Agua inicial del escenario: derivada de parámetros de suelo supuestos"
+ },
+ "scenarios.plausibility_note": {
+  "en": "A configuration is kept only if its soil is physically plausible: wilting point between 0.10 and 0.25 m3/m3, field capacity (wilting point + capacity/1000) between 0.28 and 0.45 m3/m3, available water between 80 and 250 mm per metre, and the sensor reading not below the wilting point. These ranges are team assumptions.",
+  "es": "Una configuración se conserva solo si su suelo es físicamente plausible: punto de marchitez entre 0,10 y 0,25 m3/m3, capacidad de campo (punto de marchitez + capacidad/1000) entre 0,28 y 0,45 m3/m3, agua disponible entre 80 y 250 mm por metro, y lectura del sensor no inferior al punto de marchitez. Estos rangos son supuestos del equipo."
+ },
+ "scenarios.structural_comparable": {
+  "en": "The envelope is expressed in volumetric moisture (m3/m3), which is comparable across configurations; millimetres of available water are measured from each configuration's own wilting point and are not comparable between configurations.",
+  "es": "La envolvente se expresa en humedad volumétrica (m3/m3), comparable entre configuraciones; los milímetros de agua disponible se miden desde el punto de marchitez de cada configuración y no son comparables entre ellas."
+ },
+ "crops.maize_2nd.name": {
+  "en": "Maize (2nd sowing)",
+  "es": "Maíz de segunda"
+ },
+ "crops.sorghum_1st.name": {
+  "en": "Sorghum (1st sowing)",
+  "es": "Sorgo de primera"
+ },
+ "crops.red_clover.name": {
+  "en": "Red clover (biennial pasture)",
+  "es": "Trébol rojo (pastura bianual)"
+ },
+ "crops.pasture_mix.name": {
+  "en": "Pasture mix (lotus, fescue and white clover)",
+  "es": "Pradera (lotus, festuca y trébol blanco)"
+ },
+ "sensor.warning.below_wilting": {
+  "en": "The reading is below the assumed wilting point: available water is taken as zero relative to that assumption (the soil still holds water physically).",
+  "es": "La lectura está por debajo del punto de marchitez supuesto: el agua disponible se toma como cero respecto de ese supuesto (el suelo sigue reteniendo agua físicamente)."
+ },
+ "sensor.warning.above_capacity": {
+  "en": "The reading is above the assumed field capacity: it is kept as received and flagged; the model caps the available water at the capacity.",
+  "es": "La lectura supera la capacidad de campo supuesta: se conserva tal como llegó y se marca; el modelo limita el agua disponible a la capacidad."
+ },
+ "crops.rapeseed.name": {
+  "en": "Rapeseed (canola)",
+  "es": "Colza (canola)"
+ },
+ "sowing.warning.fixed_cycle": {
+  "en": "The cycle length is kept fixed at the crop's reference duration; in practice a later sowing usually shortens it.",
+  "es": "La duración del ciclo se mantiene fija en la duración de referencia del cultivo; en la práctica una siembra más tardía suele acortarlo."
+ },
+ "sowing.note.no_future_info": {
+  "en": "Each scenario uses only the real climate of one historical season, from the reading date through the end of the cycle; no forecast and no future climate is used.",
+  "es": "Cada escenario usa solo el clima real de una zafra histórica, desde la fecha de lectura hasta el fin del ciclo; no se usa pronóstico ni clima futuro."
+ },
+ "sowing.note.water_mm": {
+  "en": "Millimetres of available water are relative to the assumed soil parameters (provisional) and must not be read as the field's real available water.",
+  "es": "Los milímetros de agua disponible son relativos a los parámetros de suelo supuestos (provisionales) y no deben leerse como el agua disponible real del campo."
+ },
+ "sowing.note.question": {
+  "en": "If this crop is sown on this date, how would the available water have evolved under different historical climate conditions? Not a yield prediction or a recommendation.",
+  "es": "Si se siembra este cultivo en esta fecha, ¿cómo habría evolucionado el agua disponible bajo distintas condiciones climáticas históricas? No es una predicción de rendimiento ni una recomendación."
+ },
+ "soil_water.note_real": {
+  "en": "Reading received from a sensor source. Depth, calibration, quality and spatial representativeness are not validated yet.",
+  "es": "Lectura recibida de una fuente de sensor. La profundidad, la calibración, la calidad y la representatividad espacial todavía no están validadas."
+ },
+ "soil_water.note_manual": {
+  "en": "Value typed by a person; it is not a verified sensor measurement.",
+  "es": "Valor escrito por una persona; no es una medición verificada de un sensor."
+ },
+ "contract.field.sensor_moisture": {
+  "en": "Soil moisture (sensor)",
+  "es": "Humedad del suelo (sensor)"
+ },
+ "contract.field.reading_date": {
+  "en": "Reading date",
+  "es": "Fecha de la lectura"
+ },
+ "contract.field.current_crop": {
+  "en": "Crop sown now",
+  "es": "Cultivo sembrado ahora"
+ },
+ "contract.field.current_sowing": {
+  "en": "Sowing date now",
+  "es": "Fecha de siembra actual"
+ },
+ "contract.field.options": {
+  "en": "Options to compare",
+  "es": "Opciones a comparar"
+ },
+ "contract.field.past_rating": {
+  "en": "Rating of past seasons",
+  "es": "Calificación de zafras pasadas"
+ },
+ "contract.field.past_yield": {
+  "en": "Yield of past seasons",
+  "es": "Rendimiento de zafras pasadas"
+ },
+ "contract.field.past_crops": {
+  "en": "Crops of past seasons",
+  "es": "Cultivos de zafras pasadas"
+ },
+ "contract.field.analysis_date": {
+  "en": "Soil analysis date",
+  "es": "Fecha del análisis de suelo"
+ },
+ "contract.field.organic_matter": {
+  "en": "Organic matter",
+  "es": "Materia orgánica"
+ },
+ "contract.field.phosphorus": {
+  "en": "Phosphorus (Bray)",
+  "es": "Fósforo (Bray)"
+ },
+ "contract.field.ph": {
+  "en": "pH",
+  "es": "pH"
+ },
+ "contract.field.erosion": {
+  "en": "Estimated erosion",
+  "es": "Erosión estimada"
+ },
+ "contract.field.soil_type": {
+  "en": "Soil type (CONEAT)",
+  "es": "Tipo de suelo (CONEAT)"
+ },
+ "contract.output.main_screen": {
+  "en": "Main screen: soil water and scenarios",
+  "es": "Pantalla principal: agua del suelo y escenarios"
+ },
+ "contract.output.option_cards": {
+  "en": "Option cards",
+  "es": "Tarjetas de opciones"
+ },
+ "contract.output.data_sheet": {
+  "en": "Data sheet",
+  "es": "Ficha de datos"
+ },
+ "contract.status.used": {
+  "en": "used by the engine",
+  "es": "usado por el motor"
+ },
+ "contract.status.stored_only": {
+  "en": "stored, not used yet",
+  "es": "guardado, aún no se usa"
+ },
+ "sensor.source_warning.manual_entry": {
+  "en": "Value typed by a person, not a verified sensor measurement.",
+  "es": "Valor escrito por una persona, no una medición verificada de un sensor."
+ },
+ "sensor.source_warning.stale_reading": {
+  "en": "The reading is more than 24 hours old.",
+  "es": "La lectura tiene más de 24 horas."
+ },
+ "sensor.source_warning.depth_unknown": {
+  "en": "The measurement depth is unknown.",
+  "es": "Se desconoce la profundidad de medición."
+ },
+ "sensor.source_warning.future_timestamp": {
+  "en": "The reading timestamp is in the future.",
+  "es": "La marca de tiempo de la lectura está en el futuro."
+ },
+ "sowing.warning.current_partial": {
+  "en": "The current crop is evaluated from today's reading to the end of its cycle using that stage's coefficients.",
+  "es": "El cultivo actual se evalúa desde la lectura de hoy hasta el fin de su ciclo con los coeficientes de la etapa en que está."
+ },
+ "crops_known.sunflower": {
+  "en": "Sunflower",
+  "es": "Girasol"
+ },
+ "crops_known.carinata": {
+  "en": "Carinata",
+  "es": "Carinata"
+ },
+ "crops_known.vetch": {
+  "en": "Vetch",
+  "es": "Vicia"
+ },
+ "crops_known.alfalfa": {
+  "en": "Alfalfa",
+  "es": "Alfalfa"
+ },
+ "crops_known.fallow": {
+  "en": "Fallow",
+  "es": "Barbecho"
+ },
+ "sowing.warning.far_from_reading": {
+  "en": "This sowing is {days} days after the reading, so the sensor's soil state barely affects the result: the scenarios are almost purely climatological.",
+  "es": "Esta siembra es {days} días después de la lectura, así que el estado del suelo del sensor casi no influye en el resultado: los escenarios son casi puramente climatológicos."
+ },
+ "scenarios.level.volumetric.manual_entry": {
+  "en": "Current volumetric moisture: value typed by a person",
+  "es": "Humedad volumétrica actual: valor escrito por una persona"
+ },
+ "scenarios.level.volumetric.backend_api_sensor": {
+  "en": "Current volumetric moisture: sensor reading from the backend API",
+  "es": "Humedad volumétrica actual: lectura de sensor desde la API del backend"
+ },
+ "scenarios.initial_state.manual_entry": {
+  "en": "Initial state: the value typed by a person converted with assumed soil parameters; conversion pending calibration.",
+  "es": "Estado inicial: el valor escrito por una persona convertido con parámetros de suelo supuestos; conversión pendiente de calibración."
+ },
+ "scenarios.initial_state.backend_api_sensor": {
+  "en": "Initial state: the sensor reading from the backend API converted with assumed soil parameters; conversion pending calibration.",
+  "es": "Estado inicial: la lectura del sensor de la API del backend convertida con parámetros de suelo supuestos; conversión pendiente de calibración."
+ },
+ "card.deficit_reading": {
+  "en": "Simulated deficit in {n} of {total} historical seasons",
+  "es": "Déficit simulado en {n} de {total} zafras históricas"
+ },
+ "card.systems_detail": {
+  "en": "6-year system: {n} of {total} year-season combinations with high deficit",
+  "es": "Sistema de 6 años: {n} de {total} combinaciones año-zafra con déficit alto"
+ },
+ "card.cycle_ended": {
+  "en": "Day {day} of a {cycle}-day cycle: the cycle of this sowing has already ended; there is no deficit scenario to show.",
+  "es": "Día {day} de un ciclo de {cycle} días: el ciclo de esta siembra ya terminó; no hay escenario de déficit para mostrar."
+ },
+ "card.stage_passed": {
+  "en": "Day {day} of {cycle}: the critical stage of this crop has already passed; the deficit during it cannot be simulated from today's reading.",
+  "es": "Día {day} de {cycle}: la etapa crítica de este cultivo ya pasó; no se puede simular el déficit de esa etapa a partir de la lectura de hoy."
+ },
+ "rotation.title": {
+  "en": "Observed rotation {n}",
+  "es": "Rotación observada {n}"
+ },
+ "card.rotation_detail": {
+  "en": "{crops} modelled crops: {n} of {total} year-season combinations with high deficit",
+  "es": "{crops} cultivos modelados: {n} de {total} combinaciones año-zafra con déficit alto"
+ },
+ "rotation.unmodelled": {
+  "en": "Not modelled (no parameters): {crops}",
+  "es": "Sin modelar (sin parámetros): {crops}"
+ },
+ "rotation.note": {
+  "en": "As written by the producer. Each crop-year is evaluated on its own with the same starting water, so the order of the years is not simulated.",
+  "es": "Tal como la escribió el productor. Cada cultivo-año se evalúa por separado con la misma agua inicial, así que no se simula el orden de los años."
+ },
+ "crops_known.cover_crop": {
+  "en": "Cover crop (green bridge)",
+  "es": "Cultivo de cobertura (puente verde)"
+ },
+ "location.note": {
+  "en": "The model runs at the NASA data point; its results do not describe other places.",
+  "es": "El modelo corre en el punto de datos de NASA; sus resultados no describen otros lugares."
+ },
+ "front.sentence": {
+  "en": "In {out} of every 10 historical seasons, water ran short in the critical stage.",
+  "es": "En {out} de cada 10 zafras históricas faltó agua en la etapa crítica."
+ },
+ "front.missing.soil_test": {
+  "en": "soil analysis",
+  "es": "análisis de suelo"
+ },
+ "front.missing.calibrated_sensor": {
+  "en": "calibrated sensor",
+  "es": "sensor calibrado"
+ },
+ "front.missing.soil_diagnosis": {
+  "en": "diagnosis of the field's soil",
+  "es": "diagnóstico del suelo del lote"
+ }
+}

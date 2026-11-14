@@ -1,0 +1,250 @@
+{
+ "scenarios.spread_label": {
+  "en": "Range of historical scenarios, with provisional parameters.",
+  "es": "Rango de escenarios históricos, con parámetros provisionales."
+ },
+ "scenarios.level.available": {
+  "en": "Current available water: not determined (no calibration)",
+  "es": "Agua disponible actual: no determinada (sin calibración)"
+ },
+ "flow.menu.crop": {
+  "en": "crop",
+  "es": "cultivo"
+ },
+ "flow.current_card": {
+  "en": "Current sowing",
+  "es": "Siembra actual"
+ },
+ "screen.footer": {
+  "en": "Exploratory simulation, not validated. Not a forecast, a yield prediction or a recommendation.",
+  "es": "Simulación exploratoria, no validada. No es un pronóstico, una predicción de rendimiento ni una recomendación."
+ },
+ "screen.main.title": {
+  "en": "Your field today",
+  "es": "Tu campo hoy"
+ },
+ "screen.main.moisture": {
+  "en": "Simulated sensor moisture",
+  "es": "Humedad simulada del sensor"
+ },
+ "screen.main.moisture_real": {
+  "en": "Sensor moisture (unvalidated)",
+  "es": "Humedad del sensor (sin validar)"
+ },
+ "screen.main.moisture_manual": {
+  "en": "Typed moisture (not a verified measurement)",
+  "es": "Humedad escrita (no es una medición verificada)"
+ },
+ "screen.main.calibration": {
+  "en": "Field calibration: pending",
+  "es": "Calibración de campo: pendiente"
+ },
+ "screen.main.evolution": {
+  "en": "Water evolution under {n} historical climate seasons",
+  "es": "Evolución del agua bajo {n} zafras climáticas históricas"
+ },
+ "screen.main.axis_days": {
+  "en": "Days after the reading",
+  "es": "Días desde la lectura"
+ },
+ "screen.main.axis_mm": {
+  "en": "Estimated available water (mm, provisional soil)",
+  "es": "Agua disponible estimada (mm, suelo provisional)"
+ },
+ "screen.main.median": {
+  "en": "Median",
+  "es": "Mediana"
+ },
+ "screen.main.sensitivity": {
+  "en": "Sensitivity to soil assumptions: range of medians (volumetric moisture)",
+  "es": "Sensibilidad a supuestos de suelo: rango de medianas (humedad volumétrica)"
+ },
+ "screen.main.base_median": {
+  "en": "Base soil median",
+  "es": "Mediana del suelo base"
+ },
+ "screen.main.soil_range": {
+  "en": "Range across plausible soils",
+  "es": "Rango entre suelos plausibles"
+ },
+ "screen.main.warnings": {
+  "en": "Reading notes",
+  "es": "Notas de la lectura"
+ },
+ "screen.cards.title": {
+  "en": "Options to compare",
+  "es": "Opciones a comparar"
+ },
+ "screen.cards.subtitle": {
+  "en": "Simulated water deficit with historical climate. Options are not ranked.",
+  "es": "Déficit hídrico simulado con clima histórico. Las opciones no se ordenan."
+ },
+ "screen.cards.critical_window": {
+  "en": "Critical stage: {start} to {end}",
+  "es": "Etapa crítica: {start} al {end}"
+ },
+ "screen.cards.soil_none": {
+  "en": "No field diagnosis",
+  "es": "Sin diagnóstico del lote"
+ },
+ "screen.cards.confidence": {
+  "en": "Confidence: low · missing: field history, soil analysis, calibrated sensor",
+  "es": "Confianza: baja · faltan: historial del lote, análisis de suelo, sensor calibrado"
+ },
+ "screen.cards.legend_note": {
+  "en": "Each drop is about one tenth of the evaluated seasons. High deficit is unmet crop demand in the critical stage; the soil may still hold water.",
+  "es": "Cada gota es aproximadamente una décima parte de las zafras evaluadas. Déficit alto es demanda del cultivo sin cubrir en la etapa crítica; el suelo puede seguir teniendo agua."
+ },
+ "screen.sheet.title": {
+  "en": "Producer and agronomist data sheet",
+  "es": "Ficha del productor y del agrónomo"
+ },
+ "screen.sheet.farmer": {
+  "en": "Producer",
+  "es": "Productor"
+ },
+ "screen.sheet.agronomist": {
+  "en": "Agronomist",
+  "es": "Agrónomo"
+ },
+ "screen.sheet.not_entered": {
+  "en": "not entered",
+  "es": "no ingresado"
+ },
+ "screen.sheet.column_use": {
+  "en": "Use in this version",
+  "es": "Uso en esta versión"
+ },
+ "screen.sheet.provenance": {
+  "en": "Which output depends on each field is declared in the data contract and checked by tests: changing a used field changes the output; changing a stored field does not.",
+  "es": "De qué salida depende cada dato está declarado en el contrato de datos y verificado por pruebas: cambiar un dato usado cambia la salida; cambiar un dato guardado no la cambia."
+ },
+ "screen.sheet.rating.1": {
+  "en": "Very bad",
+  "es": "Muy mal"
+ },
+ "screen.sheet.rating.2": {
+  "en": "Bad",
+  "es": "Mal"
+ },
+ "screen.sheet.rating.3": {
+  "en": "Good",
+  "es": "Bien"
+ },
+ "screen.sheet.rating.4": {
+  "en": "Very good",
+  "es": "Muy bien"
+ },
+ "screen.sheet.rating.5": {
+  "en": "Excellent",
+  "es": "Excelente"
+ },
+ "screen.cards.stage_ahead": {
+  "en": "Day {day} of {cycle}: the critical stage is still ahead.",
+  "es": "Día {day} de {cycle}: la etapa crítica todavía no empezó."
+ },
+ "screen.cards.stage_in_progress": {
+  "en": "Day {day} of {cycle}: the crop is in its critical stage; only the remaining {pct} % of it is simulated.",
+  "es": "Día {day} de {cycle}: el cultivo está en su etapa crítica; solo se simula el {pct} % que falta."
+ },
+ "validation.title.smap": {
+  "en": "Water balance against NASA SMAP L3 (validation period)",
+  "es": "Balance de agua contra NASA SMAP L3 (periodo de validacion)"
+ },
+ "validation.metric.spearman": {
+  "en": "Rank correlation with SMAP L3",
+  "es": "Correlacion de rangos con SMAP L3"
+ },
+ "validation.metric.anomaly": {
+  "en": "Correlation of anomalies (seasonal cycle removed)",
+  "es": "Correlacion de anomalias (sin ciclo estacional)"
+ },
+ "validation.note.smap": {
+  "en": "L3 senses the surface layer and the model the root zone: approximate comparison. Exploratory.",
+  "es": "L3 mide la capa superficial y el modelo la zona radicular: comparacion aproximada. Exploratorio."
+ },
+ "validation.title.survey": {
+  "en": "Seasons producers called unfavourable vs modelled stress",
+  "es": "Zafras que los productores llamaron desfavorables vs estres modelado"
+ },
+ "validation.axis.mentions": {
+  "en": "Producers naming the season as unfavourable",
+  "es": "Productores que nombraron la zafra como desfavorable"
+ },
+ "validation.axis.critical_stress": {
+  "en": "Modelled unmet demand in the critical stage",
+  "es": "Demanda no cubierta modelada en la etapa critica"
+ },
+ "validation.crop.soybean_1st": {
+  "en": "Soybean (1st sowing)",
+  "es": "Soja de primera"
+ },
+ "validation.crop.maize": {
+  "en": "Maize",
+  "es": "Maiz"
+ },
+ "validation.note.survey": {
+  "en": "{answered} of {total} respondents named a season without ambiguity; self-reported; window fixed before the comparison; crop parameters are still pending a dataset. Exploratory.",
+  "es": "{answered} de {total} encuestados nombraron una zafra sin ambiguedad; autoinformado; ventana fijada antes de comparar; los parametros de cultivo aun esperan un dataset. Exploratorio."
+ },
+ "validation.title.station": {
+  "en": "NASA POWER climate against the INIA La Estanzuela station",
+  "es": "Clima NASA POWER contra la estacion INIA La Estanzuela"
+ },
+ "validation.station.monthly_rain": {
+  "en": "Monthly rain (mm)",
+  "es": "Lluvia mensual (mm)"
+ },
+ "validation.station.axis_station": {
+  "en": "Station",
+  "es": "Estacion"
+ },
+ "validation.station.axis_power": {
+  "en": "NASA POWER",
+  "es": "NASA POWER"
+ },
+ "validation.station.season_rain": {
+  "en": "December-March rain, last five seasons (mm)",
+  "es": "Lluvia de diciembre a marzo, ultimas cinco zafras (mm)"
+ },
+ "validation.station.demand": {
+  "en": "Evaporative demand by month (mm/day)",
+  "es": "Demanda evaporativa por mes (mm/dia)"
+ },
+ "validation.station.penman": {
+  "en": "Station, Penman",
+  "es": "Estacion, Penman"
+ },
+ "validation.station.hargreaves": {
+  "en": "Model, Hargreaves on POWER",
+  "es": "Modelo, Hargreaves sobre POWER"
+ },
+ "validation.note.station": {
+  "en": "The station and the NASA point are at the same place; daily agreement is limited by the 0.5 x 0.625 degree grid cell. Exploratory.",
+  "es": "La estacion y el punto NASA estan en el mismo lugar; el acuerdo diario esta limitado por la celda de 0,5 x 0,625 grados. Exploratorio."
+ },
+ "validation.predictor.model": {
+  "en": "Water balance model",
+  "es": "Modelo de balance de agua"
+ },
+ "validation.predictor.smap_l4": {
+  "en": "SMAP L4 (calibration target)",
+  "es": "SMAP L4 (objetivo de calibracion)"
+ },
+ "validation.predictor.rain_index": {
+  "en": "Rain only (antecedent index)",
+  "es": "Solo lluvia (indice antecedente)"
+ },
+ "validation.title.ndvi": {
+  "en": "Vegetation activity (MODIS NDVI) against modelled stress, December-March",
+  "es": "Actividad de la vegetacion (NDVI MODIS) contra estres modelado, diciembre a marzo"
+ },
+ "validation.axis.ndvi": {
+  "en": "Mean NDVI, December-March",
+  "es": "NDVI medio, diciembre a marzo"
+ },
+ "validation.note.ndvi": {
+  "en": "The 250 m pixel mixes crops, stubble and pasture: it shows the pixel, not a rotation. Exploratory.",
+  "es": "El pixel de 250 m mezcla cultivos, rastrojo y pasturas: muestra el pixel, no una rotacion. Exploratorio."
+ }
+}

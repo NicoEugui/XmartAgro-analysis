@@ -1,0 +1,16 @@
+survey_crop,previous_crop,engine_crop,note
+wheat,,wheat,same crop
+barley,,barley,same crop
+rapeseed,,rapeseed,same crop
+maize,,maize,maize is read as first sowing
+oat,,oat_cover,oat is treated as a cover crop: it reports no stress of its own
+soybean,wheat,soybean_2nd,soybean written right after a winter grain crop is read as second sowing (rule confirmed by the team)
+soybean,barley,soybean_2nd,soybean written right after a winter grain crop is read as second sowing (rule confirmed by the team)
+soybean,rapeseed,soybean_2nd,soybean written right after a winter grain crop is read as second sowing (rule confirmed by the team)
+soybean,,soybean_1st,soybean in any other position is read as first sowing (rule confirmed by the team)
+vetch,,,no crop parameters: not modelled
+alfalfa,,,no crop parameters: not modelled
+sunflower,,,no crop parameters: not modelled
+cover_crop,,,green bridge (cover crop): not modelled
+pasture,,,pasture years are not a crop sequence: not modelled
+double_crop,,,two crops in one year without naming them: not modelled

@@ -1,0 +1,37 @@
+name,value,status,source_ref,note
+deficit_threshold_low,0.1,assumption,,unmet-demand fraction in the critical stage below which a season is low deficit (provisional)
+deficit_threshold_high,0.3,assumption,,unmet-demand fraction from which a season is high deficit (provisional)
+fallow_kc,0.3,assumption,,soil with stubble between crops
+scenario_horizon_days,120,assumption,,days simulated from the reading
+scenario_step_days,7,assumption,,spacing of the reported trajectory points
+default_reading_month,11,assumption,,reference date of the reading when none is given
+default_reading_day,14,assumption,,reference date of the reading when none is given
+wilting_min,0.1,assumption,,"physical plausibility range, m3/m3"
+wilting_max,0.25,assumption,,"physical plausibility range, m3/m3"
+field_capacity_min,0.28,assumption,,"physical plausibility range, m3/m3"
+field_capacity_max,0.45,assumption,,"physical plausibility range, m3/m3"
+available_water_min,80,assumption,,"physical plausibility range, mm per metre"
+available_water_max,250,assumption,,"physical plausibility range, mm per metre"
+sensitivity_capacity_scales,0.75;1.0;1.25;1.5,assumption,,structural sensitivity: water-capacity scales
+sensitivity_wilting_shifts,-0.02;0.0;0.02,assumption,,"structural sensitivity: wilting point shifts, m3/m3"
+root_depth_mm,1000,source,smap_l4,SMAP L4 defines the root zone as the top 100 cm
+simulated_theta,0.28,assumption,,"illustrative simulated sensor value, not a measurement"
+max_theta,0.6,assumption,,above any soil porosity: such a reading is a sensor fault
+stale_reading_hours,24,assumption,,a stored reading older than this is flagged
+far_sowing_days,120,assumption,,beyond this the sensor state has faded
+max_options,12,assumption,,options compared at once (the survey rotations alone are ten)
+history_first_season_year,2015,assumption,,oldest season offered in the producer history
+history_last_season_year,2025,assumption,,newest season offered in the producer history
+organic_matter_pct_min,0.1,assumption,,sanity range accepted for a typed value
+organic_matter_pct_max,15,assumption,,sanity range accepted for a typed value
+phosphorus_ppm_min,0,assumption,,sanity range accepted for a typed value
+phosphorus_ppm_max,300,assumption,,sanity range accepted for a typed value
+ph_min,3,assumption,,sanity range accepted for a typed value
+ph_max,10,assumption,,sanity range accepted for a typed value
+erosion_t_ha_yr_min,0,assumption,,sanity range accepted for a typed value
+erosion_t_ha_yr_max,200,assumption,,sanity range accepted for a typed value
+yield_kg_ha_min,0,assumption,,sanity range accepted for a typed value
+yield_kg_ha_max,15000,assumption,,sanity range accepted for a typed value
+rotation_start_theta,0.28,assumption,,same starting moisture for every season of a rotation card: only the climate differs
+water_risk_low_max_out,3,assumption,,an option is low water risk when at most this many of its ten drops are high deficit (provisional)
+water_risk_medium_max_out,6,assumption,,"medium water risk up to this many high-deficit drops, high above it (provisional)"

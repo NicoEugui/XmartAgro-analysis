@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xmartagro-analysis"
+version = "0.1.0"
+description = "Water-balance analysis engine and background worker for XmartAgro"
+requires-python = ">=3.11"
+dependencies = ["pymongo>=4.7"]
+
+[project.optional-dependencies]
+plots = ["matplotlib>=3.8"]
+calibrate = ["scipy>=1.11"]
+dev = ["jsonschema>=4"]
+
+[project.scripts]
+xmart-analysis-worker = "xmart_analysis.worker.__main__:main"
+xmart-analysis = "xmart_analysis.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+xmart_analysis = ["data/*", "data/*/*", "data/*/*/*"]
