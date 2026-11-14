@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
+from xmart_analysis.engine import crops_uy  # noqa: E402
 from xmart_analysis.engine.i18n import label  # noqa: E402
 
 MUTED, COLORS = "#5b6770", {"model": "#2d6a8f", "smap_l4": "#bcd5e4", "rain_index": "#e0903f"}
@@ -60,6 +61,30 @@ def plot_survey(doc, path, lang="en"):
     plt.close(fig)
 
 
+def plot_ndvi(doc, path, lang="en"):
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.2), dpi=130, sharex=True)
+    low = set(doc["lowest_ndvi_seasons"])
+    for ax, (crop, color) in zip(axes, (("soybean_1st", "#2d6a8f"), ("maize", "#e0903f"))):
+        for r in doc["seasons"]:
+            marked = r["season"] in low
+            ax.scatter(r["ndvi_dec_mar"], r[f"{crop}_stress"], color="#8a3d14" if marked else color, zorder=3)
+            if marked:
+                ax.annotate(r["season"], (r["ndvi_dec_mar"], r[f"{crop}_stress"]), textcoords="offset points", xytext=(5, 4), fontsize=7.5)
+        c = doc["correlations"][crop]
+        ax.set_title(f"{T(f'validation.crop.{crop}', lang)} · rho={c['spearman_ndvi_vs_minus_stress']:.2f} · p={c['permutation_p']:.2f}",
+                     loc="left", fontsize=9.5, fontweight="bold")
+        ax.set_xlabel(T("validation.axis.ndvi", lang), fontsize=8.5)
+        ax.set_ylabel(T("validation.axis.critical_stress", lang), fontsize=8.5)
+        ax.set_ylim(0, 1)
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+    fig.suptitle(T("validation.title.ndvi", lang), x=0.01, ha="left", fontsize=11, fontweight="bold")
+    fig.text(0.01, 0.01, T("validation.note.ndvi", lang), fontsize=7.5, color=MUTED, style="italic")
+    fig.tight_layout(rect=(0, 0.04, 1, 0.94))
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
 def plot_imerg(doc, path, lang="en"):
     fig, (left, right) = plt.subplots(1, 2, figsize=(11, 4.4), dpi=130)
     seasons = doc["seasons_dec_mar"]
@@ -107,5 +132,30 @@ def plot_rain_sensitivity(doc, path, lang="en"):
         ax.spines[side].set_visible(False)
     fig.text(0.01, 0.01, T("validation.note.rain_sensitivity", lang), fontsize=7.2, color=MUTED, style="italic")
     fig.tight_layout(rect=(0, 0.05, 1, 1))
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
+def plot_sowing(doc, path, lang="en"):
+    crops = doc["crops"]
+    fig, axes = plt.subplots(1, len(crops), figsize=(3.2 * len(crops), 4.2), dpi=130, sharey=True)
+    colors = (("ok", "#9bc3a8"), ("tight", "#e0b45c"), ("out", "#b5533c"))
+    for ax, (crop, entry) in zip(axes, crops.items()):
+        labels = [r["sowing"] for r in entry["dates"]]
+        bottom = [0] * len(labels)
+        for name, color in colors:
+            values = [r["counts"][name] for r in entry["dates"]]
+            ax.bar(labels, values, bottom=bottom, color=color, label=T(f"sowing.drop.{name}", lang))
+            bottom = [b + v for b, v in zip(bottom, values)]
+        ax.set_title(T(crops_uy.name_label_key(crop), lang), loc="left", fontsize=9, fontweight="bold")
+        ax.tick_params(axis="x", labelsize=7, rotation=45)
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+    axes[0].set_ylabel(T("sowing.axis.seasons", lang), fontsize=8.5)
+    handles, names = axes[0].get_legend_handles_labels()
+    fig.legend(handles, names, loc="upper right", ncol=3, frameon=False, fontsize=8)
+    fig.suptitle(T("sowing.title", lang), x=0.01, ha="left", fontsize=11, fontweight="bold")
+    fig.text(0.01, 0.01, T("sowing.note", lang), fontsize=7.2, color=MUTED, style="italic")
+    fig.tight_layout(rect=(0, 0.05, 1, 0.94))
     fig.savefig(path, facecolor="white")
     plt.close(fig)

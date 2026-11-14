@@ -64,7 +64,8 @@ def validate(args):
         return 1
 
 
-def _validate(args):
+def validation_document(args):
+    """Run the validators whose input files were given (the producer survey always runs)."""
     context = engine_context.build_context()
     doc = {"survey": validation.survey.run(context)}
     if args.smap_l3:
@@ -74,6 +75,11 @@ def _validate(args):
     if args.imerg:
         doc["imerg"] = validation.imerg.run(args.imerg, context)
         doc["rain_sensitivity"] = validation.rain_sensitivity.run(args.imerg, context)
+    return doc
+
+
+def _validate(args):
+    doc = validation_document(args)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     (out / "validation.json").write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -118,24 +124,44 @@ def _validate(args):
     return 0
 
 
+def frontend_document(scenario, now=None):
+    """The frontend payload for a scenario file (the bundled demo by default)."""
+    field_id, store = load_scenario(scenario or DEMO)
+    analyzer = EngineAnalyzer()
+    clock = (lambda: datetime.fromisoformat(now)) if now else (lambda: datetime.now(timezone.utc))
+    use_case = RunAnalysis(MemoryReadings(store), MemoryInputs(store), FileResults("."), analyzer, Settings(), clock)
+    answers, sensor_info, _, moment, _ = use_case.prepare(field_id)
+    return payload.build(analyzer.analyze(answers, sensor_info), moment)
+
+
 def export(args):
     """Write the static JSON for the frontend and the schema that documents it."""
-    field_id, store = load_scenario(args.scenario or DEMO)
-    analyzer = EngineAnalyzer()
-    clock = (lambda: datetime.fromisoformat(args.now)) if args.now else (lambda: datetime.now(timezone.utc))
-    use_case = RunAnalysis(MemoryReadings(store), MemoryInputs(store), FileResults(args.out), analyzer, Settings(), clock)
     try:
-        answers, sensor_info, _, now, _ = use_case.prepare(field_id)
-        session = analyzer.analyze(answers, sensor_info)
+        document = frontend_document(args.scenario, args.now)
     except EngineError as exc:
         print(json.dumps(exc.to_dict(), ensure_ascii=False, indent=2), file=sys.stderr)
         return 1
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "frontend.json").write_text(payload.dumps(payload.build(session, now)), encoding="utf-8")
+    (out / "frontend.json").write_text(payload.dumps(document), encoding="utf-8")
     (out / "frontend.schema.json").write_text(schema.dumps(), encoding="utf-8")
     (out / "frontend.fields.md").write_text(schema.markdown(), encoding="utf-8")
     print("written:", ", ".join(str(out / name) for name in ("frontend.json", "frontend.schema.json", "frontend.fields.md")))
+    return 0
+
+
+def report(args):
+    """Write the experiment log (Markdown, figures and the values behind them) from the runs of this checkout."""
+    try:
+        doc = validation_document(args)
+        doc["sowing"] = import_report("scenario_runs").run()
+        frontend = frontend_document(None)
+    except EngineError as exc:
+        print(json.dumps(exc.to_dict(), ensure_ascii=False, indent=2), file=sys.stderr)
+        return 1
+    calibration = json.loads(tables.calibration_path().read_text(encoding="utf-8"))
+    files = {k: v for k, v in (("smap_l3", args.smap_l3), ("smap_l4", args.smap_l4), ("modis_ndvi", args.modis_ndvi), ("imerg", args.imerg)) if v}
+    print("written:", import_report("experiments").build(doc, calibration, frontend, args.out, files, args.lang))
     return 0
 
 
@@ -165,11 +191,16 @@ def main(argv=None):
         p.set_defaults(fn=fn)
     sub.choices["run"].add_argument("scenario", nargs="?", help="scenario JSON (default: the bundled demo)")
     sub.choices["run"].add_argument("--lang", choices=(*LANGUAGES, "both"), default="both")
-    sub.choices["validate"].add_argument("--imerg", nargs="?", const=str(tables.site_file("imerg_daily.csv")),
-                                           help="NASA GPM IMERG Giovanni CSV for the site's cell (the bundled file if no path), adds the rain check")
-    sub.choices["validate"].add_argument("--modis-ndvi", help="NASA MODIS MOD13Q1 CSV for the site, adds the vegetation check")
-    sub.choices["validate"].add_argument("--smap-l3", help="NASA SMAP L3 CSV (SPL3SMP-E.006), adds the SMAP comparison")
-    sub.choices["validate"].add_argument("--smap-l4", help="NASA SMAP L4 CSV (SPL4SMGP.008), adds the SMAP comparison")
+    rep = sub.add_parser("report", help="write the experiment log (Markdown with figures and the values behind them)")
+    rep.add_argument("--out", default="reports", help="directory for experiments.md and figures/")
+    rep.add_argument("--lang", choices=LANGUAGES, default="en", help="language of the figures")
+    rep.set_defaults(fn=report)
+    for p in (sub.choices["validate"], rep):
+        p.add_argument("--imerg", nargs="?", const=str(tables.site_file("imerg_daily.csv")),
+                       help="NASA GPM IMERG Giovanni CSV for the site's cell (the bundled file if no path), adds the rain check")
+        p.add_argument("--modis-ndvi", help="NASA MODIS MOD13Q1 CSV for the site, adds the vegetation check")
+        p.add_argument("--smap-l3", help="NASA SMAP L3 CSV (SPL3SMP-E.006), adds the SMAP comparison")
+        p.add_argument("--smap-l4", help="NASA SMAP L4 CSV (SPL4SMGP.008), adds the SMAP comparison")
     exp = sub.add_parser("export", help="write the static JSON for the frontend and its schema")
     exp.add_argument("scenario", nargs="?", help="scenario JSON (default: the bundled demo)")
     exp.add_argument("--out", default="out", help="directory for frontend.json and frontend.schema.json")

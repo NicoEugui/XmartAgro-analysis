@@ -18,8 +18,8 @@ src/xmart_analysis/
   engine/   water-balance model, crops, scenarios, session (no I/O, standard library only)
   cli.py    `xmart-analysis run|validate`: the same analysis without a database
   worker/   domain, ports, mapping, use case, job loop, adapters (Mongo, memory, engine), CLI
-  report/   figures drawn from the analysis documents (optional extra: matplotlib)
-  validation/ comparison of the water balance with NASA SMAP data
+  report/   figures and the experiment log drawn from the analysis documents (optional extra: matplotlib)
+  validation/ comparison of the water balance with independent NASA data and the producer survey
   data/     NASA climate, calibration, model tables with their status and sources, label catalog (en/es)
 tests/      unittest suite (no database needed)
 ```
@@ -133,6 +133,32 @@ Reference run for the Soriano field (2026-11-14):
 Read it as: the ranking of bad seasons does not depend on the rain source, the level does (IMERG rains more: 1289 vs 1159 mm per year). It does not say which source is
 right, the soil parameters were not refitted with IMERG, and IMERG ends on 2025-09-30, so 2025/26 is not covered. The model keeps using POWER rain; the rain source is not
 a setting yet.
+
+## Experiment log
+
+`xmart-analysis report` writes one Markdown document, `reports/experiments.md`, with every run of this checkout, its figures and the data lineage. It is
+generated, not written by hand, so it cannot drift from the runs, and it needs no Jupyter: the code lives in the package (`report/experiments.py`) and is tested.
+
+```bash
+xmart-analysis report --smap-l3 L3.csv --smap-l4 L4.csv --modis-ndvi NDVI.csv --imerg --out reports   # --lang es for Spanish figures
+```
+
+Each validator whose file is given gets a section; without a file its section is left out (the survey and the model sections always appear).
+
+| Section | What it shows |
+| --- | --- |
+| Data architecture | data flow, every dataset in `datasets.csv` (role, source, period, rows, checksum) and the checksum of each external file used |
+| Model and calibration | soil parameters, calibration and validation errors against SMAP L4, the parameters of every seed |
+| Model output for the demo | every offered option with its water risk and drops |
+| What happens if a crop is sown on a given date | for soybean (1st and 2nd), maize, wheat and barley, the default sowing date and four shifted by 15 and 30 days: seasons ending in ok / tight / out, median stress and water at sowing, the season-by-season result for one run and the sensitivity to the (simulated) sensor reading |
+| One section per experiment | the question, the figure, the numbers behind the figure (collapsed table) and a reading with its caveat |
+| Integrity checks and Not validated | provenance and manifest status, and what the results do not support |
+
+**Are the plotted data the ones in the table?** `report/experiments.py` keeps one list, `FIGURES`, pairing each figure with the table of the values it plots.
+`tests/test_report.py` draws every figure, reads the points and bars back from the drawn chart and fails if a value of the table is not on it.
+
+The PDF (`reports/experiments.pdf`) comes from `scripts/build_pdf.sh`: pandoc turns the Markdown into HTML and headless Chrome prints it (no LaTeX needed; set `CHROME` if Chrome is elsewhere). Regenerate it after every `report` run.
+SMAP and MODIS files are not stored in the repository: the document names them and gives their checksums, so a rerun can be matched to the same files.
 
 ## Data and provenance
 

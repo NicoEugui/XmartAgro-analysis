@@ -254,5 +254,29 @@
  "validation.note.rain_sensitivity": {
   "en": "Only the rain changes; soil parameters were fitted with POWER rain. Highlighted: seasons the producers named. Exploratory.",
   "es": "Solo cambia la lluvia; los parametros del suelo se ajustaron con lluvia POWER. Resaltadas: zafras que nombraron los productores. Exploratorio."
+ },
+ "sowing.title": {
+  "en": "Seasons by outcome class for each crop and sowing date",
+  "es": "Zafras por clase de resultado para cada cultivo y fecha de siembra"
+ },
+ "sowing.axis.seasons": {
+  "en": "Historical seasons",
+  "es": "Zafras historicas"
+ },
+ "sowing.drop.ok": {
+  "en": "ok (low deficit)",
+  "es": "ok (deficit bajo)"
+ },
+ "sowing.drop.tight": {
+  "en": "tight (moderate deficit)",
+  "es": "ajustado (deficit moderado)"
+ },
+ "sowing.drop.out": {
+  "en": "out (high deficit)",
+  "es": "fuera (deficit alto)"
+ },
+ "sowing.note": {
+  "en": "Each bar counts historical seasons applied to a simulated reading; not probabilities, not a forecast. Crop parameters are pending.",
+  "es": "Cada barra cuenta zafras historicas aplicadas a una lectura simulada; no son probabilidades ni pronostico. Parametros de cultivo pendientes."
  }
 }
