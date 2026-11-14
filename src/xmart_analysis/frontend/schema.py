@@ -87,9 +87,8 @@ SITE = obj("Where the model runs and what it is built on. Results describe this 
         "source": s("Where the climate comes from.", CONTEXT, enum=["nasa_power"]),
         "first_day": s("First day of the record, YYYY-MM-DD.", CONTEXT), "last_day": s("Last day of the record, YYYY-MM-DD.", CONTEXT),
         "seasons": i("Number of historical seasons built from it (the length of every `years` list).", CHART)}),
-    "has_station": b("Whether a weather station at the same place was used to check the climate.", CONTEXT),
     "soil_calibration": obj("State of the soil parameters (fitted to NASA SMAP L4).", CONTEXT, {
-        "current": b("True when fitted at this point with the demand in force; false when borrowed from another point (pending).", CONTEXT),
+        "current": b("True when the soil parameters were fitted at this point; false when they come from another point and are pending.", CONTEXT),
         "fitted_at": nullable(obj("The point where the soil parameters were fitted.", CONTEXT, {
             "latitude": n("Latitude, degrees.", CONTEXT), "longitude": n("Longitude, degrees.", CONTEXT)}))}),
     "note": text("Warning that the model describes this point only.", "Footer of the main screen")})

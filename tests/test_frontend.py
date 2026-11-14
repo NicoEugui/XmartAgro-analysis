@@ -66,12 +66,12 @@ class Export(unittest.TestCase):
 
     def test_the_checker_rejects_what_it_should(self):
         broken = json.loads(json.dumps(self.doc))
-        del broken["site"]["has_station"]
+        del broken["site"]["soil_calibration"]
         broken["site"]["extra"] = 1
         broken["summary"]["water"]["mm"] = "much"
         broken["summary"]["options"][0]["water_risk"] = "huge"
         found = " ".join(schema_check.problems(broken, self.schema, self.schema))
-        for expected in ("missing has_station", "unexpected field extra", "expected number", "matches none"):
+        for expected in ("missing soil_calibration", "unexpected field extra", "expected number", "matches none"):
             self.assertIn(expected, found)
 
     def test_summary_inputs_and_scenarios_have_the_names_of_the_api_contract(self):
@@ -149,10 +149,10 @@ class Export(unittest.TestCase):
         self.assertEqual(inputs["agronomist"]["soil_test"]["ph"], 6.0)
 
     def test_the_field_and_site_are_stated(self):
-        self.assertEqual(self.summary["field"]["department"], "Colonia")
+        self.assertEqual((self.summary["field"]["department"], self.summary["field"]["id"]), ("Soriano", "soriano"))
         site = self.doc["site"]
-        self.assertTrue(site["has_station"])
-        self.assertFalse(site["soil_calibration"]["current"])
+        self.assertTrue(site["soil_calibration"]["current"])
+        self.assertEqual(site["climate"]["source"], "nasa_power")
         self.assertEqual(site["climate"]["seasons"], len(ws.SEASON_YEARS))
 
     def test_the_same_run_gives_the_same_bytes(self):

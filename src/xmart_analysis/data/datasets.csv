@@ -1,8 +1,6 @@
 path,group,kind,role,source_ref,period,rows,sha256,note
 sites/soriano/power_daily.csv,site:soriano,climate,model_input,nasa_power,1986-07-01/2026-06-30,14610,9c85022f18c4905b7d88d1ad3146dd7239e7771b002942c2373781de3c421464,NASA POWER at the original Soriano field coordinate (UTC days)
-sites/soriano/calibration.json,site:soriano,fit,model_input,smap_l4,,,4f14f0b7daa5e83ebe8773453125a2cef8dbb85dd2fc1d99d8688ae1e7051cb1,soil parameters fitted to SMAP L4 at the Soriano point (the SMAP files are not shipped)
-sites/la_estanzuela/power_daily.csv,site:la_estanzuela,climate,model_input,nasa_power,1986-01-01/2026-11-11,14925,d468f30a9c083e37b82156151cea6376f9f444328d15df77c510be424c30c64b,NASA POWER at the INIA La Estanzuela point (local solar time days)
-sites/la_estanzuela/station_daily.csv,site:la_estanzuela,station,validation,inia_la_estanzuela,1986-01-01/2026-11-12,14926,92566b68d7c8b3da8f4595a19eeb8139c8bda1234a001929f05d70bd9e1d7875,INIA station daily rain and temperature and Penman ET
+sites/soriano/calibration.json,site:soriano,fit,model_input,smap_l4,,,2ada5404aa8356ed5b917b62e8cf6c2168648da1cca041a0a1e77bac9a0f7ae8,soil parameters fitted to SMAP L4 at the Soriano point (the SMAP files are not shipped)
 survey/producer_survey.csv,survey,survey,reference,producer_survey,,12,e2671fe05883e4a0a62e39c2c763421af321b6292c3d84e8f97b9d675596a083,one row per respondent
 survey/survey_rotations.csv,survey,survey,options,producer_survey,,60,27f8c33dc5e93c5797de1691a1c467575db8925c6c31968fcb69240f6ae921ad,the rotations compared as options
 survey/survey_unfavorable_seasons.csv,survey,survey,validation,producer_survey,,9,88ef21704853c749d396e42142046610f234aa43066eb605ec3fb828d5b6e0d8,seasons the producers called unfavourable

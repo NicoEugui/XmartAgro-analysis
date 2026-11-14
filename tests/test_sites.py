@@ -1,4 +1,4 @@
-"""Datasets grouped by site and by origin: the registry, the manifest and running either site."""
+"""Data grouped by site and by origin: the registry, the manifest and running the site."""
 import hashlib
 import json
 import os
@@ -18,7 +18,7 @@ SORIANO_POWER_SHA256 = "9c85022f18c4905b7d88d1ad3146dd7239e7771b002942c2373781de
 
 
 def in_site(site, code):
-    """Run code in a fresh process on another site (the site is chosen when the engine is imported)."""
+    """Run code in a fresh process (the site is chosen when the engine is imported)."""
     env = {**os.environ, "XMART_SITE": site, "PYTHONPATH": SRC}
     done = subprocess.run([sys.executable, "-W", "ignore", "-c", code], env=env, capture_output=True, text=True)
     assert done.returncode == 0, done.stderr
@@ -26,19 +26,14 @@ def in_site(site, code):
 
 
 class Registry(unittest.TestCase):
-    def test_exactly_one_site_is_active_and_both_are_complete(self):
-        self.assertEqual(sum(r["active"] == "1" for r in tables.sites().values()), 1)
-        self.assertEqual(set(tables.sites()), {"la_estanzuela", "soriano"})
+    def test_the_only_site_is_the_soriano_field_and_it_is_complete(self):
+        self.assertEqual(set(tables.sites()), {"soriano"})
+        self.assertEqual(tables.sites()["soriano"]["active"], "1")
         self.assertEqual(tables.check_sites(), [])
 
-    def test_the_default_site_is_the_inia_point_and_the_environment_overrides_it(self):
-        with mock.patch.dict(os.environ, {}, clear=False):
-            os.environ.pop("XMART_SITE", None)
-            self.assertEqual(tables.active_site(), "la_estanzuela")
+    def test_the_environment_can_name_the_site_and_an_unknown_one_is_a_structured_error(self):
         with mock.patch.dict(os.environ, {"XMART_SITE": "soriano"}):
             self.assertEqual(tables.active_site(), "soriano")
-
-    def test_an_unknown_site_is_a_structured_error(self):
         with mock.patch.dict(os.environ, {"XMART_SITE": "nowhere"}):
             with self.assertRaises(EngineError) as ctx:
                 tables.active_site()
@@ -54,10 +49,9 @@ class Manifest(unittest.TestCase):
             folder = "survey/" if row["group"] == "survey" else f"sites/{row['group'].split(':')[1]}/"
             self.assertTrue(row["path"].startswith(folder), row["path"])
 
-    def test_the_station_belongs_to_the_inia_site_only(self):
-        stations = [r["path"] for r in tables.manifest() if r["kind"] == "station"]
-        self.assertEqual(stations, ["sites/la_estanzuela/station_daily.csv"])
-        self.assertFalse((tables.site_dir("soriano") / "station_daily.csv").exists())
+    def test_the_only_external_data_is_nasa_and_the_teams_survey(self):
+        self.assertEqual({r["source_ref"] for r in tables.manifest()}, {"nasa_power", "smap_l4", "producer_survey"})
+        self.assertEqual({r["kind"] for r in tables.manifest()}, {"climate", "fit", "survey"})
 
     def test_the_soriano_climate_is_exactly_the_file_nasa_delivered(self):
         digest = hashlib.sha256((tables.site_dir("soriano") / "power_daily.csv").read_bytes()).hexdigest()
@@ -79,26 +73,17 @@ class Manifest(unittest.TestCase):
         self.assertEqual(path.read_bytes(), before)
 
 
-class EitherSite(unittest.TestCase):
-    def test_the_soriano_site_runs_with_its_own_calibration_and_is_fitted(self):
+class TheSite(unittest.TestCase):
+    def test_the_site_runs_with_its_own_fitted_calibration(self):
         out = json.loads(in_site("soriano", """
 import json
 from xmart_analysis.engine import tables, water_model as wm
 w = wm.load_power()
 print(json.dumps({"lat": tables.constant("latitude"), "days": len(w), "seasons": len(tables.season_years()),
-                  "current": tables.calibration_is_current(), "station": tables.site_file("station_daily.csv").exists()}))"""))
-        self.assertEqual((out["lat"], out["days"], out["seasons"], out["current"], out["station"]),
-                         (-33.3577778, 14610, 39, True, False))
+                  "current": tables.calibration_is_current()}))"""))
+        self.assertEqual((out["lat"], out["days"], out["seasons"], out["current"]), (-33.3577778, 14610, 39, True))
 
-    def test_the_inia_site_borrows_the_soriano_soil_and_says_it_is_pending(self):
-        out = json.loads(in_site("la_estanzuela", """
-import json
-from xmart_analysis.engine import tables
-print(json.dumps({"lat": tables.constant("latitude"), "current": tables.calibration_is_current(),
-                  "from": tables.calibration_path().parent.name, "seasons": len(tables.season_years())}))"""))
-        self.assertEqual((out["lat"], out["current"], out["from"], out["seasons"]), (-34.34, False, "soriano", 40))
-
-    def test_the_whole_analysis_runs_on_the_soriano_site_too(self):
+    def test_the_whole_analysis_runs_on_it(self):
         with tempfile.TemporaryDirectory() as folder:
             code = f"import sys; from xmart_analysis import cli; sys.exit(cli.main(['run', '--out', {folder!r}, '--no-figures']))"
             in_site("soriano", code)

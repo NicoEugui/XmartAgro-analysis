@@ -3,5 +3,4 @@ nasa_power,NASA POWER daily data at each site's point,NASA,https://power.larc.na
 smap_l4,SMAP L4 SPL4SMGP.008 root-zone soil moisture,NASA,,"calibration target; a 9 km model product, not a field measurement"
 smap_l3,SMAP L3 SPL3SMP-E.006 surface soil moisture,NASA,,independent validation of the water dynamics
 producer_survey,"XmartAgro producer survey, Nov 2026 (12 respondents: Soriano, Rio Negro, Paysandu)",XmartAgro team,,rotations and unfavourable seasons as written by the producers; respondents are not named and localities are dropped
-inia_la_estanzuela,"INIA La Estanzuela agroclimatic station, daily record (supplied by the team)",INIA,,"rain, air temperature and Penman evapotranspiration, 1986-2026; the station is at the same location as the model point (La Estanzuela, Colonia)"
 modis_ndvi,"MODIS MOD13Q1.061 vegetation index, 250 m pixel at the site",NASA,,"independent check of the seasons the model finds stressed; a NASA export downloaded by the user, not shipped"

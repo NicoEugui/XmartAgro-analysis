@@ -1,7 +1,7 @@
 """Single reader of the model's data (`data/`).
 
 Layout: shared tables at the top (`model_constants.csv`, `crop_parameters.csv`, `sources.csv`...), one folder per site under
-`sites/<site_id>/` (the climate, the calibration and the constants of that place, plus its station when it has one) and the
+`sites/<site_id>/` (the climate, the calibration and the constants of that place, and nothing else) and the
 team's own producer survey under `survey/`. `sites.csv` says which site the model runs on (`XMART_SITE` overrides it) and
 `datasets.csv` lists every dataset file with its group, role, source and checksum.
 
@@ -24,7 +24,7 @@ DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 STATUSES = ("source", "fitted", "data", "assumption", "pending")  # pending: a value waiting for a dataset
 NEEDS_SOURCE = ("source", "fitted", "data")
 GROUPS = ("sowing", "cycle", "kc", "p")
-SITE_CONSTANTS = ("latitude", "longitude", "season_first_year", "season_last_year", "et0_scale")
+SITE_CONSTANTS = ("latitude", "longitude", "season_first_year", "season_last_year")
 SITE_ENV = "XMART_SITE"
 
 
@@ -64,9 +64,7 @@ def site_file(name, site_id=None):
 
 
 def calibration_path(site_id=None):
-    """The calibration of the site, or of the site it borrows from until its own is fitted."""
-    site_id = site_id or active_site()
-    return site_file("calibration.json", sites()[site_id]["calibration_site"] or site_id)
+    return site_file("calibration.json", site_id)
 
 
 def _parse_constants(rows):
@@ -126,12 +124,11 @@ def unsupported_crops():
 
 
 def calibration_is_current():
-    """True when the soil parameters were fitted at the model point with the evaporative demand now in force."""
+    """True when the soil parameters were fitted at the model point."""
     fit = calibration()
     point = fit.get("point", {})
     here = (constant("latitude"), constant("longitude"))
-    return (abs(point.get("latitude", 999) - here[0]) < 0.01 and abs(point.get("longitude", 999) - here[1]) < 0.01
-            and fit.get("et0_scale") == constant("et0_scale"))
+    return abs(point.get("latitude", 999) - here[0]) < 0.01 and abs(point.get("longitude", 999) - here[1]) < 0.01
 
 
 def survey_seasons():
@@ -204,8 +201,7 @@ def provenance():
     rows += [{"table": "calibration", "item": name, "status": "fitted" if current else "pending",
               "source_ref": "smap_l4;nasa_power" if current else "",
               "note": (f"{value} fitted to {fit['target']} over {fit['calibration']['period'][0]} to {fit['calibration']['period'][1]}"
-                       if current else f"{value} fitted at {fit.get('point')} with et0_scale {fit.get('et0_scale')}: "
-                       "refit with SMAP L4 at the model point")} for name, value in fit["parameters"].items()]
+                       if current else f"{value} fitted at {fit.get('point')}: refit with SMAP L4 at the model point")} for name, value in fit["parameters"].items()]
     return rows
 
 
@@ -221,8 +217,8 @@ def check_sites():
         if (folder / "constants.csv").exists():
             have = {r["name"] for r in csv.DictReader(open(folder / "constants.csv", encoding="utf-8"))}
             problems += [f"sites/{site_id}/constants.csv: missing {n}" for n in SITE_CONSTANTS if n not in have]
-        if not (DATA_DIR / "sites" / (row["calibration_site"] or site_id) / "calibration.json").exists():
-            problems.append(f"sites/{site_id}: its calibration site has no calibration.json")
+        if not (folder / "calibration.json").exists():
+            problems.append(f"sites/{site_id}: missing calibration.json")
     return problems
 
 

@@ -1,7 +1,7 @@
 """Calibrate the water balance against NASA SMAP L4 root-zone moisture and validate on years it has not seen.
 
-Needs scipy (extra `calibrate`). L4 is a 9 km model product, not a measurement of the field. The evaporative demand is the
-corrected one (`et0_scale`), so the soil parameters must be refitted whenever that scale changes.
+Needs scipy (extra `calibrate`). L4 is a 9 km model product, not a measurement of the field. Only NASA data is used: POWER climate
+(Hargreaves ET0) and SMAP L4.
 """
 
 import hashlib
@@ -49,9 +49,25 @@ def search_bounds():
     return [tuple(fixed.get(name, previous[name])) for name in wm.PARAMS]
 
 
+TOLERANCE = 0.01  # runs within 1 % of the best calibration error count as equally good
+
+
+def choose(runs, bounds):
+    """The run closest to the median of the runs that fit equally well, so one odd optimum is not picked for a tiny gain.
+
+    Only the calibration error is used (never the validation years); parameters are compared as a share of their search range."""
+    best = min(r["calibration_rmse_m3_m3"] for r in runs)
+    good = [r for r in runs if r["calibration_rmse_m3_m3"] <= best * (1 + TOLERANCE)]
+
+    def vector(run):
+        return [(run["parameters"][name] - low) / (high - low) for name, (low, high) in zip(wm.PARAMS, bounds)]
+    centre = [sorted(v[i] for v in map(vector, good))[len(good) // 2] for i in range(len(wm.PARAMS))]
+    return min(good, key=lambda r: sum((a - b) ** 2 for a, b in zip(vector(r), centre)))
+
+
 def calibrate(l4_path, seeds=(7, 1, 2, 3, 4), maxiter=60, popsize=14):
-    """Fit the soil parameters with several seeds and keep the lowest calibration error (validation years are not used to
-    choose). The spread across seeds is reported: different parameter sets can fit SMAP L4 equally well."""
+    """Fit the soil parameters with several seeds and keep the consensus of those that fit equally well (see `choose`).
+    The spread across seeds is reported: different parameter sets can fit SMAP L4 equally well."""
     from scipy.optimize import differential_evolution
 
     weather, l4 = wm.load_power(), smap.load_l4(l4_path)
@@ -70,14 +86,13 @@ def calibrate(l4_path, seeds=(7, 1, 2, 3, 4), maxiter=60, popsize=14):
         result = differential_evolution(cost, bounds, seed=seed, maxiter=maxiter, popsize=popsize, tol=1e-6, polish=False)
         runs.append({"seed": seed, "calibration_rmse_m3_m3": round(float(result.fun), 5),
                      "parameters": dict(zip(wm.PARAMS, (round(float(x), 4) for x in result.x)))})
-    best = min(runs, key=lambda r: r["calibration_rmse_m3_m3"])
+    best = choose(runs, bounds)
     params = [best["parameters"][name] for name in wm.PARAMS]
     sim = wm.simulate_moisture(params, weather, et0, start, VALIDATION_PERIOD[1], initial)
     baseline = mean(l4[d] for d in fit_days)
     return {"model": "calibrated_daily_bucket_l4_v2",
             "target": "SMAP L4 SPL4SMGP.008 sm_rootzone, daily mean of 8 samples (m3/m3)",
-            "climate": "NASA POWER demo point (PRECTOTCORR, T2M, T2M_MIN, T2M_MAX); ET0 by Hargreaves scaled to the station's Penman ET",
-            "et0_scale": tables.constant("et0_scale"),
+            "climate": "NASA POWER at the field point (PRECTOTCORR, T2M, T2M_MIN, T2M_MAX); ET0 by Hargreaves",
             "point": {"latitude": tables.constant("latitude"), "longitude": tables.constant("longitude")},
             "calibration": {"period": [d.isoformat() for d in CALIBRATION_PERIOD], **metrics(sim, l4, CALIBRATION_PERIOD)},
             "validation": {"period": [d.isoformat() for d in VALIDATION_PERIOD], **metrics(sim, l4, VALIDATION_PERIOD)},
@@ -85,8 +100,9 @@ def calibrate(l4_path, seeds=(7, 1, 2, 3, 4), maxiter=60, popsize=14):
                 "description": "always predict the calibration-period mean; correlation is undefined",
                 "rmse_m3_m3": round(math.sqrt(mean((baseline - l4[d]) ** 2 for d in days(*VALIDATION_PERIOD) if d in l4)), 4)},
             "parameters": best["parameters"], "chosen_seed": best["seed"], "seed_runs": runs,
+            "selection": f"the run closest to the median of the seeds within {TOLERANCE:.0%} of the best calibration error",
             "search_bounds": dict(zip(wm.PARAMS, bounds)),
             "available_water_range_mm": [0, round(params[1], 1)],
             "inputs_sha256": {Path(p).name: hashlib.sha256(Path(p).read_bytes()).hexdigest()
-                              for p in (wm.POWER_CSV, l4_path, tables.site_file("station_daily.csv"))},
+                              for p in (wm.POWER_CSV, l4_path)},
             "limitations": LIMITATIONS + ["different parameter sets fit SMAP L4 equally well (see seed_runs): the soil parameters are not identified by it"]}

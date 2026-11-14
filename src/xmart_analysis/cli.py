@@ -67,8 +67,6 @@ def validate(args):
 def _validate(args):
     context = engine_context.build_context()
     doc = {"survey": validation.survey.run(context)}
-    if validation.station.available():
-        doc["station"] = validation.station.run(context)
     if args.smap_l3:
         doc["smap"] = validation.smap.run(args.smap_l3, args.smap_l4, context)
     if args.modis_ndvi:
@@ -81,11 +79,6 @@ def _validate(args):
     print("site:", tables.active_site())
     for crop, entry in survey["crops"].items():
         print(f"survey, {crop}: highest stress {entry['highest_stress']}, most named {entry['most_named']}, agree={entry['agree']}")
-    if "station" in doc:
-        station = doc["station"]
-        print(f"station: monthly rain r={station['rain']['monthly_r']}, Dec-Mar season r={station['rain']['season_dec_mar_r']}, "
-              f"uncorrected Hargreaves/station ET={station['evapotranspiration']['model_over_station']} (scale applied: "
-              f"{station['evapotranspiration']['applied_scale']}), driest at the station {station['driest_seasons']['station']}")
     if "ndvi" in doc:
         n = doc["ndvi"]
         print(f"ndvi (n={len(n['seasons'])} seasons): {n['correlations']}; {n['overlap']} of the {len(n['most_stressed_seasons'])} most stressed "
@@ -100,10 +93,6 @@ def _validate(args):
             if "ndvi" in doc:
                 figures.plot_ndvi(doc["ndvi"], out / f"validation_ndvi.{lang}.png", lang)
                 print("figure:", out / f"validation_ndvi.{lang}.png")
-            if "station" in doc:
-                figures.plot_station(doc["station"], out / f"validation_station.{lang}.png", lang, weather=context["weather"],
-                                     et0=context["et0"])
-                print("figure:", out / f"validation_station.{lang}.png")
             if "smap" in doc:
                 figures.plot_smap(doc["smap"], out / f"validation_smap.{lang}.png", lang)
                 print("figure:", out / f"validation_smap.{lang}.png")
@@ -150,7 +139,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(prog="xmart-analysis", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     for name, fn, help_text in (("run", run, "analyze a scenario file and draw the screens"),
-                                ("validate", validate, "compare the model and its climate with the producer survey, a weather station and, optionally, NASA SMAP")):
+                                ("validate", validate, "compare the model with the producer survey and, optionally, NASA SMAP and MODIS")):
         p = sub.add_parser(name, help=help_text)
         p.add_argument("--out", default="out", help="directory for documents and figures")
         p.add_argument("--no-figures", action="store_true")

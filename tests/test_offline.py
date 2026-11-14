@@ -21,16 +21,16 @@ class OfflineRun(unittest.TestCase):
     def test_the_bundled_demo_runs_and_writes_results_without_figures(self):
         with tempfile.TemporaryDirectory() as out:
             self.assertEqual(cli.main(["run", "--out", out, "--no-figures"]), 0)
-            doc = json.loads((Path(out) / "demo-la-estanzuela.results.json").read_text(encoding="utf-8"))
+            doc = json.loads((Path(out) / "demo-soriano.results.json").read_text(encoding="utf-8"))
             self.assertEqual(set(doc["analysis"]), {"en", "es"})
             self.assertEqual(doc["summary"]["water"]["is_simulated"], True)
 
     def test_a_second_run_with_the_same_inputs_is_recognised_as_unchanged(self):
         with tempfile.TemporaryDirectory() as out:
             cli.main(["run", "--out", out, "--no-figures"])
-            first = (Path(out) / "demo-la-estanzuela.results.json").stat().st_mtime_ns
+            first = (Path(out) / "demo-soriano.results.json").stat().st_mtime_ns
             cli.main(["run", "--out", out, "--no-figures"])
-            self.assertEqual(first, (Path(out) / "demo-la-estanzuela.results.json").stat().st_mtime_ns)
+            self.assertEqual(first, (Path(out) / "demo-soriano.results.json").stat().st_mtime_ns)
 
     @unittest.skipUnless(HAVE_MPL, "matplotlib is not installed")
     def test_the_three_screens_are_drawn_in_both_languages(self):
@@ -183,8 +183,6 @@ class SmapValidator(unittest.TestCase):
             self.assertEqual(cli.main(args), 0)
             names = {p.name for p in Path(out).glob("*.png")}
             expected = {f"validation_{kind}.{lang}.png" for kind in ("survey", "smap") for lang in ("en", "es")}
-            if tables.site_file("station_daily.csv").exists():
-                expected |= {f"validation_station.{lang}.png" for lang in ("en", "es")}
             self.assertEqual(names, expected)
 
     def test_the_antecedent_index_decays_between_rains(self):

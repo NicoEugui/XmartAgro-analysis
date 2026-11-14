@@ -43,7 +43,7 @@ Without Docker: `pip install .` then `xmart-analysis-worker --once` (process pen
 pip install '.[plots]'                       # matplotlib is optional, only for figures
 xmart-analysis run                           # bundled demo scenario -> out/*.results.json and the three screens (en, es)
 xmart-analysis run my_scenario.json --lang es --out out
-xmart-analysis validate                                     # survey and weather station, with figures
+xmart-analysis validate                                     # the producers' survey, with figures
 xmart-analysis validate --smap-l3 L3.csv --smap-l4 L4.csv --modis-ndvi NDVI.csv   # also NASA SMAP and MODIS (files for the site's point)
 xmart-analysis calibrate --smap-l4 L4.csv --out calibration.json   # refit the soil parameters (needs the `calibrate` extra, scipy)
 ```
@@ -72,22 +72,20 @@ xmart-analysis export --out schema --now 2026-11-14T10:30:00+00:00 && mv schema/
 
 ## Data layout
 
+Only NASA data and the team's own producer survey are used, for one place: the Soriano field.
+
 ```
 data/
-  sites.csv                 which site the model runs on (XMART_SITE overrides it) and where its soil calibration comes from
+  sites.csv                 which site the model runs on (XMART_SITE can name it)
   datasets.csv              every dataset file: group, role, source, period, rows and checksum
   model_constants.csv, crop_parameters.csv, survey_crop_map.csv, sources.csv, labels   shared tables
-  sites/soriano/            the original Soriano field coordinate: NASA POWER climate, SMAP-fitted calibration, constants
-  sites/la_estanzuela/      the INIA La Estanzuela point (active): NASA POWER climate, INIA station daily record, constants
+  sites/soriano/            the field: NASA POWER climate, SMAP-fitted soil calibration, constants (latitude, longitude, season range)
   survey/                   the team's own producer survey (respondents, rotations, unfavourable seasons)
 ```
 
-Each site folder holds what belongs to that place only: its climate, its constants (latitude, longitude, season range and the
-`et0_scale` fitted there) and, when it has one, its weather station. The model reads the active site; `XMART_SITE=soriano`
-runs the same analysis on the other one. The INIA site borrows the Soriano soil parameters (`calibration_site` in `sites.csv`)
-until SMAP L4 at its own point is fitted, and the provenance report lists them as `pending` meanwhile. To adopt its own: run
-`XMART_SITE=la_estanzuela xmart-analysis calibrate --smap-l4 L4.csv --out sites/la_estanzuela/calibration.json` from `data/`, add the file to
-`datasets.csv`, set `calibration_site` to `la_estanzuela` in `sites.csv` and run `python -m xmart_analysis.datasets refresh`.
+The soil calibration records the point it was fitted at; the provenance report lists it as `pending` if it no longer matches the site.
+To refit it: `xmart-analysis calibrate --smap-l4 L4.csv --out src/xmart_analysis/data/sites/soriano/calibration.json`, then
+`python -m xmart_analysis.datasets refresh`.
 
 ```bash
 python -m xmart_analysis.datasets check      # every file matches the manifest, every site is complete
@@ -105,21 +103,12 @@ The survey (`survey/producer_survey.csv`, `survey/survey_rotations.csv`, `survey
 localities, rotations as a list of crops in the written order (the respondents do not say which crop falls in which year).
 `xmart-analysis validate` compares the seasons they called unfavourable with the model's critical-stage stress.
 
-The weather station (`data/sites/la_estanzuela/station_daily.csv`, INIA La Estanzuela daily rain, air temperature and Penman
-evapotranspiration, 1986-2026) is used only to validate the NASA POWER climate the model runs on; it does not feed the model.
-It is not at the NASA point, so daily agreement is partial. The evaporative demand is Hargreaves on NASA POWER times `et0_scale` (`model_constants.csv`), a factor fitted so it matches the
-station's Penman ET on average; the soil parameters in `calibration.json` were fitted to SMAP L4 with that corrected demand, and a
-test fails if the two ever get out of step. A new station export is added with
-`xmart_analysis.validation.station.import_station(source_csv, target_csv)`.
-
 The rotations are the options compared (`{"kind": "rotation", "rotation": "survey_03"}`): each written crop is mapped to a
 modelled crop by `survey_crop_map.csv` (a soybean right after a winter grain crop is read as second sowing, any other as
 first), run over the 39 historical seasons at its default sowing date with the same starting moisture, and the counts are
-added. Respondents 5 and 6 wrote no crop sequence and are not offered. Everything runs at one NASA POWER point, the one of the INIA La Estanzuela station
-(`latitude` and `longitude` in `model_constants.csv`); results do not describe other places. A new POWER download is brought in with
-`xmart_analysis.datasets.import_power(source_csv, target_csv)`, which trims the days not yet available and refuses gaps; after changing
-the point, refit the soil parameters (`xmart-analysis calibrate`), because `calibration.json` records the point it was fitted at and
-the provenance report shows it as `pending` until it matches.
+added. Respondents 5 and 6 wrote no crop sequence and are not offered. Everything runs at one NASA POWER point, the Soriano field
+(`latitude` and `longitude` in `sites/soriano/constants.csv`); results do not describe other places. A new POWER download is brought in with
+`xmart_analysis.datasets.import_power(source_csv, target_csv)`, which trims the days not yet available and refuses gaps.
 
 ```bash
 python -m xmart_analysis.provenance            # counts by status and source

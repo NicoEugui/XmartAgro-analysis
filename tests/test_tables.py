@@ -15,9 +15,9 @@ class Provenance(unittest.TestCase):
     def test_the_check_command_succeeds_on_the_shipped_tables(self):
         self.assertEqual(provenance.main(["--check"]), 0)
 
-    def test_only_nasa_the_teams_survey_and_the_supplied_station_are_cited(self):
-        self.assertEqual(set(tables.sources()), {"nasa_power", "smap_l4", "smap_l3", "modis_ndvi", "producer_survey", "inia_la_estanzuela"})
-        self.assertEqual({r["publisher"] for r in tables.sources().values()}, {"NASA", "XmartAgro team", "INIA"})
+    def test_only_nasa_and_the_teams_own_survey_are_cited(self):
+        self.assertEqual(set(tables.sources()), {"nasa_power", "smap_l4", "smap_l3", "modis_ndvi", "producer_survey"})
+        self.assertEqual({r["publisher"] for r in tables.sources().values()}, {"NASA", "XmartAgro team"})
 
     def test_crop_parameters_wait_for_a_dataset_and_say_so(self):
         for crop, spec in cu.CROPS.items():
@@ -33,9 +33,9 @@ class Provenance(unittest.TestCase):
         expected = "fitted" if tables.calibration_is_current() else "pending"
         self.assertEqual({r["status"] for r in tables.provenance() if r["table"] == "calibration"}, {expected})
 
-    def test_a_calibration_from_another_point_or_demand_is_reported_pending(self):
+    def test_a_calibration_from_another_point_is_reported_pending(self):
         original = tables.calibration
-        for change in ({"point": {"latitude": 0.0, "longitude": 0.0}}, {"et0_scale": 99.0}):
+        for change in ({"point": {"latitude": 0.0, "longitude": 0.0}},):
             tables.calibration = lambda change=change: {**original(), **change}
             try:
                 self.assertFalse(tables.calibration_is_current())

@@ -187,42 +187,6 @@
   "en": "{answered} of {total} respondents named a season without ambiguity; self-reported; window fixed before the comparison; crop parameters are still pending a dataset. Exploratory.",
   "es": "{answered} de {total} encuestados nombraron una zafra sin ambiguedad; autoinformado; ventana fijada antes de comparar; los parametros de cultivo aun esperan un dataset. Exploratorio."
  },
- "validation.title.station": {
-  "en": "NASA POWER climate against the INIA La Estanzuela station",
-  "es": "Clima NASA POWER contra la estacion INIA La Estanzuela"
- },
- "validation.station.monthly_rain": {
-  "en": "Monthly rain (mm)",
-  "es": "Lluvia mensual (mm)"
- },
- "validation.station.axis_station": {
-  "en": "Station",
-  "es": "Estacion"
- },
- "validation.station.axis_power": {
-  "en": "NASA POWER",
-  "es": "NASA POWER"
- },
- "validation.station.season_rain": {
-  "en": "December-March rain, last five seasons (mm)",
-  "es": "Lluvia de diciembre a marzo, ultimas cinco zafras (mm)"
- },
- "validation.station.demand": {
-  "en": "Evaporative demand by month (mm/day)",
-  "es": "Demanda evaporativa por mes (mm/dia)"
- },
- "validation.station.penman": {
-  "en": "Station, Penman",
-  "es": "Estacion, Penman"
- },
- "validation.station.hargreaves": {
-  "en": "Model, Hargreaves on POWER",
-  "es": "Modelo, Hargreaves sobre POWER"
- },
- "validation.note.station": {
-  "en": "The station and the NASA point are at the same place; daily agreement is limited by the 0.5 x 0.625 degree grid cell. Exploratory.",
-  "es": "La estacion y el punto NASA estan en el mismo lugar; el acuerdo diario esta limitado por la celda de 0,5 x 0,625 grados. Exploratorio."
- },
  "validation.predictor.model": {
   "en": "Water balance model",
   "es": "Modelo de balance de agua"

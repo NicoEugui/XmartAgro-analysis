@@ -82,10 +82,8 @@ def has_all_days(weather, start, end_inclusive):
     return all(start + timedelta(days=i) in weather for i in range((end_inclusive - start).days + 1))
 
 
-def precompute_et0(weather, scale=None):
-    """Reference ET0 per day; `scale` (default: the `et0_scale` constant, fitted to a station's Penman ET) corrects Hargreaves."""
-    scale = tables.constant("et0_scale") if scale is None else scale
-    return {day: scale * reference_et(day, w) for day, w in weather.items()}
+def precompute_et0(weather):
+    return {day: reference_et(day, w) for day, w in weather.items()}
 
 
 def simulate_water_balance(params, weather, et0, start, end, initial_water_mm, kc_fn, stress_fn=None):

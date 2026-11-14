@@ -12,9 +12,8 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `site.climate.first_day` | string | First day of the record, YYYY-MM-DD. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.climate.last_day` | string | Last day of the record, YYYY-MM-DD. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.climate.seasons` | integer | Number of historical seasons built from it (the length of every `years` list). | Agronomist chart · yearly result of each option |
-| `site.has_station` | boolean | Whether a weather station at the same place was used to check the climate. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.soil_calibration` | object | State of the soil parameters (fitted to NASA SMAP L4). | Not drawn on the current screens: context for a header, a footer or the presentation |
-| `site.soil_calibration.current` | boolean | True when fitted at this point with the demand in force; false when borrowed from another point (pending). | Not drawn on the current screens: context for a header, a footer or the presentation |
+| `site.soil_calibration.current` | boolean | True when the soil parameters were fitted at this point; false when they come from another point and are pending. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.soil_calibration.fitted_at` | object or null | The point where the soil parameters were fitted. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.soil_calibration.fitted_at.latitude` | number | Latitude, degrees. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.soil_calibration.fitted_at.longitude` | number | Longitude, degrees. | Not drawn on the current screens: context for a header, a footer or the presentation |

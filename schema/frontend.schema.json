@@ -143,17 +143,12 @@
           "description": "The daily climate the model runs on.",
           "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
         },
-        "has_station": {
-          "type": "boolean",
-          "description": "Whether a weather station at the same place was used to check the climate.",
-          "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
-        },
         "soil_calibration": {
           "type": "object",
           "properties": {
             "current": {
               "type": "boolean",
-              "description": "True when fitted at this point with the demand in force; false when borrowed from another point (pending).",
+              "description": "True when the soil parameters were fitted at this point; false when they come from another point and are pending.",
               "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
             },
             "fitted_at": {
@@ -202,7 +197,6 @@
       },
       "required": [
         "climate",
-        "has_station",
         "soil_calibration",
         "note"
       ],

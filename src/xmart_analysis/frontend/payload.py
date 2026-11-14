@@ -29,7 +29,6 @@ def _site():
     power = next(r for r in tables.manifest() if r["path"] == f"sites/{site_id}/power_daily.csv")
     first, last = power["period"].split("/")
     return {"climate": {"source": "nasa_power", "first_day": first, "last_day": last, "seasons": len(tables.season_years())},
-            "has_station": tables.site_file("station_daily.csv").exists(),
             "soil_calibration": {"current": tables.calibration_is_current(), "fitted_at": tables.calibration().get("point")},
             "note": label("location.note")}
 
