@@ -174,6 +174,9 @@ def describe(relative_path):
     if "-END HEADER-" in text:  # NASA POWER export
         data = list(csv.DictReader(text.split("-END HEADER-")[1].strip().splitlines()))
         days = [date(int(r["YEAR"]), 1, 1) + timedelta(days=int(r["DOY"]) - 1) for r in data]
+    elif "\ntime," in text:  # NASA Giovanni time series: a header block, then `time, value`
+        data = [line.split(",")[0] for line in text.split("\ntime,")[1].splitlines()[1:] if line.strip()]
+        days = [date.fromisoformat(d) for d in data]
     else:
         data = list(csv.DictReader(text.splitlines()))
         days = [date.fromisoformat(r["date"]) for r in data] if data and "date" in data[0] else []

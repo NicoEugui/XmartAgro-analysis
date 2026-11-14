@@ -44,7 +44,7 @@ pip install '.[plots]'                       # matplotlib is optional, only for 
 xmart-analysis run                           # bundled demo scenario -> out/*.results.json and the three screens (en, es)
 xmart-analysis run my_scenario.json --lang es --out out
 xmart-analysis validate                                     # the producers' survey, with figures
-xmart-analysis validate --smap-l3 L3.csv --smap-l4 L4.csv --modis-ndvi NDVI.csv   # also NASA SMAP and MODIS (files for the site's point)
+xmart-analysis validate --smap-l3 L3.csv --smap-l4 L4.csv --modis-ndvi NDVI.csv --imerg   # also NASA SMAP, MODIS and GPM IMERG (see "Validation against independent data")
 xmart-analysis calibrate --smap-l4 L4.csv --out calibration.json   # refit the soil parameters (needs the `calibrate` extra, scipy)
 ```
 
@@ -79,7 +79,7 @@ data/
   sites.csv                 which site the model runs on (XMART_SITE can name it)
   datasets.csv              every dataset file: group, role, source, period, rows and checksum
   model_constants.csv, crop_parameters.csv, survey_crop_map.csv, sources.csv, labels   shared tables
-  sites/soriano/            the field: NASA POWER climate, SMAP-fitted soil calibration, constants (latitude, longitude, season range)
+  sites/soriano/            the field: NASA POWER climate, NASA GPM IMERG rain (validation only; `validate --imerg` with no path uses it), SMAP-fitted soil calibration, constants (latitude, longitude, season range)
   survey/                   the team's own producer survey (respondents, rotations, unfavourable seasons)
 ```
 
@@ -92,6 +92,47 @@ python -m xmart_analysis.datasets check      # every file matches the manifest, 
 python -m xmart_analysis.datasets refresh    # rewrite rows, period and checksum after a dataset changes on purpose
 python -m xmart_analysis.datasets import-power DOWNLOAD.csv src/xmart_analysis/data/sites/<site>/power_daily.csv
 ```
+
+## Validation against independent data
+
+`xmart-analysis validate` compares the model with data it was not built from. Each block is exploratory and runs only for the site's point.
+
+| Flag | Input | Compares | Figure |
+| --- | --- | --- | --- |
+| (none) | the producer survey (bundled) | seasons the producers called unfavourable vs the modelled critical-stage stress | `validation_survey.*.png` |
+| `--smap-l3 FILE` / `--smap-l4 FILE` | NASA SMAP exports | modelled soil water vs SMAP, in the validation years | `validation_smap.*.png` |
+| `--modis-ndvi FILE` | NASA MODIS NDVI export | modelled stress vs vegetation greenness per season | `validation_ndvi.*.png` |
+| `--imerg [FILE]` | NASA GPM IMERG (bundled in `sites/soriano/imerg_daily.csv`; give a path to use another export) | POWER rain vs IMERG rain, and the model run with each | `validation_imerg.*.png`, `validation_rain_sensitivity.*.png` |
+
+```bash
+xmart-analysis validate --imerg --out out      # writes out/validation.json plus the figures in en and es
+```
+
+Everything is also in `out/validation.json`. A file that is not at the site's point is refused (`file_not_at_site`).
+
+### Rain source: POWER or IMERG
+
+The model runs on NASA POWER rain. IMERG is a second NASA rain estimate for the same point, so `--imerg` answers two questions:
+
+1. **Do the two rains agree?** (`imerg` block: daily, monthly and Dec-Mar-by-season correlation, annual mm, driest seasons by each source.)
+2. **Does the answer change if the model uses IMERG rain?** (`rain_sensitivity` block.) The model is run twice on the 27 seasons both sources cover (1998/99 to 2024/25).
+   Only the daily rain changes: temperature, evaporative demand and the soil parameters (fitted with POWER rain) stay the same.
+   Per crop it gives `spearman_between_sources` (1 means the same season order), `mean_abs_difference` of stress, high-deficit seasons per source and the
+   stress of every season; per rotation, the share of high-deficit seasons with each source; and the seasons the producers named.
+
+Reference run for the Soriano field (2026-11-14):
+
+| | POWER vs IMERG |
+| --- | --- |
+| Season order, soybean 1st / maize (rho) | 0.93 / 0.97 |
+| Mean absolute stress difference, soybean / maize | 0.054 / 0.039 |
+| High-deficit seasons, soybean (POWER / IMERG) | 19 / 18 |
+| Rotations, high-deficit share | 5 to 8 points lower with IMERG |
+| 2022/23 (named by 4 producers) | most stressed under both: 0.888 / 0.775 |
+
+Read it as: the ranking of bad seasons does not depend on the rain source, the level does (IMERG rains more: 1289 vs 1159 mm per year). It does not say which source is
+right, the soil parameters were not refitted with IMERG, and IMERG ends on 2025-09-30, so 2025/26 is not covered. The model keeps using POWER rain; the rain source is not
+a setting yet.
 
 ## Data and provenance
 

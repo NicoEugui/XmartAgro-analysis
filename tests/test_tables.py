@@ -16,7 +16,7 @@ class Provenance(unittest.TestCase):
         self.assertEqual(provenance.main(["--check"]), 0)
 
     def test_only_nasa_and_the_teams_own_survey_are_cited(self):
-        self.assertEqual(set(tables.sources()), {"nasa_power", "smap_l4", "smap_l3", "modis_ndvi", "producer_survey"})
+        self.assertEqual(set(tables.sources()), {"nasa_power", "smap_l4", "smap_l3", "modis_ndvi", "gpm_imerg", "producer_survey"})
         self.assertEqual({r["publisher"] for r in tables.sources().values()}, {"NASA", "XmartAgro team"})
 
     def test_crop_parameters_wait_for_a_dataset_and_say_so(self):

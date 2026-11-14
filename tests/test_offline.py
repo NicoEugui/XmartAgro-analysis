@@ -12,7 +12,7 @@ from xmart_analysis import cli
 from xmart_analysis.engine import context
 from xmart_analysis.engine import tables
 from xmart_analysis.engine.errors import EngineError
-from xmart_analysis.validation import files, ndvi, smap, survey
+from xmart_analysis.validation import files, imerg, ndvi, rain_sensitivity, smap, survey
 
 HAVE_MPL = importlib.util.find_spec("matplotlib") is not None
 
@@ -109,6 +109,72 @@ class NdviValidator(unittest.TestCase):
     def test_chance_overlap_is_reported_next_to_the_overlap(self):
         doc = ndvi.run(self.path, self.ctx)
         self.assertEqual(doc["overlap_expected_by_chance"], round(ndvi.TOP * ndvi.TOP / 24, 1))
+
+
+class ImergValidator(unittest.TestCase):
+    """A Giovanni-shaped file built from the POWER rain itself, so the agreement must be perfect."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.dir = tempfile.TemporaryDirectory()
+        cls.ctx = context.build_context()
+        cls.path = Path(cls.dir.name) / "imerg.csv"
+        cls.write(cls.path, "-58.05,-33.35,-58.05,-33.35")
+
+    @classmethod
+    def write(cls, path, box):
+        weather = cls.ctx["weather"]
+        lines = ["Title:,\"Time Series, Area-Averaged of Daily mean precipitation rate\"", "User Start Date:,1998-01-01T00:00:00Z",
+                 f"Data Bounding Box:,\"{box}\"", "Fill Value (mean_GPM_3IMERGDF_07_precipitation):, -9999.9", "",
+                 "time, mean_GPM_3IMERGDF_07_precipitation"]
+        for day in sorted(weather):
+            if date(1998, 1, 1) <= day <= date(2020, 12, 31):
+                lines.append(f"{day},{-9999.9 if day == date(2000, 1, 5) else weather[day]['PRECTOTCORR']}")
+        Path(path).write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.dir.cleanup()
+
+    def test_fill_values_are_dropped_and_the_cell_is_read_from_the_header(self):
+        series = imerg.load(self.path)
+        self.assertNotIn(date(2000, 1, 5), series)
+        self.assertIn(date(2000, 1, 6), series)
+
+    def test_the_same_rain_agrees_perfectly_and_reports_the_period(self):
+        doc = imerg.run(self.path, self.ctx)
+        self.assertEqual((doc["rain"]["daily_r"], doc["rain"]["monthly_r"], doc["rain"]["season_dec_mar_r"]), (1.0, 1.0, 1.0))
+        self.assertEqual(doc["period"], ["1998-01-01", "2020-12-31"])
+        self.assertEqual(doc["driest_seasons"]["imerg"], doc["driest_seasons"]["power"])
+
+    def test_a_cell_that_is_not_the_site_is_refused(self):
+        other = Path(self.dir.name) / "other.csv"
+        self.write(other, "-60.05,-30.35,-60.05,-30.35")
+        with self.assertRaises(EngineError) as ctx:
+            imerg.load(other)
+        self.assertEqual(ctx.exception.code, "file_not_at_site")
+
+    @unittest.skipUnless(HAVE_MPL, "matplotlib is not installed")
+    def test_validate_draws_the_imerg_figure_in_both_languages(self):
+        with tempfile.TemporaryDirectory() as out:
+            self.assertEqual(cli.main(["validate", "--out", out, "--imerg", str(self.path)]), 0)
+            names = {p.name for p in Path(out).glob("*.png")}
+            self.assertTrue({"validation_imerg.en.png", "validation_imerg.es.png",
+                             "validation_rain_sensitivity.en.png", "validation_rain_sensitivity.es.png"} <= names)
+
+    def test_the_same_rain_changes_nothing_in_the_sensitivity(self):
+        doc = rain_sensitivity.run(self.path, self.ctx)
+        for crop in doc["crops"].values():
+            self.assertEqual((crop["spearman_between_sources"], crop["mean_abs_difference"]), (1.0, 0.0))
+            self.assertEqual(crop["high_deficit_seasons"]["power"], crop["high_deficit_seasons"]["imerg"])
+        for shares in doc["rotations_high_deficit_share"].values():
+            self.assertEqual(shares["power"], shares["imerg"])
+
+    def test_only_the_days_with_imerg_rain_are_used(self):
+        series = imerg.load(self.path)
+        ctx = rain_sensitivity.restricted_context(self.ctx, series, "imerg")
+        self.assertEqual(set(ctx["weather"]), set(series))
+        self.assertEqual(set(ctx["et0"]), set(series))
 
 
 class SurveyDataset(unittest.TestCase):

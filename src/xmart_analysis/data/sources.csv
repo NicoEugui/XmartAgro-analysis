@@ -4,3 +4,4 @@ smap_l4,SMAP L4 SPL4SMGP.008 root-zone soil moisture,NASA,,"calibration target; 
 smap_l3,SMAP L3 SPL3SMP-E.006 surface soil moisture,NASA,,independent validation of the water dynamics
 producer_survey,"XmartAgro producer survey, Nov 2026 (12 respondents: Soriano, Rio Negro, Paysandu)",XmartAgro team,,rotations and unfavourable seasons as written by the producers; respondents are not named and localities are dropped
 modis_ndvi,"MODIS MOD13Q1.061 vegetation index, 250 m pixel at the site",NASA,,"independent check of the seasons the model finds stressed; a NASA export downloaded by the user, not shipped"
+gpm_imerg,"NASA GPM IMERG Final daily precipitation V07 (GPM_3IMERGDF), 0.1 degree cell at the site",NASA,https://gpm.nasa.gov/data,"independent check of the POWER rain; a Giovanni export downloaded by the team and kept unchanged in the site folder"

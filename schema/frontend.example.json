@@ -34,7 +34,7 @@
       "pending": 13,
       "assumption": 50,
       "source": 1,
-      "data": 8,
+      "data": 9,
       "fitted": 6
     },
     "sources": [
@@ -61,6 +61,11 @@
       {
         "id": "modis_ndvi",
         "title": "MODIS MOD13Q1.061 vegetation index, 250 m pixel at the site",
+        "publisher": "NASA"
+      },
+      {
+        "id": "gpm_imerg",
+        "title": "NASA GPM IMERG Final daily precipitation V07 (GPM_3IMERGDF), 0.1 degree cell at the site",
         "publisher": "NASA"
       }
     ]

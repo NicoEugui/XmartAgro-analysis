@@ -210,5 +210,49 @@
  "validation.note.ndvi": {
   "en": "The 250 m pixel mixes crops, stubble and pasture: it shows the pixel, not a rotation. Exploratory.",
   "es": "El pixel de 250 m mezcla cultivos, rastrojo y pasturas: muestra el pixel, no una rotacion. Exploratorio."
+ },
+ "validation.title.imerg": {
+  "en": "NASA POWER rain against NASA GPM IMERG",
+  "es": "Lluvia NASA POWER contra NASA GPM IMERG"
+ },
+ "validation.imerg.axis_imerg": {
+  "en": "IMERG, December-March rain (mm)",
+  "es": "IMERG, lluvia de diciembre a marzo (mm)"
+ },
+ "validation.imerg.axis_power": {
+  "en": "POWER, December-March rain (mm)",
+  "es": "POWER, lluvia de diciembre a marzo (mm)"
+ },
+ "validation.imerg.last_seasons": {
+  "en": "Last seasons with data, December-March rain (mm)",
+  "es": "Ultimas zafras con datos, lluvia de diciembre a marzo (mm)"
+ },
+ "validation.imerg.source_imerg": {
+  "en": "IMERG",
+  "es": "IMERG"
+ },
+ "validation.imerg.source_power": {
+  "en": "POWER",
+  "es": "POWER"
+ },
+ "validation.note.imerg": {
+  "en": "IMERG is a 0.1 degree satellite estimate (about 10 km): daily agreement is limited, seasonal totals are what the water balance needs. Exploratory.",
+  "es": "IMERG es una estimacion satelital de 0,1 grados (unos 10 km): el acuerdo diario es limitado, los totales por zafra son lo que necesita el balance de agua. Exploratorio."
+ },
+ "validation.title.rain_sensitivity": {
+  "en": "Modelled stress with POWER rain and with IMERG rain",
+  "es": "Estres modelado con lluvia POWER y con lluvia IMERG"
+ },
+ "validation.rain_sensitivity.axis_power": {
+  "en": "Stress with POWER rain",
+  "es": "Estres con lluvia POWER"
+ },
+ "validation.rain_sensitivity.axis_imerg": {
+  "en": "Stress with IMERG rain",
+  "es": "Estres con lluvia IMERG"
+ },
+ "validation.note.rain_sensitivity": {
+  "en": "Only the rain changes; soil parameters were fitted with POWER rain. Highlighted: seasons the producers named. Exploratory.",
+  "es": "Solo cambia la lluvia; los parametros del suelo se ajustaron con lluvia POWER. Resaltadas: zafras que nombraron los productores. Exploratorio."
  }
 }

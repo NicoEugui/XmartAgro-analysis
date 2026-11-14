@@ -50,7 +50,7 @@ class Manifest(unittest.TestCase):
             self.assertTrue(row["path"].startswith(folder), row["path"])
 
     def test_the_only_external_data_is_nasa_and_the_teams_survey(self):
-        self.assertEqual({r["source_ref"] for r in tables.manifest()}, {"nasa_power", "smap_l4", "producer_survey"})
+        self.assertEqual({r["source_ref"] for r in tables.manifest()}, {"nasa_power", "gpm_imerg", "smap_l4", "producer_survey"})
         self.assertEqual({r["kind"] for r in tables.manifest()}, {"climate", "fit", "survey"})
 
     def test_the_soriano_climate_is_exactly_the_file_nasa_delivered(self):

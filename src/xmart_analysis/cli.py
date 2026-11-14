@@ -71,6 +71,9 @@ def _validate(args):
         doc["smap"] = validation.smap.run(args.smap_l3, args.smap_l4, context)
     if args.modis_ndvi:
         doc["ndvi"] = validation.ndvi.run(args.modis_ndvi, context)
+    if args.imerg:
+        doc["imerg"] = validation.imerg.run(args.imerg, context)
+        doc["rain_sensitivity"] = validation.rain_sensitivity.run(args.imerg, context)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     (out / "validation.json").write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -83,6 +86,16 @@ def _validate(args):
         n = doc["ndvi"]
         print(f"ndvi (n={len(n['seasons'])} seasons): {n['correlations']}; {n['overlap']} of the {len(n['most_stressed_seasons'])} most stressed "
               f"seasons are among the lowest-NDVI (chance: {n['overlap_expected_by_chance']})")
+    if "imerg" in doc:
+        r = doc["imerg"]["rain"]
+        print(f"imerg ({doc['imerg']['period'][0]} to {doc['imerg']['period'][1]}): monthly rain r={r['monthly_r']}, Dec-Mar season r="
+              f"{r['season_dec_mar_r']}, annual mm {r['mean_annual_mm']}, driest {doc['imerg']['driest_seasons']}")
+    if "rain_sensitivity" in doc:
+        for crop, c in doc["rain_sensitivity"]["crops"].items():
+            print(f"rain sensitivity, {crop}: {c['seasons']} seasons, rho between sources {c['spearman_between_sources']}, mean abs stress "
+                  f"difference {c['mean_abs_difference']}, high-deficit seasons {c['high_deficit_seasons']}")
+        for r in doc["rain_sensitivity"]["producer_seasons"]:
+            print(f"  producers' season {r['season']} ({r['mentions']} mentions): stress POWER {r['power']}, IMERG {r['imerg']}")
     for period, entry in doc.get("smap", {}).get("periods", {}).items():
         print(f"smap {period} (n={entry['days']}):", {k: (v["spearman"], v["anomaly_r"]) for k, v in entry["scores"].items()})
     if not args.no_figures:
@@ -93,6 +106,12 @@ def _validate(args):
             if "ndvi" in doc:
                 figures.plot_ndvi(doc["ndvi"], out / f"validation_ndvi.{lang}.png", lang)
                 print("figure:", out / f"validation_ndvi.{lang}.png")
+            if "imerg" in doc:
+                figures.plot_imerg(doc["imerg"], out / f"validation_imerg.{lang}.png", lang)
+                print("figure:", out / f"validation_imerg.{lang}.png")
+            if "rain_sensitivity" in doc:
+                figures.plot_rain_sensitivity(doc["rain_sensitivity"], out / f"validation_rain_sensitivity.{lang}.png", lang)
+                print("figure:", out / f"validation_rain_sensitivity.{lang}.png")
             if "smap" in doc:
                 figures.plot_smap(doc["smap"], out / f"validation_smap.{lang}.png", lang)
                 print("figure:", out / f"validation_smap.{lang}.png")
@@ -139,13 +158,15 @@ def main(argv=None):
     parser = argparse.ArgumentParser(prog="xmart-analysis", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     for name, fn, help_text in (("run", run, "analyze a scenario file and draw the screens"),
-                                ("validate", validate, "compare the model with the producer survey and, optionally, NASA SMAP and MODIS")):
+                                ("validate", validate, "compare the model with the producer survey and, optionally, NASA SMAP, MODIS and IMERG")):
         p = sub.add_parser(name, help=help_text)
         p.add_argument("--out", default="out", help="directory for documents and figures")
         p.add_argument("--no-figures", action="store_true")
         p.set_defaults(fn=fn)
     sub.choices["run"].add_argument("scenario", nargs="?", help="scenario JSON (default: the bundled demo)")
     sub.choices["run"].add_argument("--lang", choices=(*LANGUAGES, "both"), default="both")
+    sub.choices["validate"].add_argument("--imerg", nargs="?", const=str(tables.site_file("imerg_daily.csv")),
+                                           help="NASA GPM IMERG Giovanni CSV for the site's cell (the bundled file if no path), adds the rain check")
     sub.choices["validate"].add_argument("--modis-ndvi", help="NASA MODIS MOD13Q1 CSV for the site, adds the vegetation check")
     sub.choices["validate"].add_argument("--smap-l3", help="NASA SMAP L3 CSV (SPL3SMP-E.006), adds the SMAP comparison")
     sub.choices["validate"].add_argument("--smap-l4", help="NASA SMAP L4 CSV (SPL4SMGP.008), adds the SMAP comparison")

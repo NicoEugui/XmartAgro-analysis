@@ -1,5 +1,6 @@
 path,group,kind,role,source_ref,period,rows,sha256,note
 sites/soriano/power_daily.csv,site:soriano,climate,model_input,nasa_power,1986-07-01/2026-06-30,14610,9c85022f18c4905b7d88d1ad3146dd7239e7771b002942c2373781de3c421464,NASA POWER at the original Soriano field coordinate (UTC days)
+sites/soriano/imerg_daily.csv,site:soriano,climate,validation,gpm_imerg,1998-01-01/2025-09-30,10135,39c0e29c703fa2c79c920e342dd8af2b9f469e18e3f1012b45738f1bfdd7b919,"NASA GPM IMERG Final daily rain (Giovanni export, original file) at the Soriano 0.1 degree cell; -9999.9 marks days without value; ends 2025-09-30; independent rain check, not a model input"
 sites/soriano/calibration.json,site:soriano,fit,model_input,smap_l4,,,2ada5404aa8356ed5b917b62e8cf6c2168648da1cca041a0a1e77bac9a0f7ae8,soil parameters fitted to SMAP L4 at the Soriano point (the SMAP files are not shipped)
 survey/producer_survey.csv,survey,survey,reference,producer_survey,,12,e2671fe05883e4a0a62e39c2c763421af321b6292c3d84e8f97b9d675596a083,one row per respondent
 survey/survey_rotations.csv,survey,survey,options,producer_survey,,60,27f8c33dc5e93c5797de1691a1c467575db8925c6c31968fcb69240f6ae921ad,the rotations compared as options
