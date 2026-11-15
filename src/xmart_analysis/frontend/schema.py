@@ -253,6 +253,42 @@ ERROR_STATUS = obj("The analysis failed: the badge and what went wrong.", BADGE,
         "message": s("What happened, in English, for a person to read.", "Error message of the screen")})})
 
 
+CHART_USE = "Charts screen · one chart per entry, mirroring a figure of the experiment log"
+_NUMBER_OR_TEXT = {"anyOf": [{"type": "string"}, {"type": "number"}]}
+
+CHARTS = arr(obj("One chart: the data behind a figure of the experiment log, columnar (one shared x, one list of values per series).", CHART_USE, {
+    "id": s("Stable id of the chart, e.g. sensor_series or sowing_maize.", CHART_USE),
+    "figure": s("The figure of reports/experiments.md it mirrors (sowing, survey, smap, ndvi, imerg, rain_decision, sensor, sensor_windows, "
+                "sensor_recalibration); a figure can have several charts.", CHART_USE),
+    "group": s("Where to file it: sowing (what happens if a crop is sown on a date), validation (against independent data), rain (POWER vs IMERG) or sensor "
+               "(the simulated-sensor experiments).", CHART_USE, enum=["sowing", "validation", "rain", "sensor"]),
+    "title": text("Title of the chart.", CHART_USE + " · title"),
+    "note": nullable(text("The caveat to print under the chart.", CHART_USE + " · small print")),
+    "x": obj("The horizontal axis, shared by every series.", CHART_USE + " · x axis", {
+        "type": s("category: the values are ids (names tells how to show them); date: YYYY-MM-DD; month_day: MM-DD, a calendar day without year; "
+                  "number: a quantity, where a point is placed by its value.", CHART_USE + " · x axis", enum=["category", "date", "month_day", "number"]),
+        "label": nullable(text("Axis title.", CHART_USE + " · x axis")),
+        "values": _with({"type": "array", "items": _with(dict(_NUMBER_OR_TEXT), "One position on the axis.", CHART_USE + " · x axis")},
+                        "The positions, in order: ids, dates or numbers according to `type`.", CHART_USE + " · x axis"),
+        "names": nullable(arr(text("How to show that value.", CHART_USE + " · x axis"), "One name per value, when the ids need one (runs, soils, predictors); null otherwise.",
+                              CHART_USE + " · x axis")),
+        "tags": nullable(arr(s("A language-neutral tag.", CHART_USE + " · point tooltip"), "One tag per value, for scatter charts where the position is a quantity (the season of each point); null otherwise.",
+                             CHART_USE + " · point tooltip"))}),
+    "y": obj("The vertical axis.", CHART_USE + " · y axis", {
+        "label": nullable(text("Axis title.", CHART_USE + " · y axis")),
+        "unit": nullable(s("Unit of the values: m3/m3 or mm; null for counts, shares and scores.", CHART_USE + " · y axis"))}),
+    "stacked": b("True when the series are parts of one bar (stack them) instead of bars side by side.", CHART_USE),
+    "simulated": b("True when the data comes from a simulated sensor or a simulated reading: show the demo badge on it.", CHART_USE + " · badge"),
+    "source": s("Where the numbers come from: nasa_power, gpm_imerg, smap_l3, modis_ndvi, producer_survey or simulated_sensor.", CHART_USE + " · small print"),
+    "series": arr(obj("One series.", CHART_USE, {
+        "id": s("Id of the series.", CHART_USE),
+        "label": text("Legend entry.", CHART_USE + " · legend"),
+        "style": s("How to draw it: bar, line or points.", CHART_USE, enum=["bar", "line", "points"]),
+        "values": arr(nullable(n("The value at that position.", CHART_USE)), "One value per position of `x.values`, in the same order; null when there is none.", CHART_USE)}),
+        "The series to draw.", CHART_USE)}),
+    "The charts, in a fixed order: the data behind every figure of the experiment log.", CHART_USE)
+
+
 def build():
     return {"$schema": "https://json-schema.org/draft/2020-12/schema", "title": "XmartAgro frontend data",
             "description": "Static data for the XmartAgro panel in the shape of its API contract (summary, inputs, scenarios): one "
@@ -261,8 +297,9 @@ def build():
             "x-used-in": "The whole document: one file the panel reads, with no API call", "type": "object", "$defs": DEFS,
             "properties": {"schema_version": s("Version of this schema.", CONTEXT, const=SCHEMA_VERSION),
                            "generated_at": s("When the analysis was run, ISO 8601.", CONTEXT, format="date-time"),
-                           "site": SITE, "status": STATUS, "summary": SUMMARY, "inputs": INPUTS, "scenarios": SCENARIOS, "catalog": CATALOG},
-            "required": ["schema_version", "generated_at", "site", "status", "summary", "inputs", "scenarios", "catalog"],
+                           "site": SITE, "status": STATUS, "summary": SUMMARY, "inputs": INPUTS, "scenarios": SCENARIOS, "catalog": CATALOG,
+                           "charts": CHARTS},
+            "required": ["schema_version", "generated_at", "site", "status", "summary", "inputs", "scenarios", "catalog", "charts"],
             "additionalProperties": False}
 
 
@@ -301,7 +338,7 @@ def _kind(node, root):
         return _kind(root["$defs"][_ref(node)], root)
     if "anyOf" in node:
         inner = [_kind(option, root) for option in node["anyOf"] if option.get("type") != "null"]
-        return f"{inner[0]} or null"
+        return " or ".join(inner) + (" or null" if any(option.get("type") == "null" for option in node["anyOf"]) else "")
     if "enum" in node:
         return "one of " + ", ".join(f"`{v}`" for v in node["enum"])
     return node.get("type", "any")

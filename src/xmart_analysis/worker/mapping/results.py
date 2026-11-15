@@ -4,7 +4,7 @@ import hashlib
 import json
 
 from xmart_analysis.engine.i18n import LANGUAGES, resolve
-from xmart_analysis.frontend import payload
+from xmart_analysis.frontend import charts, payload
 
 SCHEMA_VERSION = "1.0"
 
@@ -19,5 +19,6 @@ def to_results(field_id, session, inputs_hash, generated_at, engine_version, lan
         "_id": field_id, "schema_version": SCHEMA_VERSION, "inputs_hash": inputs_hash, "engine_version": engine_version,
         "generated_at": generated_at.isoformat(), "mapping_notes": list(notes),
         "summary": resolve(parts["summary"], language), "scenarios": resolve(parts["scenarios"], language),
+        "charts": resolve(charts.build(), language),
         "analysis": {lang: resolve(session, lang) for lang in LANGUAGES},
     }

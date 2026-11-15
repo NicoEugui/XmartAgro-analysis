@@ -9,12 +9,13 @@ soil effect...) the field is null. Text fields are `{key, en, es}` label objects
 import json
 from collections import Counter
 
+from . import charts as chart_data
 from ..engine import deficit, tables
 from ..engine import platform_session as ps
 from ..engine import water_scenarios as ws
 from ..engine.i18n import label
 
-SCHEMA_VERSION = "2.1"
+SCHEMA_VERSION = "2.2"
 MODES = ("demo", "live", "error", "offline")  # the states the panel can be in; the last one is decided by the panel itself
 
 
@@ -139,7 +140,7 @@ def api_parts(session, generated_at):
 def build(session, generated_at):
     return {"schema_version": SCHEMA_VERSION, "generated_at": generated_at.isoformat(), "site": _site(), "status": _status(session),
             "summary": summary(session, generated_at), "inputs": inputs(session), "scenarios": scenarios(session),
-            "catalog": catalog()}
+            "catalog": catalog(), "charts": chart_data.build()}
 
 
 def build_error(error, generated_at):

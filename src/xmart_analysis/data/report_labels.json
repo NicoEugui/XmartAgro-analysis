@@ -426,5 +426,33 @@
  "sensor_recal.note": {
   "en": "Simulated field and sensor. «offset known» assumes one perfect reference measurement (e.g. a soil sample dried and weighed) that removes the sensor's offset.",
   "es": "Campo y sensor simulados. «desvío conocido» supone una medición de referencia perfecta (p. ej. una muestra de suelo secada y pesada) que quita el desvío del sensor."
+ },
+ "chart.sensor_errors.title": {
+  "en": "Error of the model with and without a simulated sensor",
+  "es": "Error del modelo con y sin un sensor simulado"
+ },
+ "chart.imerg_seasons.title": {
+  "en": "Rain from December to March by season: POWER and IMERG (mm)",
+  "es": "Lluvia de diciembre a marzo por zafra: POWER e IMERG (mm)"
+ },
+ "chart.rain_classes.title": {
+  "en": "Seasons by outcome class with each rain source: {crop}",
+  "es": "Zafras por clase de resultado con cada fuente de lluvia: {crop}"
+ },
+ "chart.sowing.title": {
+  "en": "Seasons by outcome class for each sowing date: {crop}",
+  "es": "Zafras por clase de resultado según la fecha de siembra: {crop}"
+ },
+ "chart.sowing_detail.title": {
+  "en": "Critical-stage stress of every historical season, {crop} on its default sowing date",
+  "es": "Estrés en etapa crítica de cada zafra histórica, {crop} en su fecha de siembra por defecto"
+ },
+ "chart.sowing_reading.title": {
+  "en": "Seasons by outcome class for different simulated readings: {crop}",
+  "es": "Zafras por clase de resultado con distintas lecturas simuladas: {crop}"
+ },
+ "chart.reading.axis": {
+  "en": "simulated soil moisture at the reading (m3/m3)",
+  "es": "humedad simulada del suelo en la lectura (m3/m3)"
  }
 }

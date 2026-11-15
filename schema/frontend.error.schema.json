@@ -37,7 +37,7 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "2.1",
+      "const": "2.2",
       "description": "Version of this schema.",
       "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
     },

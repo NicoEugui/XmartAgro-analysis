@@ -137,6 +137,29 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `catalog.modes[].id` | one of `demo`, `live`, `error`, `offline` | demo, live, error or offline. | Badge at the top of every screen |
 | `catalog.modes[].badge` | text | Badge text for the state. | Badge at the top of every screen |
 | `catalog.modes[].meaning` | text | When the state applies and what to show. | Badge at the top of every screen |
+| `charts` | array | The charts, in a fixed order: the data behind every figure of the experiment log. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].id` | string | Stable id of the chart, e.g. sensor_series or sowing_maize. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].figure` | string | The figure of reports/experiments.md it mirrors (sowing, survey, smap, ndvi, imerg, rain_decision, sensor, sensor_windows, sensor_recalibration); a figure can have several charts. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].group` | one of `sowing`, `validation`, `rain`, `sensor` | Where to file it: sowing (what happens if a crop is sown on a date), validation (against independent data), rain (POWER vs IMERG) or sensor (the simulated-sensor experiments). | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].title` | text | Title of the chart. | Charts screen · one chart per entry, mirroring a figure of the experiment log · title |
+| `charts[].note` | text or null | The caveat to print under the chart. | Charts screen · one chart per entry, mirroring a figure of the experiment log · small print |
+| `charts[].x` | object | The horizontal axis, shared by every series. | Charts screen · one chart per entry, mirroring a figure of the experiment log · x axis |
+| `charts[].x.type` | one of `category`, `date`, `month_day`, `number` | category: the values are ids (names tells how to show them); date: YYYY-MM-DD; month_day: MM-DD, a calendar day without year; number: a quantity, where a point is placed by its value. | Charts screen · one chart per entry, mirroring a figure of the experiment log · x axis |
+| `charts[].x.label` | text or null | Axis title. | Charts screen · one chart per entry, mirroring a figure of the experiment log · x axis |
+| `charts[].x.values` | array | The positions, in order: ids, dates or numbers according to `type`. | Charts screen · one chart per entry, mirroring a figure of the experiment log · x axis |
+| `charts[].x.names` | array or null | One name per value, when the ids need one (runs, soils, predictors); null otherwise. | Charts screen · one chart per entry, mirroring a figure of the experiment log · x axis |
+| `charts[].x.tags` | array or null | One tag per value, for scatter charts where the position is a quantity (the season of each point); null otherwise. | Charts screen · one chart per entry, mirroring a figure of the experiment log · point tooltip |
+| `charts[].y` | object | The vertical axis. | Charts screen · one chart per entry, mirroring a figure of the experiment log · y axis |
+| `charts[].y.label` | text or null | Axis title. | Charts screen · one chart per entry, mirroring a figure of the experiment log · y axis |
+| `charts[].y.unit` | string or null | Unit of the values: m3/m3 or mm; null for counts, shares and scores. | Charts screen · one chart per entry, mirroring a figure of the experiment log · y axis |
+| `charts[].stacked` | boolean | True when the series are parts of one bar (stack them) instead of bars side by side. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].simulated` | boolean | True when the data comes from a simulated sensor or a simulated reading: show the demo badge on it. | Charts screen · one chart per entry, mirroring a figure of the experiment log · badge |
+| `charts[].source` | string | Where the numbers come from: nasa_power, gpm_imerg, smap_l3, modis_ndvi, producer_survey or simulated_sensor. | Charts screen · one chart per entry, mirroring a figure of the experiment log · small print |
+| `charts[].series` | array | The series to draw. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].series[].id` | string | Id of the series. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].series[].label` | text | Legend entry. | Charts screen · one chart per entry, mirroring a figure of the experiment log · legend |
+| `charts[].series[].style` | one of `bar`, `line`, `points` | How to draw it: bar, line or points. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].series[].values` | array | One value per position of `x.values`, in the same order; null when there is none. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
 
 ## The error document
 

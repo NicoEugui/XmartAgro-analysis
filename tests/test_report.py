@@ -11,6 +11,7 @@ from xmart_analysis import cli
 from xmart_analysis.engine import tables
 from xmart_analysis.report import scenario_runs
 from xmart_analysis.engine import sensor_series
+from xmart_analysis.frontend import charts
 from xmart_analysis.validation import imerg, rain_sensitivity, sensor_assimilation, survey
 
 
@@ -107,6 +108,18 @@ class PlottedValues(unittest.TestCase):
         readings = sensor_series.load()
         self.assertEqual(len(readings), 365)
         self.assertTrue({round(v, 4) for v in readings.values()} <= {round(v, 4) for v in drawn})
+
+    def test_every_value_of_a_figure_table_is_in_the_frontend_charts(self):
+        built = charts.from_documents(self.docs)
+        figure_of = {"rain_sensitivity": "rain_decision"}  # one chart serves two figures
+        for name, (_, table) in self.experiments.FIGURES.items():
+            with self.subTest(figure=name):
+                shown = {float(v) for c in built if c["figure"] == figure_of.get(name, name)
+                         for v in [*c["x"]["values"], *(v for se in c["series"] for v in se["values"])] if isinstance(v, (int, float))}
+                _, rows = table(self.docs[name])
+                wanted = {float(v) for row in rows for v in row if isinstance(v, (int, float))}
+                self.assertTrue(wanted)
+                self.assertEqual({v for v in wanted if not any(abs(v - w) < 1e-9 for w in shown)}, set())
 
     def test_the_rain_comparison_counts_every_season_once_and_covers_the_year(self):
         for crop, entry in self.docs["rain_sensitivity"]["crops"].items():

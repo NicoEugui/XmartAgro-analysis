@@ -68,6 +68,13 @@ person; `status.badge` is the text to show at the top of every screen («Modo de
 know it cannot read the file). When the analysis cannot be built, `export` still writes a valid file, the error document (`status.mode` `error`, `status.error` with code, field and message, no
 results), and exits with 1; an unexpected failure is reported as `internal_error` without leaking its text.
 
+**Charts.** `charts` carries the data behind every figure of the experiment log (the sowing grid, the survey, SMAP, NDVI, IMERG, POWER vs IMERG, and the three sensor experiments), 26 charts in one
+language-neutral format so the panel can draw similar graphs itself. A chart is columnar: `x.values` is the shared axis (`category`, `date`, `month_day` or `number`) and each series has a `values` list of the same
+length, drawn as `bar`, `line` or `points` (`stacked` for parts of one bar). Every chart says which figure it mirrors (`figure`), where it comes from (`source`) and whether it is `simulated`
+(show the demo badge on it). The charts are built from the same documents as the figures (`frontend/charts.py`, `validation/documents.py`), and a test checks that every value in a figure's table is in the charts, so the front
+draws the numbers the report plots. The worker also stores them in the `results` document (`charts`, resolved to the panel's language). `frontend.json` grows to about 200 KB with them: if the
+panel only needs some, it can read the groups it draws (`sowing`, `validation`, `rain`, `sensor`) and ignore the rest.
+
 **The sensor series in the demo.** The demo scenario carries the simulated year of readings (`{"from_file": "sensor_simulated.csv", ...}`), the use case reads the last year of
 readings of the field (`ReadingsRepository.history`, implemented for memory and Mongo) and the engine starts the scenarios from the model's own state corrected by that series,
 not from the last noisy reading. `summary.water.series` has the day-by-day reading and modelled state for a «sensor vs modelo» chart, and `summary.water.reading_moisture` keeps the last reading.
