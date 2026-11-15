@@ -308,6 +308,14 @@ xmart-analysis export --out schema --models models --now 2026-11-14T10:30:00+00:
 | `satellite` | Los últimos 90 días del campo del demo: el satélite tal cual, corregido y el sensor (simulado) | B |
 | `crop_history` | Una propuesta por zafra con la curva real de MODIS del campo del demo: el cultivo, la confianza y `action` (`propose` si alcanza la confianza, `ask` si la pantalla debe preguntar) | C |
 
+**El calendario: cualquier fecha del último año, cualquier cultivo** (bloque `calendar` y campo `as_of`; código en `src/xmart_analysis/engine/calendar_grid.py`). El front es un archivo estático, así que no puede calcular "qué pasa si abro la app el 20 de mayo y elijo cebada". Lo calcula el motor de antemano, para una fecha por semana (53 fechas, hacia atrás desde el último día del clima) y para los 9 cultivos que se pueden sembrar:
+- **El agua de cada fecha** es el estado del campo ese día: la serie corregida (con B, si se aplican los modelos) corrida día a día, con los huecos llenados por el modelo.
+- **Cada cultivo** se evalúa con la misma función que la pantalla principal (`platform_session.crop_card`), en su **próxima fecha de siembra**, con el clima de las 39 zafras y, con modelos, con el modelo A (`risk_basis` trae los cortes fijos al lado).
+- **`offered`** es verdadero si la siembra queda a menos de `offer_days` (120) de la fecha. Las demás se muestran como guía aproximada con su aviso: el agua que tiene el campo hoy se va desdibujando con el tiempo. Por eso en diciembre-enero casi no hay cultivos "ofrecidos" (el trigo se siembra en junio, 5 meses después): la pantalla debería decirlo en vez de inventar.
+- **`as_of`** (en la raíz) es el día al que corresponde todo ("Estado al 13 nov"), para que nadie lea una foto vieja como la de hoy.
+- Es una **emulación**: las fechas son las del último año de la serie, como si la app se hubiera abierto ese día. En producción, cada noche el pipeline regeneraría el calendario con el estado nuevo.
+- `schema/preview.html` es una página mínima (HTML y JS sin librerías) que lee solo `frontend.example.json` y deja elegir fecha y cultivo; sirve para ver cómo se consume el bloque (se abre con `python3 -m http.server` dentro de `schema/`).
+
 **Los modelos se aplican, no solo se muestran.** Con `--models`, el resultado de la pantalla principal cambia respecto del análisis sin modelos:
 - `summary.water`: el agua de partida sale del satélite corregido por B (`source: smap_corrected`, `correction`: versión de B y último día con satélite). Ya no se usa la serie del sensor simulado, y `status.simulated_inputs` pasa a `["training_panel"]`.
 - `summary.options[]`: `drops` y `water_risk` son los de A, y `risk_basis` dice `source: model_a`, la versión y los cortes fijos al lado (`fixed_cuts_drops`, `fixed_cuts_water_risk`). Las opciones sin zafras que leer (por ejemplo, un ciclo ya terminado) quedan en `fixed_cuts`.

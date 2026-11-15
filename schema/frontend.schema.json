@@ -103,6 +103,11 @@
       "description": "When the analysis was run, ISO 8601.",
       "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
     },
+    "as_of": {
+      "type": "string",
+      "description": "The day the water and the options are for, YYYY-MM-DD: the last day of the climate record. Show it («Estado al 13 nov») so nobody reads an old picture as today's.",
+      "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil» · date"
+    },
     "site": {
       "type": "object",
       "properties": {
@@ -2274,11 +2279,321 @@
           "type": "null"
         }
       ]
+    },
+    "calendar": {
+      "type": "object",
+      "properties": {
+        "step_days": {
+          "type": "integer",
+          "description": "Days between two dates of the calendar.",
+          "x-used-in": "Date picker · the field on a chosen date and crop"
+        },
+        "offer_days": {
+          "type": "integer",
+          "description": "A sowing further than this from the date is `offered: false`: the water of the date has faded.",
+          "x-used-in": "Date picker · the field on a chosen date and crop"
+        },
+        "from": {
+          "type": "string",
+          "description": "First date, YYYY-MM-DD.",
+          "x-used-in": "Date picker · the field on a chosen date and crop"
+        },
+        "to": {
+          "type": "string",
+          "description": "Last date, YYYY-MM-DD: the same day as `as_of`.",
+          "x-used-in": "Date picker · the field on a chosen date and crop"
+        },
+        "dates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "description": "The date, YYYY-MM-DD.",
+                "x-used-in": "Date picker · the field on a chosen date and crop"
+              },
+              "water": {
+                "type": "object",
+                "properties": {
+                  "mm": {
+                    "type": "number",
+                    "description": "Available water in mm that day.",
+                    "x-used-in": "Date picker · the field on a chosen date and crop · header"
+                  },
+                  "capacity_mm": {
+                    "type": "number",
+                    "description": "Water the modelled soil can hold, mm.",
+                    "x-used-in": "Date picker · the field on a chosen date and crop · header"
+                  },
+                  "volumetric_moisture": {
+                    "type": "number",
+                    "description": "Volumetric moisture that day, m3/m3.",
+                    "x-used-in": "Date picker · the field on a chosen date and crop · header"
+                  }
+                },
+                "required": [
+                  "mm",
+                  "capacity_mm",
+                  "volumetric_moisture"
+                ],
+                "additionalProperties": false,
+                "description": "The field's water that day (the same estimate as summary.water: assumed soil parameters, never measured water).",
+                "x-used-in": "Date picker · the field on a chosen date and crop · header"
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "crop": {
+                      "type": "string",
+                      "description": "Crop id, as in catalog.crops.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card"
+                    },
+                    "sowing": {
+                      "type": "string",
+                      "description": "The crop's next sowing date, MM-DD.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card"
+                    },
+                    "days_to_sowing": {
+                      "type": "integer",
+                      "description": "Days from the date to that sowing.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card"
+                    },
+                    "offered": {
+                      "type": "boolean",
+                      "description": "True when the sowing is within `offer_days` of the date: show these first; the others are a rough guide.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card"
+                    },
+                    "evaluated": {
+                      "type": "integer",
+                      "description": "Historical seasons evaluated.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card"
+                    },
+                    "water_risk": {
+                      "description": "low, medium or high from `drops`.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card · pill",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "low",
+                            "medium",
+                            "high"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "drops": {
+                      "description": "The ten drops of the option's seasons: model A's when `risk_basis.source` is model_a, the fixed cuts' otherwise.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card · ten drops",
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/drops"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "risk_basis": {
+                      "type": "object",
+                      "properties": {
+                        "source": {
+                          "type": "string",
+                          "enum": [
+                            "model_a",
+                            "fixed_cuts"
+                          ],
+                          "description": "model_a or fixed_cuts.",
+                          "x-used-in": "Date picker · the field on a chosen date and crop · small print"
+                        },
+                        "model_version": {
+                          "description": "Version of model A used; null with the fixed cuts.",
+                          "x-used-in": "Date picker · the field on a chosen date and crop · small print",
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "fixed_cuts_drops": {
+                          "description": "The drops the fixed cuts of stress give.",
+                          "x-used-in": "Date picker · the field on a chosen date and crop · small print",
+                          "anyOf": [
+                            {
+                              "$ref": "#/$defs/drops"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "fixed_cuts_water_risk": {
+                          "description": "low, medium or high from the fixed cuts.",
+                          "x-used-in": "Date picker · the field on a chosen date and crop · small print",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "low",
+                                "medium",
+                                "high"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "source",
+                        "model_version",
+                        "fixed_cuts_drops",
+                        "fixed_cuts_water_risk"
+                      ],
+                      "additionalProperties": false,
+                      "description": "What `drops` rest on, with the fixed cuts beside them.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · small print"
+                    },
+                    "critical_window": {
+                      "description": "The crop's critical stage, day/month.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card",
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "string",
+                              "description": "DD/MM.",
+                              "x-used-in": "Date picker · the field on a chosen date and crop · option card"
+                            },
+                            "end": {
+                              "type": "string",
+                              "description": "DD/MM.",
+                              "x-used-in": "Date picker · the field on a chosen date and crop · option card"
+                            }
+                          },
+                          "required": [
+                            "start",
+                            "end"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "median_water_at_sowing_mm": {
+                      "description": "Median across seasons of the water the soil holds on the sowing day, mm.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card · detail",
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "A warning code, as in `warnings`.",
+                        "x-used-in": "Date picker · the field on a chosen date and crop · option card · gaps"
+                      },
+                      "description": "Warnings of this option.",
+                      "x-used-in": "Date picker · the field on a chosen date and crop · option card · gaps"
+                    }
+                  },
+                  "required": [
+                    "crop",
+                    "sowing",
+                    "days_to_sowing",
+                    "offered",
+                    "evaluated",
+                    "water_risk",
+                    "drops",
+                    "risk_basis",
+                    "critical_window",
+                    "median_water_at_sowing_mm",
+                    "warnings"
+                  ],
+                  "additionalProperties": false,
+                  "description": "One crop on this date, read at its next sowing date.",
+                  "x-used-in": "Date picker · the field on a chosen date and crop · option card"
+                },
+                "description": "One entry per crop that can be sown (catalog.crops).",
+                "x-used-in": "Date picker · the field on a chosen date and crop"
+              }
+            },
+            "required": [
+              "date",
+              "water",
+              "options"
+            ],
+            "additionalProperties": false,
+            "description": "The field on one date.",
+            "x-used-in": "Date picker · the field on a chosen date and crop"
+          },
+          "description": "One entry per date, oldest first.",
+          "x-used-in": "Date picker · the field on a chosen date and crop"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "The code.",
+                "x-used-in": "Date picker · the field on a chosen date and crop · option card · gaps"
+              },
+              "text": {
+                "$ref": "#/$defs/text",
+                "description": "What it says.",
+                "x-used-in": "Date picker · the field on a chosen date and crop · option card · gaps"
+              }
+            },
+            "required": [
+              "code",
+              "text"
+            ],
+            "additionalProperties": false,
+            "description": "The text of a warning code.",
+            "x-used-in": "Date picker · the field on a chosen date and crop · option card · gaps"
+          },
+          "description": "The texts of every code used in `options[].warnings`.",
+          "x-used-in": "Date picker · the field on a chosen date and crop"
+        }
+      },
+      "required": [
+        "step_days",
+        "offer_days",
+        "from",
+        "to",
+        "dates",
+        "warnings"
+      ],
+      "additionalProperties": false,
+      "description": "The field on every date of the last year for every crop that can be sown, so the panel can answer «I open the app on this date and pick this crop» from this file alone.",
+      "x-used-in": "Date picker · the field on a chosen date and crop"
     }
   },
   "required": [
     "schema_version",
     "generated_at",
+    "as_of",
     "site",
     "status",
     "summary",
@@ -2286,7 +2601,8 @@
     "scenarios",
     "catalog",
     "charts",
-    "learning"
+    "learning",
+    "calendar"
   ],
   "additionalProperties": false
 }

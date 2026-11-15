@@ -159,7 +159,7 @@ def _season_classes(doc):
     return [{"season": r["season"], "class": r["class"], "stress": r["stress"]} for r in doc["season_results"]]
 
 
-def _crop_card(crop, sowing, theta, reading_md, is_current, kw, info):
+def crop_card(crop, sowing, theta, reading_md, is_current, kw, info):
     doc = sw.evaluate_sowing(crop, sowing, theta, reading_md, source_info=info, **kw)
     ref = ws.safe_date(2001, *sowing)
     start, end = cu.critical_window_from_sowing(crop, ref)
@@ -243,7 +243,7 @@ def build_session(answers, sensor_info=None, context=None):
         if (o["crop"], md) in seen:
             continue
         seen.add((o["crop"], md))
-        cards.append(_crop_card(o["crop"], md, theta, reading_md, False, kw, info))
+        cards.append(crop_card(o["crop"], md, theta, reading_md, False, kw, info))
 
     inputs = {"location": {"latitude": tables.constant("latitude"), "longitude": tables.constant("longitude"),
                            "source": "nasa_power", "note": label("location.note")},

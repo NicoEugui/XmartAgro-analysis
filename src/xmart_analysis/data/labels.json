@@ -462,5 +462,9 @@
  "learn.start.note": {
   "en": "Starting water: the satellite corrected by model B, which learned from the panel's fields (simulated sensors). Not a sensor reading.",
   "es": "Agua de partida: el satélite corregido por el modelo B, que aprendió de los campos del panel (sensores simulados). No es una lectura de sensor."
+ },
+ "calendar.warning.far": {
+  "en": "This sowing is far from the date picked: the water the field has that day fades with time, so read it as a rough guide.",
+  "es": "Esta siembra queda lejos de la fecha elegida: el agua que tiene el campo ese día se va desdibujando con el tiempo, tomalo como una guía aproximada."
  }
 }

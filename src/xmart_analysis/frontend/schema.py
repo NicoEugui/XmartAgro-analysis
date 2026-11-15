@@ -364,6 +364,40 @@ LEARNING = nullable(obj("What the models A, B and C add: their versions and how 
         "One proposal per season with a complete MODIS curve at the demo field's point (real NASA data, a 250 m pixel that mixes fields).", LEARN)}))
 
 
+CAL = "Date picker · the field on a chosen date and crop"
+CALENDAR = obj("The field on every date of the last year for every crop that can be sown, so the panel can answer «I open the app on this date and pick this crop» from this file alone.", CAL, {
+    "step_days": i("Days between two dates of the calendar.", CAL),
+    "offer_days": i("A sowing further than this from the date is `offered: false`: the water of the date has faded.", CAL),
+    "from": s("First date, YYYY-MM-DD.", CAL), "to": s("Last date, YYYY-MM-DD: the same day as `as_of`.", CAL),
+    "dates": arr(obj("The field on one date.", CAL, {
+        "date": s("The date, YYYY-MM-DD.", CAL),
+        "water": obj("The field's water that day (the same estimate as summary.water: assumed soil parameters, never measured water).", CAL + " · header", {
+            "mm": n("Available water in mm that day.", CAL + " · header"), "capacity_mm": n("Water the modelled soil can hold, mm.", CAL + " · header"),
+            "volumetric_moisture": n("Volumetric moisture that day, m3/m3.", CAL + " · header")}),
+        "options": arr(obj("One crop on this date, read at its next sowing date.", CAL + " · option card", {
+            "crop": s("Crop id, as in catalog.crops.", CAL + " · option card"),
+            "sowing": s("The crop's next sowing date, MM-DD.", CAL + " · option card"),
+            "days_to_sowing": i("Days from the date to that sowing.", CAL + " · option card"),
+            "offered": b("True when the sowing is within `offer_days` of the date: show these first; the others are a rough guide.", CAL + " · option card"),
+            "evaluated": i("Historical seasons evaluated.", CAL + " · option card"),
+            "water_risk": nullable(s("low, medium or high from `drops`.", CAL + " · option card · pill", enum=["low", "medium", "high"])),
+            "drops": nullable(ref("drops", "The ten drops of the option's seasons: model A's when `risk_basis.source` is model_a, the fixed cuts' otherwise.", CAL + " · option card · ten drops")),
+            "risk_basis": obj("What `drops` rest on, with the fixed cuts beside them.", CAL + " · small print", {
+                "source": s("model_a or fixed_cuts.", CAL + " · small print", enum=["model_a", "fixed_cuts"]),
+                "model_version": nullable(i("Version of model A used; null with the fixed cuts.", CAL + " · small print")),
+                "fixed_cuts_drops": nullable(ref("drops", "The drops the fixed cuts of stress give.", CAL + " · small print")),
+                "fixed_cuts_water_risk": nullable(s("low, medium or high from the fixed cuts.", CAL + " · small print", enum=["low", "medium", "high"]))}),
+            "critical_window": nullable(obj("The crop's critical stage, day/month.", CAL + " · option card", {
+                "start": s("DD/MM.", CAL + " · option card"), "end": s("DD/MM.", CAL + " · option card")})),
+            "median_water_at_sowing_mm": nullable(n("Median across seasons of the water the soil holds on the sowing day, mm.", CAL + " · option card · detail")),
+            "warnings": arr(s("A warning code, as in `warnings`.", CAL + " · option card · gaps"), "Warnings of this option.", CAL + " · option card · gaps")}),
+            "One entry per crop that can be sown (catalog.crops).", CAL)}),
+        "One entry per date, oldest first.", CAL),
+    "warnings": arr(obj("The text of a warning code.", CAL + " · option card · gaps", {
+        "code": s("The code.", CAL + " · option card · gaps"), "text": text("What it says.", CAL + " · option card · gaps")}),
+        "The texts of every code used in `options[].warnings`.", CAL)})
+
+
 def build():
     return {"$schema": "https://json-schema.org/draft/2020-12/schema", "title": "XmartAgro frontend data",
             "description": "Static data for the XmartAgro panel in the shape of its API contract (summary, inputs, scenarios): one "
@@ -372,9 +406,10 @@ def build():
             "x-used-in": "The whole document: one file the panel reads, with no API call", "type": "object", "$defs": DEFS,
             "properties": {"schema_version": s("Version of this schema.", CONTEXT, const=SCHEMA_VERSION),
                            "generated_at": s("When the analysis was run, ISO 8601.", CONTEXT, format="date-time"),
+                           "as_of": s("The day the water and the options are for, YYYY-MM-DD: the last day of the climate record. Show it («Estado al 13 nov») so nobody reads an old picture as today's.", HEADER + " · date"),
                            "site": SITE, "status": STATUS, "summary": SUMMARY, "inputs": INPUTS, "scenarios": SCENARIOS, "catalog": CATALOG,
-                           "charts": CHARTS, "learning": LEARNING},
-            "required": ["schema_version", "generated_at", "site", "status", "summary", "inputs", "scenarios", "catalog", "charts", "learning"],
+                           "charts": CHARTS, "learning": LEARNING, "calendar": CALENDAR},
+            "required": ["schema_version", "generated_at", "as_of", "site", "status", "summary", "inputs", "scenarios", "catalog", "charts", "learning", "calendar"],
             "additionalProperties": False}
 
 

@@ -93,3 +93,4 @@ learn_smap_scale_by_texture,0.75;0.92;1.05,assumption,,"planted scale of the sim
 learn_smap_offset_jitter,0.02,assumption,,how far a field strays from its texture class in the planted satellite offset
 learn_smap_scale_jitter,0.03,assumption,,how far a field strays from its texture class in the planted satellite scale
 learn_propose_min_confidence,0.6,assumption,,share of the forest votes model C needs for the app to propose a crop; below it the app asks the producer instead
+calendar_step_days,7,assumption,,days between two dates of the calendar the front offers (the field's water is known for every day of the last year)

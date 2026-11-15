@@ -196,11 +196,11 @@ class CommittedFiles(unittest.TestCase):
             fresh = export(folder)
         committed = json.loads((REPO / "schema" / "frontend.example.json").read_text(encoding="utf-8"))
         self.assertEqual(schema_check.problems(committed, schema.build(), schema.build()), [])
-        # the example carries what a trained registry changes: the learning block, the starting water and the options' drops (their numbers depend on
+        # the example carries what a trained registry changes: the learning block, the starting water and the options' drops (and the calendar, built on them; their numbers depend on
         # the libraries that trained it, so only their shape is checked here; `tests/test_frontend_learning.py` trains one and checks them);
         # everything else must be exactly what the code produces
         for doc in (committed, fresh):
-            doc["learning"] = doc["status"]["simulated_inputs"] = doc["summary"]["water"] = doc["summary"]["options"] = None
+            doc["learning"] = doc["calendar"] = doc["status"]["simulated_inputs"] = doc["summary"]["water"] = doc["summary"]["options"] = None
         self.assertEqual(committed, fresh, "regenerate with the command above")
 
     def test_the_committed_example_shows_the_learning_block_filled(self):

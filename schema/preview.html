@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XmartAgro · vista previa del calendario</title>
+<style>
+ body{font:15px/1.4 system-ui,sans-serif;max-width:720px;margin:0 auto;padding:16px;color:#1c2a1f;background:#fafaf7}
+ h1{font-size:18px;margin:0 0 4px} .muted{color:#5d6b60;font-size:13px}
+ .banner{background:#fdf0d5;border-radius:8px;padding:6px 10px;margin:8px 0;font-size:13px}
+ select,button{font:inherit} select{padding:6px;width:100%;margin:6px 0 12px}
+ .crops{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+ .crops button{border:1px solid #c9d1c8;background:#fff;border-radius:16px;padding:5px 12px;cursor:pointer}
+ .crops button.on{background:#e3f0e2;border-color:#6aa56a} .crops button.far{opacity:.55}
+ .card{background:#fff;border:1px solid #e1e5df;border-radius:12px;padding:14px;margin-top:10px}
+ .drops{display:flex;gap:4px;margin:8px 0} .d{width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg)}
+ .ok{background:#4f9d69}.tight{background:#e0a93b}.out{background:#c8553d}
+ .pill{display:inline-block;border-radius:10px;padding:1px 10px;font-size:13px;color:#fff}
+ .low{background:#4f9d69}.medium{background:#e0a93b}.high{background:#c8553d}
+</style></head><body>
+<h1>XmartAgro · calendario</h1>
+<div class="muted">Lee solo <code>frontend.example.json</code>: no calcula nada. Elegí una fecha y un cultivo.</div>
+<div class="banner" id="badge"></div>
+<div class="banner" id="nofile" hidden>El navegador no deja leer el archivo al abrir la página con doble clic. Elegí <code>frontend.example.json</code> acá
+ (o abrí la página con <code>python3 -m http.server</code> dentro de <code>schema/</code>): <input type="file" id="file" accept=".json,application/json"></div>
+<label for="date" class="muted">Hoy es…</label><select id="date"></select>
+<div id="water"></div><div class="crops" id="crops"></div><div id="out"></div>
+<script>
+const MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const fmt=d=>{const[y,m,x]=d.split("-");return `${+x} ${MES[m-1]} ${y}`};
+const start=doc=>{
+ document.getElementById("nofile").hidden=true;
+ const names=Object.fromEntries(doc.catalog.crops.map(c=>[c.id,c.name.es]));
+ const warn=Object.fromEntries(doc.calendar.warnings.map(w=>[w.code,w.text.es]));
+ const dates=doc.calendar.dates; let crop=null;
+ document.getElementById("badge").textContent=doc.status.badge.es+" · estado al "+fmt(doc.as_of);
+ const sel=document.getElementById("date"); sel.innerHTML="";
+ dates.forEach((e,i)=>sel.add(new Option(fmt(e.date),i)));
+ sel.value=dates.length-1;
+ const draw=()=>{
+  const e=dates[sel.value], opts=[...e.options].sort((a,b)=>b.offered-a.offered||a.days_to_sowing-b.days_to_sowing);
+  if(!opts.some(o=>o.crop===crop))crop=opts[0].crop;
+  document.getElementById("water").innerHTML=`<b>${e.water.mm} mm</b> de agua útil <span class="muted">(capacidad ${e.water.capacity_mm} mm)</span>`;
+  document.getElementById("crops").innerHTML=opts.map(o=>`<button data-c="${o.crop}" class="${o.crop===crop?"on":""} ${o.offered?"":"far"}">${names[o.crop]}</button>`).join("");
+  document.querySelectorAll("#crops button").forEach(b=>b.onclick=()=>{crop=b.dataset.c;draw()});
+  const o=opts.find(x=>x.crop===crop), d=o.drops, bs=o.risk_basis;
+  const drops=["ok","tight","out"].map(k=>`<span class="d ${k}"></span>`.repeat(d[k])).join("");
+  const sow=o.sowing.split("-"), w=o.warnings.filter(c=>c==="sowing_far_from_reading").map(c=>warn[c]);
+  document.getElementById("out").innerHTML=`<div class="card"><b>${names[o.crop]}</b> · siembra ${+sow[1]} ${MES[sow[0]-1]} (en ${o.days_to_sowing} días)
+   <div>Agua: <span class="pill ${o.water_risk}">riesgo ${{low:"bajo",medium:"medio",high:"alto"}[o.water_risk]}</span></div>
+   <div class="drops">${drops}</div>
+   <div>En ${d.out} de cada 10 zafras históricas se quedó sin agua; en ${d.tight} justa; en ${d.ok} tuvo agua.</div>
+   ${w.length?`<div class="banner">${w[0]}</div>`:""}
+   <div class="muted">Base: ${bs.source==="model_a"?"modelo A v"+bs.model_version+" (cortes fijos: riesgo "+bs.fixed_cuts_water_risk+")":"cortes fijos de estrés"} · ${o.evaluated} zafras</div></div>`;
+ };
+ sel.onchange=draw; draw();
+};
+fetch("frontend.example.json").then(r=>r.json()).then(start).catch(()=>{
+ document.getElementById("nofile").hidden=false;
+ document.getElementById("file").onchange=e=>e.target.files[0].text().then(t=>start(JSON.parse(t)));
+});
+</script></body></html>

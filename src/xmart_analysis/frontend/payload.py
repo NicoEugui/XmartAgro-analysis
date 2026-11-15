@@ -10,7 +10,9 @@ import json
 from collections import Counter
 
 from . import charts as chart_data
-from ..engine import deficit, tables
+from ..engine import calendar_grid, deficit, tables
+from ..engine import context as engine_context
+from ..engine import sowing_scenarios as sw
 from ..engine import platform_session as ps
 from ..engine import water_scenarios as ws
 from ..engine.i18n import label
@@ -73,6 +75,11 @@ def _water(session, generated_at):
             "series": {**series, "carried_days": series.get("carried_days", 0)} if series else None,
             "correction": {"model": "B", "version": sensor["model_b"]["version"], "last_satellite_day": sensor["model_b"]["last_satellite_day"],
                            "note": label("learn.start.note")} if sensor.get("model_b") else None}
+
+
+def _as_of(session, generated_at):
+    """The day the water and the options are for: the day of the reading the scenarios start from (the run's day when it has none)."""
+    return (session["outputs"]["main_screen"]["soil_water"].get("reading_date") or generated_at.isoformat())[:10]
 
 
 def _detail(card):
@@ -151,12 +158,52 @@ def catalog():
             "modes": [{"id": m, "badge": label(f"front.mode.{m}"), "meaning": label(f"front.mode.meaning.{m}")} for m in MODES]}
 
 
+_GRIDS = {}  # the engine's calendar of a session (the slow part), by what the engine produced: the same session is worked out once
+
+
+def _grid(session, context):
+    key = ps.engine_fingerprint(session)
+    if key not in _GRIDS:
+        _GRIDS[key] = calendar_grid.build(session, context)
+    return _GRIDS[key]
+
+
+def _cell(days, card, risk):
+    drops = risk["drops"] if risk else _drops(card)
+    return {"crop": card["id"].split("@")[0], "sowing": card["sowing"], "days_to_sowing": days, "offered": days <= sw.FAR_SOWING_DAYS,
+            "evaluated": card["scenarios"], "water_risk": deficit.water_risk(drops), "drops": drops, "risk_basis": _risk_basis(card, risk),
+            "critical_window": card["critical_window"], "median_water_at_sowing_mm": card["median_water_at_sowing_mm"],
+            "warnings": [w["code"] for w in card["warnings"]]}
+
+
+def calendar(session, context, adjustments=None):
+    """The field on every date of the last year for every crop that can be sown: what the panel shows when someone picks a date and a crop.
+
+    The water of each date is the field's state that day (with B's corrected satellite when the models are applied); each crop is read at its next
+    sowing date with the same engine and, with `adjustments`, the same model A as the main screen."""
+    grid = _grid(session, context)
+    capacity = session["outputs"]["main_screen"]["scenarios"]["initial_state"]["capacity_mm"]
+    warnings = {}
+    dates = []
+    for entry in grid:
+        options = []
+        for days, card in entry["cards"]:
+            options.append(_cell(days, card, adjustments.risk(card) if adjustments else None))
+            for w in card["warnings"]:
+                warnings.setdefault(w["code"], w["label"])
+        dates.append({"date": entry["date"].isoformat(), "water": {"mm": round(entry["water_mm"], 1), "capacity_mm": capacity,
+                                                                  "volumetric_moisture": round(entry["moisture"], 4)}, "options": options})
+    warnings["sowing_far_from_reading"] = label("calendar.warning.far")
+    return {"step_days": tables.constant("calendar_step_days"), "offer_days": sw.FAR_SOWING_DAYS, "from": dates[0]["date"], "to": dates[-1]["date"],
+            "dates": dates, "warnings": [{"code": code, "text": text} for code, text in warnings.items()]}
+
+
 def api_parts(session, generated_at):
     """What the API contract calls `summary` and `scenarios`; the worker stores them in `results`."""
     return {"summary": summary(session, generated_at), "scenarios": scenarios(session)}
 
 
-def build(session, generated_at, models=None):
+def build(session, generated_at, models=None, context=None):
     """The whole document. `models` is a registry folder: with published models the document carries their `learning` block, without it that block is null."""
     adjustments = learning = None
     if models is not None:  # numpy and scikit-learn (the `learn` extra) are needed only here
@@ -164,9 +211,11 @@ def build(session, generated_at, models=None):
         from . import learning as learning_block
         adjustments = Adjustments.load(models)
         learning = learning_block.build(models, session["outputs"]["option_cards"], adjustments)
-    return {"schema_version": SCHEMA_VERSION, "generated_at": generated_at.isoformat(), "site": _site(), "status": _status(session, learning),
+    return {"schema_version": SCHEMA_VERSION, "generated_at": generated_at.isoformat(), "as_of": _as_of(session, generated_at),
+            "site": _site(), "status": _status(session, learning),
             "summary": summary(session, generated_at, adjustments), "inputs": inputs(session), "scenarios": scenarios(session),
-            "catalog": catalog(), "charts": chart_data.build(), "learning": learning}
+            "catalog": catalog(), "charts": chart_data.build(), "learning": learning,
+            "calendar": calendar(session, context or engine_context.build_context(), adjustments)}
 
 
 def build_error(error, generated_at):

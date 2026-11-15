@@ -6,6 +6,7 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | --- | --- | --- | --- |
 | `schema_version` | string | Version of this schema. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `generated_at` | string | When the analysis was run, ISO 8601. | Not drawn on the current screens: context for a header, a footer or the presentation |
+| `as_of` | string | The day the water and the options are for, YYYY-MM-DD: the last day of the climate record. Show it («Estado al 13 nov») so nobody reads an old picture as today's. | Main screen · header «Tu campo hoy: N mm de agua útil» · date |
 | `site` | object | Where the model runs and what it is built on. Results describe this point only. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.climate` | object | The daily climate the model runs on. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.climate.source` | one of `nasa_power` | Where the climate comes from. | Not drawn on the current screens: context for a header, a footer or the presentation |
@@ -231,6 +232,38 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `learning.crop_history[].peak_value` | number | NDVI at the peak. | Model screen · what the three models add to the analysis · history proposal · detail |
 | `learning.crop_history[].duration_days` | integer | Days the field stays green. | Model screen · what the three models add to the analysis · history proposal · detail |
 | `learning.crop_history[].peaks` | integer | Number of green peaks. | Model screen · what the three models add to the analysis · history proposal · detail |
+| `calendar` | object | The field on every date of the last year for every crop that can be sown, so the panel can answer «I open the app on this date and pick this crop» from this file alone. | Date picker · the field on a chosen date and crop |
+| `calendar.step_days` | integer | Days between two dates of the calendar. | Date picker · the field on a chosen date and crop |
+| `calendar.offer_days` | integer | A sowing further than this from the date is `offered: false`: the water of the date has faded. | Date picker · the field on a chosen date and crop |
+| `calendar.from` | string | First date, YYYY-MM-DD. | Date picker · the field on a chosen date and crop |
+| `calendar.to` | string | Last date, YYYY-MM-DD: the same day as `as_of`. | Date picker · the field on a chosen date and crop |
+| `calendar.dates` | array | One entry per date, oldest first. | Date picker · the field on a chosen date and crop |
+| `calendar.dates[].date` | string | The date, YYYY-MM-DD. | Date picker · the field on a chosen date and crop |
+| `calendar.dates[].water` | object | The field's water that day (the same estimate as summary.water: assumed soil parameters, never measured water). | Date picker · the field on a chosen date and crop · header |
+| `calendar.dates[].water.mm` | number | Available water in mm that day. | Date picker · the field on a chosen date and crop · header |
+| `calendar.dates[].water.capacity_mm` | number | Water the modelled soil can hold, mm. | Date picker · the field on a chosen date and crop · header |
+| `calendar.dates[].water.volumetric_moisture` | number | Volumetric moisture that day, m3/m3. | Date picker · the field on a chosen date and crop · header |
+| `calendar.dates[].options` | array | One entry per crop that can be sown (catalog.crops). | Date picker · the field on a chosen date and crop |
+| `calendar.dates[].options[].crop` | string | Crop id, as in catalog.crops. | Date picker · the field on a chosen date and crop · option card |
+| `calendar.dates[].options[].sowing` | string | The crop's next sowing date, MM-DD. | Date picker · the field on a chosen date and crop · option card |
+| `calendar.dates[].options[].days_to_sowing` | integer | Days from the date to that sowing. | Date picker · the field on a chosen date and crop · option card |
+| `calendar.dates[].options[].offered` | boolean | True when the sowing is within `offer_days` of the date: show these first; the others are a rough guide. | Date picker · the field on a chosen date and crop · option card |
+| `calendar.dates[].options[].evaluated` | integer | Historical seasons evaluated. | Date picker · the field on a chosen date and crop · option card |
+| `calendar.dates[].options[].water_risk` | one of `low`, `medium`, `high` or null | low, medium or high from `drops`. | Date picker · the field on a chosen date and crop · option card · pill |
+| `calendar.dates[].options[].drops` | object or null | The ten drops of the option's seasons: model A's when `risk_basis.source` is model_a, the fixed cuts' otherwise. | Date picker · the field on a chosen date and crop · option card · ten drops |
+| `calendar.dates[].options[].risk_basis` | object | What `drops` rest on, with the fixed cuts beside them. | Date picker · the field on a chosen date and crop · small print |
+| `calendar.dates[].options[].risk_basis.source` | one of `model_a`, `fixed_cuts` | model_a or fixed_cuts. | Date picker · the field on a chosen date and crop · small print |
+| `calendar.dates[].options[].risk_basis.model_version` | integer or null | Version of model A used; null with the fixed cuts. | Date picker · the field on a chosen date and crop · small print |
+| `calendar.dates[].options[].risk_basis.fixed_cuts_drops` | object or null | The drops the fixed cuts of stress give. | Date picker · the field on a chosen date and crop · small print |
+| `calendar.dates[].options[].risk_basis.fixed_cuts_water_risk` | one of `low`, `medium`, `high` or null | low, medium or high from the fixed cuts. | Date picker · the field on a chosen date and crop · small print |
+| `calendar.dates[].options[].critical_window` | object or null | The crop's critical stage, day/month. | Date picker · the field on a chosen date and crop · option card |
+| `calendar.dates[].options[].critical_window.start` | string | DD/MM. | Date picker · the field on a chosen date and crop · option card |
+| `calendar.dates[].options[].critical_window.end` | string | DD/MM. | Date picker · the field on a chosen date and crop · option card |
+| `calendar.dates[].options[].median_water_at_sowing_mm` | number or null | Median across seasons of the water the soil holds on the sowing day, mm. | Date picker · the field on a chosen date and crop · option card · detail |
+| `calendar.dates[].options[].warnings` | array | Warnings of this option. | Date picker · the field on a chosen date and crop · option card · gaps |
+| `calendar.warnings` | array | The texts of every code used in `options[].warnings`. | Date picker · the field on a chosen date and crop |
+| `calendar.warnings[].code` | string | The code. | Date picker · the field on a chosen date and crop · option card · gaps |
+| `calendar.warnings[].text` | text | What it says. | Date picker · the field on a chosen date and crop · option card · gaps |
 
 ## The error document
 

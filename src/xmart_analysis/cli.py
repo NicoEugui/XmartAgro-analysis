@@ -138,7 +138,7 @@ def frontend_document(scenario, now=None, models=None):
         adjustments = Adjustments.load(models)
     if adjustments:  # what the panel taught about satellites replaces the sensor series as the starting water
         sensor_info = adjustments.start_state(sensor_info, analyzer.context)
-    return payload.build(analyzer.analyze(answers, sensor_info), moment, models)
+    return payload.build(analyzer.analyze(answers, sensor_info), moment, models, analyzer.context)
 
 
 def export(args):
