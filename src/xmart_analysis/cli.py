@@ -126,13 +126,19 @@ def _clock(now):
     return (lambda: datetime.fromisoformat(now)) if now else (lambda: datetime.now(timezone.utc))
 
 
-def frontend_document(scenario, now=None):
-    """The frontend payload for a scenario file (the bundled demo by default)."""
+def frontend_document(scenario, now=None, models=None):
+    """The frontend payload for a scenario file (the bundled demo by default); `models` is a registry folder whose published models fill the `learning` block."""
     field_id, store = load_scenario(scenario or DEMO)
     analyzer = EngineAnalyzer()
     use_case = RunAnalysis(MemoryReadings(store), MemoryInputs(store), FileResults("."), analyzer, Settings(), _clock(now))
     answers, sensor_info, _, moment, _ = use_case.prepare(field_id)
-    return payload.build(analyzer.analyze(answers, sensor_info), moment)
+    adjustments = None
+    if models is not None:
+        from .learning.apply import Adjustments
+        adjustments = Adjustments.load(models)
+    if adjustments:  # what the panel taught about satellites replaces the sensor series as the starting water
+        sensor_info = adjustments.start_state(sensor_info, analyzer.context)
+    return payload.build(analyzer.analyze(answers, sensor_info), moment, models)
 
 
 def export(args):
@@ -144,7 +150,7 @@ def export(args):
     out.mkdir(parents=True, exist_ok=True)
     code = 0
     try:
-        document = frontend_document(args.scenario, args.now)
+        document = frontend_document(args.scenario, args.now, args.models)
     except Exception as exc:  # noqa: BLE001 - whatever fails, the file must say so instead of staying stale
         error = exc.to_dict() if isinstance(exc, EngineError) else {"type": type(exc).__name__}
         print(json.dumps(error, ensure_ascii=False, indent=2), file=sys.stderr)
@@ -194,6 +200,64 @@ def calibrate(args):
     return 0
 
 
+def learn(args):
+    try:
+        from .learning import training
+    except ModuleNotFoundError as exc:
+        raise SystemExit(f"Learning needs numpy, scipy and scikit-learn: pip install 'xmartagro-analysis[learn]' ({exc.name})") from exc
+    doc = training.train(args.out, _clock(args.now)().date().isoformat(), only=args.only)
+    path = Path(args.out) / "learning.json"
+    path.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    for name, model in doc["models"].items():
+        print(f"model {name} v{model['version']}: {model['state']} ({model['reason']})")
+    print("written:", path)
+    return 0
+
+
+def ingest_command(args):
+    try:
+        from .learning import examples, training
+    except ModuleNotFoundError as exc:
+        raise SystemExit(f"Learning needs numpy, scipy and scikit-learn: pip install 'xmartagro-analysis[learn]' ({exc.name})") from exc
+    loaded = training.load_stores(args.out, examples.Panel())[2]
+    for kind, tables_ in loaded.items():
+        for name, (added, skipped) in tables_.items():
+            print(f"{kind}/{name}: {added} rows added, {skipped} already there")
+    return 0
+
+
+def coneat_groups_command(args):
+    import shutil
+    import subprocess
+    import tempfile
+    from .soils import groups
+
+    if not shutil.which("pdftotext"):
+        raise SystemExit("Reading the CONEAT description needs `pdftotext` (poppler): brew install poppler")
+    with tempfile.TemporaryDirectory() as folder:
+        text_path = Path(folder) / "groups.txt"
+        subprocess.run(["pdftotext", args.pdf, str(text_path)], check=True)
+        rows = groups.parse(text_path.read_text(encoding="utf-8"))
+    groups.write(rows, args.out)
+    print(f"{len(rows)} groups written: {args.out} ({sum(bool(r['dominant_orders']) for r in rows)} with their dominant soil orders)")
+    return 0
+
+
+def soil_units_command(args):
+    from .soils import SYSTEMS, units
+
+    adapter = SYSTEMS[args.system]
+    try:
+        soil_map = adapter(args.shapefile) if args.shapefile else adapter()
+    except ModuleNotFoundError as exc:
+        raise SystemExit(str(exc)) from exc
+    rows = units.refresh(soil_map, args.out)
+    for row in rows:
+        print(f"{row['field_id']}: {row['system']} {row['code']} (index {row['productivity_index']})")
+    print(f"{len(rows)} fields written: {args.out}")
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="xmart-analysis", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -216,6 +280,7 @@ def main(argv=None):
     exp.add_argument("scenario", nargs="?", help="scenario JSON (default: the bundled demo)")
     exp.add_argument("--out", default="out", help="directory for frontend.json and frontend.schema.json")
     exp.add_argument("--now", help="fix the generation time (ISO 8601) so the output is reproducible")
+    exp.add_argument("--models", help="registry folder (see `learn`): its published models fill the `learning` block; without it the block is null")
     exp.set_defaults(fn=export)
     sim = sub.add_parser("simulate-sensor", help="write the simulated year of soil-moisture sensor readings")
     sim.add_argument("--out", default=str(sensor_series.default_path()), help="where to write the readings CSV")
@@ -224,6 +289,23 @@ def main(argv=None):
     cal.add_argument("--smap-l4", default=str(tables.site_file(NASA_FILES["--smap-l4"][0])), help="NASA SMAP L4 CSV (SPL4SMGP.008) for the site's point (the bundled file by default)")
     cal.add_argument("--out", default="calibration.json", help="where to write the result; copy it to data/ to adopt it")
     cal.set_defaults(fn=calibrate)
+    cg = sub.add_parser("coneat-groups", help="write the table of CONEAT groups (index, soil orders) from the MGAP description of the groups (needs pdftotext)")
+    cg.add_argument("pdf", help="the MGAP document 'Descripcion de Grupos de suelos CONEAT'")
+    cg.add_argument("--out", default=str(tables.DATA_DIR / "soils" / "coneat_groups.csv"))
+    cg.set_defaults(fn=coneat_groups_command)
+    su = sub.add_parser("soil-units", help="ask a soil system (CONEAT) for the unit of every field of the panel and write the table")
+    su.add_argument("--system", default="coneat", choices=("coneat",), help="the soil system to ask")
+    su.add_argument("--shapefile", help="the system's map (CONEAT: the MGAP shapefile, needs pyshp and pyproj)")
+    su.add_argument("--out", default=str(tables.DATA_DIR / "learning" / "soil_units.csv"))
+    su.set_defaults(fn=soil_units_command)
+    ing = sub.add_parser("ingest", help="load the series and the examples of the panel into the stores (rows already there are skipped)")
+    ing.add_argument("--out", default="models", help="folder holding series/ and examples/ (the same one `learn` uses)")
+    ing.set_defaults(fn=ingest_command)
+    lrn = sub.add_parser("learn", help="train models A, B and C on the simulated panel, validate them and register the versions")
+    lrn.add_argument("--out", default="models", help="registry folder (registry.json, the trained files and learning.json)")
+    lrn.add_argument("--only", nargs="+", choices=("A", "B", "C"), help="train only these models")
+    lrn.add_argument("--now", help="fix the training date (ISO 8601) so the registry is reproducible")
+    lrn.set_defaults(fn=learn)
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.WARNING)
     return args.fn(args)

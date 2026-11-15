@@ -18,7 +18,11 @@ class EngineAnalyzer:
         calibration = wm.CALIBRATION_PATH.read_bytes()
         return f"1.1-{tables.active_site()}-{hashlib.sha256(calibration).hexdigest()[:12]}"
 
-    def analyze(self, answers, sensor_info):
+    @property
+    def context(self):
         if self._context is None:
             self._context = context.build_context()
-        return ps.build_session(answers, sensor_info=sensor_info, context=self._context)
+        return self._context
+
+    def analyze(self, answers, sensor_info):
+        return ps.build_session(answers, sensor_info=sensor_info, context=self.context)

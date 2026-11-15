@@ -95,11 +95,11 @@ SITE = obj("Where the model runs and what it is built on. Results describe this 
 
 BADGE = "Badge at the top of every screen"
 STATUS = obj("How far the results can be trusted. Always show the disclaimer.", "Footer of the main screen and the presentation", {
-    "mode": s("demo while any input is simulated, live when every input is measured or entered by a person. The panel adds `offline` itself when it "
-              "cannot read the file, and the error document says `error`; catalog.modes explains the four.", BADGE, enum=["demo", "live"]),
+    "mode": s("demo while any input is simulated, live when every input is measured or entered by a person. The panel decides `pending` (a new field the "
+              "nightly run has not reached) and `offline` (it cannot read the file) itself, and the error document says `error`; catalog.modes explains the five.", BADGE, enum=["demo", "live"]),
     "badge": text("The text of the badge for this mode, e.g. «Modo demo · datos simulados». Show it at the top of every screen while the mode is demo.",
                   BADGE),
-    "simulated_inputs": arr(s("What is simulated.", BADGE, enum=["sensor_readings"]),
+    "simulated_inputs": arr(s("What is simulated.", BADGE, enum=["sensor_readings", "training_panel"]),
                             "The inputs that are simulated, so the badge can say which numbers they feed; empty when the mode is live.", BADGE),
     "exploratory": b("Always true: scenarios from historical climate, not forecasts.", "Footer of the main screen"),
     "validated_for_field": b("Always false: nothing here is validated for a particular field.", "Footer of the main screen"),
@@ -141,13 +141,20 @@ SUMMARY = obj("Everything the main screen needs, in the shape of the API's summa
                         enum=["state_correction"]),
             "gain": n("Share of the gap between model and reading corrected each day (0 ignores the sensor, 1 adopts it).", "Main screen · moisture chart «sensor vs modelo»"),
             "days": i("Days with a reading.", "Main screen · moisture chart «sensor vs modelo»"),
+            "carried_days": i("Days after the last reading the model ran on its own to reach the last day of the climate record (0 with a sensor that reports every day).",
+                              "Main screen · moisture chart «sensor vs modelo»"),
             "period": arr(s("A date, YYYY-MM-DD.", "Main screen · moisture chart «sensor vs modelo»"), "First and last day of the series.",
                           "Main screen · moisture chart «sensor vs modelo»"),
             "history": arr(obj("One day.", "Main screen · moisture chart «sensor vs modelo»", {
                 "date": s("The day, YYYY-MM-DD.", "Main screen · moisture chart «sensor vs modelo»"),
                 "reading": n("The reading of that day, m3/m3.", "Main screen · moisture chart «sensor vs modelo»"),
                 "modeled": n("The model's state that day after correcting toward the reading, m3/m3.", "Main screen · moisture chart «sensor vs modelo»")}),
-                           "Reading and modelled state of every day, oldest first.", "Main screen · moisture chart «sensor vs modelo»")}))}),
+                           "Reading and modelled state of every day, oldest first.", "Main screen · moisture chart «sensor vs modelo»")})),
+        "correction": nullable(obj("Set when the satellite as model B corrects it stands in for the sensor: the readings of `series` are that corrected satellite.", HEADER + " · small print", {
+            "model": s("The model: B.", HEADER + " · small print", enum=["B"]),
+            "version": i("Version of model B used.", HEADER + " · small print"),
+            "last_satellite_day": s("Last day with a satellite value, YYYY-MM-DD.", HEADER + " · small print"),
+            "note": text("What this water rests on, to show as small print.", HEADER + " · small print")}))}),
     "soil": obj("Soil health. The model has no soil diagnosis yet, so the state is null.", SOIL_CARD, {
         "state": nullable(s("good, fair or poor; null while there is no diagnosis.", SOIL_CARD, enum=["good", "fair", "poor"])),
         "trend": nullable(s("improving, stable or declining; null while there is no diagnosis.", SOIL_CARD,
@@ -163,8 +170,14 @@ SUMMARY = obj("Everything the main screen needs, in the shape of the API's summa
         "is_current": b("True for the crop the producer has sown now: «Tu rotación actual», red outline.", OPTION_CARD + " · badge"),
         "water_risk": nullable(s("low, medium or high, from the number of high-deficit drops (provisional thresholds); null when nothing was "
                                  "simulated.", OPTION_CARD + " · pill «Agua: riesgo …»", enum=["low", "medium", "high"])),
-        "drops": nullable(ref("drops", "The ten drops to draw; null when nothing was simulated (e.g. the cycle already ended).",
+        "drops": nullable(ref("drops", "The ten drops to draw; null when nothing was simulated (e.g. the cycle already ended). With `risk_basis.source` model_a they are model A's, otherwise the fixed cuts'.",
                               OPTION_CARD + " · ten drops")),
+        "risk_basis": obj("What `drops` and `water_risk` rest on, with the fixed cuts beside them to compare.", OPTION_CARD + " · small print", {
+            "source": s("model_a when the published model A reads the seasons, fixed_cuts when only the fixed stress cuts do.", OPTION_CARD + " · small print",
+                        enum=["model_a", "fixed_cuts"]),
+            "model_version": nullable(i("Version of model A used; null with the fixed cuts.", OPTION_CARD + " · small print")),
+            "fixed_cuts_drops": nullable(ref("drops", "The drops the fixed cuts of stress give.", OPTION_CARD + " · small print")),
+            "fixed_cuts_water_risk": nullable(s("low, medium or high from the fixed cuts.", OPTION_CARD + " · small print", enum=["low", "medium", "high"]))}),
         "sentence": text("One sentence for the card, e.g. «En 4 de cada 10 zafras históricas faltó agua en la etapa crítica».",
                          OPTION_CARD + " · sentence"),
         "soil_effect": nullable(s("improves, stays or worsens; always null: the model does not estimate it.", OPTION_CARD + " · «Suelo: …»",
@@ -241,7 +254,7 @@ CATALOG = obj("The closed lists the forms offer: nothing is typed as free text."
     "seasons": arr(s("Season, e.g. 2025/26.", PRODUCER + " · season selector"), "Seasons the history can cover, newest first.",
                    PRODUCER + " · season selector"),
     "modes": arr(obj("A state the panel can be in.", BADGE, {
-        "id": s("demo, live, error or offline.", BADGE, enum=["demo", "live", "error", "offline"]),
+        "id": s("demo, live, pending, error or offline.", BADGE, enum=["demo", "live", "pending", "error", "offline"]),
         "badge": text("Badge text for the state.", BADGE), "meaning": text("When the state applies and what to show.", BADGE)}),
         "The four states of the panel with the text of each badge, `offline` included (only the panel can know it).", BADGE)})
 
@@ -258,10 +271,11 @@ _NUMBER_OR_TEXT = {"anyOf": [{"type": "string"}, {"type": "number"}]}
 
 CHARTS = arr(obj("One chart: the data behind a figure of the experiment log, columnar (one shared x, one list of values per series).", CHART_USE, {
     "id": s("Stable id of the chart, e.g. sensor_series or sowing_maize.", CHART_USE),
-    "figure": s("The figure of reports/experiments.md it mirrors (sowing, survey, smap, ndvi, imerg, rain_decision, sensor, sensor_windows, "
+    "figure": s("The figure of reports/experiments.md it mirrors (retrospective, sowing, survey, smap, ndvi, imerg, rain_decision, sensor, sensor_windows, "
                 "sensor_recalibration); a figure can have several charts.", CHART_USE),
-    "group": s("Where to file it: sowing (what happens if a crop is sown on a date), validation (against independent data), rain (POWER vs IMERG) or sensor "
-               "(the simulated-sensor experiments).", CHART_USE, enum=["sowing", "validation", "rain", "sensor"]),
+    "group": s("Where to file it: sowing (what happens if a crop is sown on a date), validation (against independent data), rain (POWER vs IMERG), sensor "
+               "(the simulated-sensor experiments) or retrospective (what the tool would have said before each past season).", CHART_USE,
+               enum=["sowing", "validation", "rain", "sensor", "retrospective"]),
     "title": text("Title of the chart.", CHART_USE + " · title"),
     "note": nullable(text("The caveat to print under the chart.", CHART_USE + " · small print")),
     "x": obj("The horizontal axis, shared by every series.", CHART_USE + " · x axis", {
@@ -279,7 +293,7 @@ CHARTS = arr(obj("One chart: the data behind a figure of the experiment log, col
         "unit": nullable(s("Unit of the values: m3/m3 or mm; null for counts, shares and scores.", CHART_USE + " · y axis"))}),
     "stacked": b("True when the series are parts of one bar (stack them) instead of bars side by side.", CHART_USE),
     "simulated": b("True when the data comes from a simulated sensor or a simulated reading: show the demo badge on it.", CHART_USE + " · badge"),
-    "source": s("Where the numbers come from: nasa_power, gpm_imerg, smap_l3, modis_ndvi, producer_survey or simulated_sensor.", CHART_USE + " · small print"),
+    "source": s("Where the numbers come from: nasa_power, gpm_imerg, smap_l3, modis_ndvi, producer_survey, simulated_sensor or simulated_panel.", CHART_USE + " · small print"),
     "series": arr(obj("One series.", CHART_USE, {
         "id": s("Id of the series.", CHART_USE),
         "label": text("Legend entry.", CHART_USE + " · legend"),
@@ -287,6 +301,67 @@ CHARTS = arr(obj("One chart: the data behind a figure of the experiment log, col
         "values": arr(nullable(n("The value at that position.", CHART_USE)), "One value per position of `x.values`, in the same order; null when there is none.", CHART_USE)}),
         "The series to draw.", CHART_USE)}),
     "The charts, in a fixed order: the data behind every figure of the experiment log.", CHART_USE)
+
+
+LEARN = "Model screen · what the three models add to the analysis"
+_OF_10 = lambda what: obj(what, LEARN, {"ok": i("Seasons out of 10 with enough water.", LEARN), "tight": i("Seasons out of 10 with tight water.", LEARN),  # noqa: E731
+                                        "out": i("Seasons out of 10 without water.", LEARN)})
+LEARNING = nullable(obj("What the models A, B and C add: their versions and how well they did, model A's reading of every option, model B's correction of the satellite and model C's "
+                        "proposal of the crop history. Null when no registry of trained models was given.", LEARN, {
+    "simulated": b("True while the models were trained on the simulated panel: show the demo badge on it.", LEARN + " · badge"),
+    "note": text("What the numbers mean and do not mean.", LEARN + " · small print"),
+    "models": arr(obj("One published model.", LEARN + " · model card", {
+        "id": s("A, B or C.", LEARN + " · model card", enum=["A", "B", "C"]),
+        "role": text("What the model does.", LEARN + " · model card"),
+        "version": i("Version number of the published model.", LEARN + " · model card"),
+        "state": s("published, candidate or retired; only published models are shown.", LEARN + " · model card", enum=["published", "candidate", "retired"]),
+        "trained_on": s("Date of the training, YYYY-MM-DD.", LEARN + " · model card"),
+        "examples": i("Examples the model learned from.", LEARN + " · model card"),
+        "fields": i("Fields those examples come from.", LEARN + " · model card"),
+        "simulated_data": b("True when every example was simulated.", LEARN + " · badge"),
+        "metric": obj("How the model did on fields it never saw, against the fixed rule it replaces.", LEARN + " · model card", {
+            "name": text("The metric.", LEARN + " · model card"), "value": n("The model's value.", LEARN + " · model card"),
+            "fixed_rule_name": text("The metric of the fixed rule.", LEARN + " · model card"),
+            "fixed_rule": n("The fixed rule's value.", LEARN + " · model card"),
+            "lower_is_better": b("True for an error, false for an accuracy.", LEARN + " · model card"),
+            "better": b("True when the model beats the fixed rule.", LEARN + " · model card")}),
+        "reason": s("Why it was published or not.", LEARN + " · model card")}), "The published models, B, A and C.", LEARN),
+    "options": arr(obj("Model A's reading of one option, next to the fixed cuts'.", LEARN + " · option card", {
+        "id": s("Id of the option, as in summary.options.", LEARN + " · option card"),
+        "model_version": i("Version of model A used.", LEARN + " · option card"),
+        "seasons": i("Crop-seasons read: the ones the option's drops count (summary.options.evaluated).", LEARN + " · option card"),
+        "of_10": _OF_10("Of 10 seasons, how many model A expects the producer to call good (ok), normal (tight) or bad (out)."),
+        "water_risk": nullable(s("low, medium or high from model A's drops.", LEARN + " · option card", enum=["low", "medium", "high"])),
+        "fixed_cuts_of_10": _OF_10("The same with the fixed cuts of stress (what summary.options.drops shows)."),
+        "fixed_cuts_water_risk": nullable(s("low, medium or high from the fixed cuts.", LEARN + " · option card", enum=["low", "medium", "high"]))}),
+        "One entry per option with seasons to read.", LEARN),
+    "satellite": nullable(obj("Model B on the last days of the demo field: the satellite as it is, corrected, and the sensor.", LEARN + " · satellite chart", {
+        "model_version": i("Version of model B used.", LEARN + " · satellite chart"),
+        "field_id": s("The field.", LEARN + " · satellite chart"),
+        "dates": arr(s("A day, YYYY-MM-DD.", LEARN + " · satellite chart"), "The days.", LEARN + " · satellite chart"),
+        "satellite": arr(n("SMAP root-zone moisture as delivered.", LEARN + " · satellite chart"), "One value per day.", LEARN + " · satellite chart"),
+        "corrected": arr(n("Moisture after model B.", LEARN + " · satellite chart"), "One value per day.", LEARN + " · satellite chart"),
+        "sensor": arr(n("Calibrated sensor moisture of the field.", LEARN + " · satellite chart"), "One value per day.", LEARN + " · satellite chart"),
+        "rmse": obj("Error against the sensor over these days.", LEARN + " · satellite chart", {
+            "satellite": n("Error of the satellite as it is.", LEARN + " · satellite chart"), "corrected": n("Error after model B.", LEARN + " · satellite chart")}),
+        "unit": s("m3/m3.", LEARN + " · satellite chart"),
+        "sensor_simulated": b("True while the sensor is simulated.", LEARN + " · badge"),
+        "in_sample": b("True when the field is one the model learned from, so this is not a test.", LEARN + " · small print"),
+        "note": text("The caveat.", LEARN + " · small print")})),
+    "crop_history": arr(obj("Model C's proposal of what grew in one season, for the producer to confirm.", LEARN + " · history proposal", {
+        "season": s("The season, e.g. 2022/23.", LEARN + " · history proposal"),
+        "crop": s("Crop id or `fallow`.", LEARN + " · history proposal"),
+        "crop_name": text("Name of the crop.", LEARN + " · history proposal"),
+        "confidence": n("Share of the forest's votes the answer got, 0 to 1; low confidence means ask instead of propose.", LEARN + " · history proposal"),
+        "action": s("propose when the confidence is enough to suggest the crop, ask when it is not and the app should ask the producer.", LEARN + " · history proposal",
+                    enum=["propose", "ask"]),
+        "confirmed": b("False: the producer has not confirmed it.", LEARN + " · history proposal"),
+        "start_offset": i("Days from 1 April when the field turns green, -1 if it never does.", LEARN + " · history proposal · detail"),
+        "peak_offset": i("Days from 1 April of the greenest composite.", LEARN + " · history proposal · detail"),
+        "peak_value": n("NDVI at the peak.", LEARN + " · history proposal · detail"),
+        "duration_days": i("Days the field stays green.", LEARN + " · history proposal · detail"),
+        "peaks": i("Number of green peaks.", LEARN + " · history proposal · detail")}),
+        "One proposal per season with a complete MODIS curve at the demo field's point (real NASA data, a 250 m pixel that mixes fields).", LEARN)}))
 
 
 def build():
@@ -298,8 +373,8 @@ def build():
             "properties": {"schema_version": s("Version of this schema.", CONTEXT, const=SCHEMA_VERSION),
                            "generated_at": s("When the analysis was run, ISO 8601.", CONTEXT, format="date-time"),
                            "site": SITE, "status": STATUS, "summary": SUMMARY, "inputs": INPUTS, "scenarios": SCENARIOS, "catalog": CATALOG,
-                           "charts": CHARTS},
-            "required": ["schema_version", "generated_at", "site", "status", "summary", "inputs", "scenarios", "catalog", "charts"],
+                           "charts": CHARTS, "learning": LEARNING},
+            "required": ["schema_version", "generated_at", "site", "status", "summary", "inputs", "scenarios", "catalog", "charts", "learning"],
             "additionalProperties": False}
 
 

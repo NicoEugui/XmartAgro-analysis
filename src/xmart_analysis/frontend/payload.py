@@ -14,9 +14,10 @@ from ..engine import deficit, tables
 from ..engine import platform_session as ps
 from ..engine import water_scenarios as ws
 from ..engine.i18n import label
+from ..engine.sensor_input import CORRECTED_SOURCE
 
-SCHEMA_VERSION = "2.2"
-MODES = ("demo", "live", "error", "offline")  # the states the panel can be in; the last one is decided by the panel itself
+SCHEMA_VERSION = "3.0"
+MODES = ("demo", "live", "pending", "error", "offline")  # the states the panel can be in; pending and offline are decided by the panel itself
 
 
 def _field():
@@ -35,11 +36,16 @@ def _site():
             "note": label("location.note")}
 
 
-def _status(session):
+def _corrected(session):
+    """True when the water the scenarios start from is the satellite as model B corrects it (no sensor reading is used)."""
+    return session["outputs"]["main_screen"]["soil_water"]["source"] == CORRECTED_SOURCE
+
+
+def _status(session, learning=None):
     counts = Counter(r["status"] for r in tables.provenance())
     simulated = session["outputs"]["main_screen"]["soil_water"]["is_simulated"]
     return {"mode": "demo" if simulated else "live", "badge": label("front.mode.demo" if simulated else "front.mode.live"),
-            "simulated_inputs": ["sensor_readings"] if simulated else [],
+            "simulated_inputs": (["sensor_readings"] if simulated and not _corrected(session) else []) + (["training_panel"] if learning and learning["simulated"] else []),
             "exploratory": True, "validated_for_field": False, "disclaimer": label("screen.footer"),
             "simulated_reading": simulated,
             "values_by_status": dict(counts),
@@ -59,10 +65,14 @@ def _water(session, generated_at):
     sensor = session["outputs"]["main_screen"]["soil_water"]
     state = scenarios["initial_state"]
     initial = state["water_levels"]["scenario_initial_water"]
-    return {"mm": initial["value"], "capacity_mm": state["capacity_mm"], "source": "sensor", "reliability": "low",
+    series = sensor.get("series") or {}
+    return {"mm": initial["value"], "capacity_mm": state["capacity_mm"], "source": CORRECTED_SOURCE if _corrected(session) else "sensor", "reliability": "low",
             "updated_at": sensor.get("reading_date") or generated_at.isoformat(), "mm_status": initial["status"],
             "is_simulated": sensor["is_simulated"], "volumetric_moisture": sensor["volumetric_moisture"],
-            "reading_moisture": sensor["raw_moisture"], "series": sensor["series"]}
+            "reading_moisture": sensor["raw_moisture"],
+            "series": {**series, "carried_days": series.get("carried_days", 0)} if series else None,
+            "correction": {"model": "B", "version": sensor["model_b"]["version"], "last_satellite_day": sensor["model_b"]["last_satellite_day"],
+                           "note": label("learn.start.note")} if sensor.get("model_b") else None}
 
 
 def _detail(card):
@@ -81,12 +91,21 @@ def _drops(card):
     return {deficit.DROP_NAMES[k]: v for k, v in split.items()} if split else None
 
 
-def _option(card):
-    rotation = card["kind"] == "rotation"
+def _risk_basis(card, risk):
+    """What the option's drops and risk rest on: model A (with the fixed cuts beside it) or the fixed cuts alone."""
+    if risk:
+        return {"source": "model_a", "model_version": risk["model_version"], "fixed_cuts_drops": risk["fixed_cuts_drops"],
+                "fixed_cuts_water_risk": risk["fixed_cuts_water_risk"]}
     drops = _drops(card)
+    return {"source": "fixed_cuts", "model_version": None, "fixed_cuts_drops": drops, "fixed_cuts_water_risk": deficit.water_risk(drops)}
+
+
+def _option(card, risk=None):
+    rotation = card["kind"] == "rotation"
+    drops = risk["drops"] if risk else _drops(card)
     sentence = label("front.sentence", out=drops["out"]) if drops else _detail(card)
     return {"id": card["id"], "name": card["title"], "is_current": card["is_current"], "water_risk": deficit.water_risk(drops),
-            "drops": drops, "sentence": sentence, "soil_effect": None, "soil_reason": None, "why": None, "evidence": [],
+            "drops": drops, "risk_basis": _risk_basis(card, risk), "sentence": sentence, "soil_effect": None, "soil_reason": None, "why": None, "evidence": [],
             "benefits": [], "gaps": [w["label"] for w in card["warnings"]], "risks": [],
             "kind": card["kind"], "detail": _detail(card), "sowing": card.get("sowing"),
             "critical_window": card.get("critical_window"), "cycle_status": card.get("status"),
@@ -96,10 +115,10 @@ def _option(card):
             "crops": [{"name": c["name"], "status": c["status"]} for c in card["crops"]] if rotation else [], "note": card.get("note")}
 
 
-def summary(session, generated_at):
+def summary(session, generated_at, adjustments=None):
     return {"field": _field(), "mock": False, "generated_at": generated_at.isoformat(), "water": _water(session, generated_at),
             "soil": {"state": None, "trend": None, "precision": "low", "reasons": [], "missing": _missing(session)},
-            "options": [_option(c) for c in session["outputs"]["option_cards"]]}
+            "options": [_option(c, adjustments.risk(c) if adjustments else None) for c in session["outputs"]["option_cards"]]}
 
 
 def scenarios(session):
@@ -137,10 +156,17 @@ def api_parts(session, generated_at):
     return {"summary": summary(session, generated_at), "scenarios": scenarios(session)}
 
 
-def build(session, generated_at):
-    return {"schema_version": SCHEMA_VERSION, "generated_at": generated_at.isoformat(), "site": _site(), "status": _status(session),
-            "summary": summary(session, generated_at), "inputs": inputs(session), "scenarios": scenarios(session),
-            "catalog": catalog(), "charts": chart_data.build()}
+def build(session, generated_at, models=None):
+    """The whole document. `models` is a registry folder: with published models the document carries their `learning` block, without it that block is null."""
+    adjustments = learning = None
+    if models is not None:  # numpy and scikit-learn (the `learn` extra) are needed only here
+        from ..learning.apply import Adjustments
+        from . import learning as learning_block
+        adjustments = Adjustments.load(models)
+        learning = learning_block.build(models, session["outputs"]["option_cards"], adjustments)
+    return {"schema_version": SCHEMA_VERSION, "generated_at": generated_at.isoformat(), "site": _site(), "status": _status(session, learning),
+            "summary": summary(session, generated_at, adjustments), "inputs": inputs(session), "scenarios": scenarios(session),
+            "catalog": catalog(), "charts": chart_data.build(), "learning": learning}
 
 
 def build_error(error, generated_at):

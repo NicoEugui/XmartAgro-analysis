@@ -22,9 +22,9 @@ PERIODS = {"calibration": (date(2015, 4, 1), date(2020, 12, 31)), "validation": 
 API_DECAY = 0.85  # antecedent precipitation index: yesterday's index times this plus today's rain
 
 
-def load_l4(path):
+def load_l4(path, site_id=None):
     """Daily mean root-zone moisture (m3/m3); a day needs all 8 samples."""
-    check_point(path)
+    check_point(path, site_id)
     samples = defaultdict(list)
     with open(path, newline="") as stream:
         for row in csv.DictReader(stream):

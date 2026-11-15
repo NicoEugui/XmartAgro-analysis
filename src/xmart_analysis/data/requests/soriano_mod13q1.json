@@ -1,0 +1,44 @@
+{
+  "task_name": "xmartagro-punto2-modis-ndvi",
+  "task_type": "point",
+  "params": {
+    "dates": [
+      {
+        "endDate": "11-07-2026",
+        "recurring": false,
+        "startDate": "02-18-2002",
+        "yearRange": [
+          1950,
+          2050
+        ]
+      }
+    ],
+    "layers": [
+      {
+        "layer": "_250m_16_days_NDVI",
+        "product": "MOD13Q1.061"
+      },
+      {
+        "layer": "_250m_16_days_pixel_reliability",
+        "product": "MOD13Q1.061"
+      },
+      {
+        "layer": "_250m_16_days_EVI",
+        "product": "MOD13Q1.061"
+      }
+    ],
+    "output": {
+      "format": {
+        "type": "geotiff"
+      }
+    },
+    "coordinates": [
+      {
+        "id": "punto2",
+        "category": "soriano",
+        "latitude": -33.357778,
+        "longitude": -58.078806
+      }
+    ]
+  }
+}

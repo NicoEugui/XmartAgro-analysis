@@ -11,6 +11,8 @@ API (NestJS)  <--reads---  results                  <--writes--------  worker
 Exploratory prototype: results compare historical-climate scenarios, are not validated for any field, and are neither
 forecasts nor recommendations. Soil state, soil effect and trend are `null` because no diagnosis exists.
 
+> **New to the project?** Read `docs/como-funciona.md` (in Spanish): how everything works from A to Z, what is real and what is simulated, and how the nightly pipeline and the training would run in production.
+
 ## Layout
 
 ```
@@ -20,6 +22,8 @@ src/xmart_analysis/
   worker/   domain, ports, mapping, use case, job loop, adapters (Mongo, memory, engine), CLI
   report/   figures and the experiment log drawn from the analysis documents (optional extra: matplotlib)
   validation/ comparison of the water balance with independent NASA data and the producer survey
+  soils/    the soil-map plug-in: a port, the CONEAT adapter (Uruguay) and the rules that turn a soil unit into texture and capacity (extra: coneat)
+  learning/ the simulated panel (fields, nodes, producers, seasons), models A, B and C, validation on fields kept apart, the model registry (extra: learn)
   data/     NASA climate, calibration, model tables with their status and sources, label catalog (en/es)
 tests/      unittest suite (no database needed)
 ```
@@ -57,6 +61,8 @@ A scenario file has the shape of the API documents: `{field_id, readings: [...],
 xmart-analysis export --out dist                 # the bundled demo, or: xmart-analysis export my_scenario.json --out dist
 ```
 
+Add `--models DIR` (the registry folder `learn` writes) and the document carries the `learning` block of the published models (versions and metrics, model A's reading of every option, model B's correction of the satellite, model C's crop-history proposals) and the models are applied to the result: B's corrected satellite is the starting water and A's drops are the options' drops (the fixed cuts stay in `risk_basis`). Without it that block is `null` and the analysis is the fixed-rule one. The schema is version 3.0.
+
 It writes four files: `frontend.json` (the data of the three screens, the status and the validation blocks), `frontend.schema.json`
 (JSON Schema, draft 2020-12, with a description on every field), `frontend.error.schema.json` (the document the file holds when the analysis fails) and `frontend.fields.md` (the same contract as a table). Every text is
 `{key, en, es}`: show `en` or `es`. Options are never ranked, `status.exploratory` is always true and `status.validated_for_field` always
@@ -84,14 +90,14 @@ With a single reading there is no series and nothing changes. The Mongo `history
 `frontend.error.schema.json`, `frontend.example.json` (the demo, generated with a fixed time) and `frontend.error.example.json`. Tests fail if they drift from the code; regenerate with
 
 ```bash
-xmart-analysis export --out schema --now 2026-11-14T10:30:00+00:00 && mv schema/frontend.json schema/frontend.example.json
+xmart-analysis learn --out /tmp/models --now 2026-11-15T00:00:00+00:00 && xmart-analysis export --out schema --models /tmp/models --now 2026-11-14T10:30:00+00:00 && mv schema/frontend.json schema/frontend.example.json
 ```
 
 (`frontend.error.example.json` comes from `payload.build_error`; `tests/test_sensor_demo.py` shows the document it must equal.)
 
 ## Data layout
 
-Only NASA data and the team's own producer survey are used, for one place: the Soriano field.
+Real data is only NASA data and the team's own producer survey, for two places: the Soriano field (the demo site) and La Estanzuela, Colonia (`sites/la_estanzuela/`: NASA POWER, SMAP L4 and L3, MODIS NDVI and its own SMAP-fitted soil; `XMART_SITE=la_estanzuela` runs the model there) and, for the learning panel, the NASA POWER climate of six more farm points (`sites/sim_*/`, kind `climate` in `sites.csv`: only climate, never calibrated or active). Everything else that trains the models is simulated, marked so, and lives in `data/learning/` (see "Learning layer"). The only outside references are two FAO papers that bound the simulated crops (`fao56`, `fao33`).
 
 ```
 data/
@@ -100,10 +106,11 @@ data/
   model_constants.csv, crop_parameters.csv, survey_crop_map.csv, sources.csv, labels   shared tables
   sites/soriano/            the field: NASA POWER climate, NASA GPM IMERG rain, NASA SMAP L4 and L3 soil moisture and MODIS NDVI (the validators and the calibration read these when a flag has no path), SMAP-fitted soil calibration, constants (latitude, longitude, season range), and `sensor_simulated.csv` (one SIMULATED year of daily soil-moisture readings; see "Simulated sensor")
   survey/                   the team's own producer survey (respondents, rotations, unfavourable seasons)
+  learning/                 SIMULATED panel tables: fields, nodes, producers, crop_ranges (see "Learning layer")
 ```
 
-The NASA CSVs are AppEEARS point exports of 7 Nov 2026; the product, layers, dates and point of each request are in `sources.csv`. The request files AppEEARS also delivers carry the
-account's email and task ids, so they are not kept in the repository.
+The Soriano NASA CSVs are AppEEARS point exports of 7 Nov 2026 and La Estanzuela's of 15 Nov 2026 (its POWER file comes from the public POWER API; a new site's calibration starts from another site's search bounds, then `xmart-analysis calibrate` refits it); the product, layers, dates and point of each request are in `sources.csv`. `data/requests/` keeps the AppEEARS requests of Soriano and La Estanzuela (product, layers, dates, point) with the account and task identifiers removed: only the task name
+(`XmartAgro_...`), its type and its parameters remain, and a test fails if an email or a name appears.
 
 The soil calibration records the point it was fitted at; the provenance report lists it as `pending` if it no longer matches the site.
 To refit it: `xmart-analysis calibrate --out src/xmart_analysis/data/sites/soriano/calibration.json` (it reads the bundled SMAP L4; give `--smap-l4 FILE` for another export), then
@@ -187,6 +194,76 @@ All simulated, not a field result.
 The series always ends on the last day of the climate record (`sensor_days` days back from it): to bring it up to today, refresh NASA POWER
 (`python -m xmart_analysis.datasets import-power ...`), then `xmart-analysis simulate-sensor` and `python -m xmart_analysis.datasets refresh`.
 The demo starts from this series (see "Static data for the frontend").
+
+## Soil map (CONEAT) as a plug-in
+
+Soil comes from an optional module (`soils/`) so another country can connect its own system. `SoilMap.lookup(lat, lon)` returns a `SoilUnit` (system, code, productivity index, dominant soil orders); the CONEAT adapter reads the MGAP shapefile
+(about 120 MB, **not kept in the repository**; it needs `pip install -e '.[coneat]'`) and the group data comes from `data/soils/coneat_groups.csv` (128 groups, read from the MGAP description of the groups). A new country adds an adapter that returns the same `SoilUnit` and
+registers it in `soils.SYSTEMS`. With no system (`NullSoilMap`) every field falls back to a medium soil.
+
+```bash
+xmart-analysis coneat-groups "Descripcion de Grupos de suelos CONEAT.pdf"      # the table of groups (needs pdftotext)
+xmart-analysis soil-units --system coneat --shapefile sue_utm.shp               # the unit of every field -> data/learning/soil_units.csv
+```
+
+What the panel takes from a unit (`soils/derive.py`, all provisional assumptions in `model_constants.csv` and `soil_order_texture.csv`): the **texture class** (the heaviest of the first two soil orders), the **capacity factor** of the simulated soil (it grows with the
+productivity index, 1 at index 100) and the **planted satellite error** (by texture). CONEAT gives an index and dominant soils, not available water in millimetres, so the capacity is our derivation. The Soriano coordinate falls in group 11.4 (index 214).
+The units are real MGAP data, the only data besides NASA and the survey; the table of units and the table of groups are listed in `datasets.csv` as `soil_map`.
+
+## Learning layer
+
+The specification asks for machine learning that learns from all fields. Real data is one field and nine unfavourable seasons, so the panel that trains the models is **simulated**: every row says `simulated: True`
+and source `simulated_panel`, and the tables that make it live in `data/learning/` (kind `simulated` in `datasets.csv`). The panel measures whether the method recovers a structure planted on purpose, not how accurate it would be
+on real fields; real data replaces it by adding rows to the same tables, with no change to the models.
+
+| Table | What it holds |
+|---|---|
+| `fields.csv` | the real Soriano field, the second real point La Estanzuela (Colonia, own NASA climate, SMAP and MODIS) and six simulated fields (Salto, Paysandu, Rio Negro, Flores, Durazno, Florida) at six farm coordinates, each with its **own NASA POWER record** (`sites/sim_*/`, a `climate` site: climate only); the soil of every field comes from its CONEAT unit (`soil_units.csv`, see "Soil map"); the rest of a simulated field is simulated: a soil the model does not know, clay and slope, and the planted satellite error |
+| `nodes.csv` | two sensor nodes per field (30 and 60 cm) with their own patch of soil, offset and noise; a node is usable only after a reference measurement tells its offset |
+| `soil_plans.csv` | the soil analysis and Soil Use Plan of every field (organic matter, Bray phosphorus, pH, estimated erosion, soil type), simulated from its clay, slope and capacity; the CONEAT code is left empty |
+| `producers.csv` | the twelve surveyed producers: their field, sowing shift, stage length, Kc and p variants, and how they rate a season |
+| `crop_ranges.csv` | published range of Kc mid and p (FAO-56), Ky (FAO-33) and the simulated NDVI peak; a producer's variant stays inside it |
+
+**Seasons.** The survey gives each producer's rotation without years, so the simulation assigns it: the crops cycle over the last five seasons (twelve producers, **60 seasons**); a respondent who wrote no rotation gets the crops all respondents wrote.
+A national panel adds every crop in every field and historical season (1987 to 2025). The model computes the stress with the table's crop and its soil; the outcome uses the producer's variant and the field's real soil, Ky turns it into a yield,
+noise adds what water does not explain, and the producer's scale makes the five ratings of the app. The real national seasons the team collects go to a check against these outcomes.
+
+**Models** (`learning/models.py`, all share `Learner`; the gradual rule `(n * own + k * regional) / (n + k)` is in `pooling.py`):
+
+| | Learns | Method | Judged by | Fixed starting rule |
+|---|---|---|---|---|
+| B | how far the satellite is from the calibrated sensor in a field like this | linear regression on satellite, clay, slope and season, plus the field's own mean error | RMSE on fields kept apart | the satellite as is |
+| A | the chance a season is rated bad, normal or good given the stress the model computed | ordinal logistic regression, per crop and regional | accuracy on fields kept apart | the cuts 0.10 and 0.30 |
+| C | what grew (a crop, or fallow) from five numbers of the NDVI curve | random forest | accuracy on fields kept apart | the most common class |
+
+Validation keeps whole fields apart (a quarter, 20 random splits). A trained model is registered as the next version and **published only if the data is enough and it beats the fixed rule on fields it never saw**; otherwise it stays a
+candidate with the reason, and the published one keeps serving (`learning/registry.py`).
+
+```bash
+pip install -e '.[learn]'                 # numpy, scipy, scikit-learn
+xmart-analysis ingest --out models        # fills the series and examples stores (rows already there are skipped)
+xmart-analysis learn --out models         # ingests, trains A, B and C, validates, registers; writes models/registry.json and models/learning.json
+xmart-analysis learn --only B --now 2026-11-15T00:00:00+00:00
+```
+
+Result of the committed seed (simulated panel, fields kept apart): B takes the satellite error from 0.0300 to 0.0251 m3/m3 for a field with no sensor and to 0.0237 with 90 days of its own;
+A gets 81.4% of the seasons right against 81.1% for the fixed cuts (almost no gain: the cuts are close to the planted rule); C gets 84.1% of the crops and 100% of the season group (winter, summer, fallow).
+The stores (`learning/stores.py`) only ever add rows, so ingesting twice changes nothing and new data accumulates. The nightly pipeline itself is not wired to the registry (the front is emulated with a static JSON), but the exporter applies it: with `--models`, model B's corrected satellite sets the starting water (`summary.water.source` `smap_corrected`) and model A sets each option's drops and risk (`summary.options[].risk_basis`, with the fixed cuts beside it); without it the analysis uses the fixed rules and needs no numpy. `docs/como-funciona.md` documents how it would run.
+
+### Soil health
+
+`engine/soil_health.py` (rules, no learning) says how a rotation treats the soil: **state** (good, regular, poor), **trend** (improving, stable, worsening) and **precision** (low without a soil analysis, medium with one).
+Each season scores the stubble its crop leaves, a cover crop or pasture, and the months the soil stays bare; soybean after soybean costs score up to a cap; the analysis moves it (estimated erosion above 7 t/ha/year or organic matter under 2.5% cost, organic matter from 4% gains).
+What each crop does is in `data/crop_soil_effects.csv`, the thresholds in `model_constants.csv` (`soil_*`): all provisional assumptions to be sourced. `effect(rotation)` gives improves, maintains or worsens for an option and needs no analysis.
+`learning/soil_health.py` applies the rules to the twelve producers: their rotation is what they wrote in the survey form (years assigned by the simulation, one crop per season), and the soil analysis is the simulated one of their field. The table goes into `learning.json`
+(`soil_health`). Limits: bare months come from the crop's cycle until the NASA NDVI curve of each season is attached to a known crop, and this says how a rotation treats the soil, not how much soil is lost.
+
+## Backtest: what the tool would have said before each past season
+
+`learning/retrospective.py`. For a field, a crop and a past season the tool answers on the sowing day as it would today: it takes the water the soil holds that day and applies the climate of the **other** seasons (the season itself is left out),
+counts the seasons that ended with water, tight or without it, and gives the risk; then the season is looked at with its real climate. Soybean sown in November 2022: high risk in 6 of the 8 fields of the panel (medium in 2) and the season ended without water in all 8,
+worse than 97% to 100% of the other seasons. But with the crop parameters pending, soybean and maize end without water in about 64% of seasons, so a high warning adds little (67% against 64%); wheat and barley rarely do (9%, 6%) and were never warned.
+The two seasons the surveyed producers named most (2022/23, 2025/26) have the highest mean stress in the panel. The fields and outcomes are simulated: this is the consistency of the warning, not a check against a real field. It is section 4 of the experiment log and the `retrospective` charts of the frontend JSON.
 
 ## Experiment log
 

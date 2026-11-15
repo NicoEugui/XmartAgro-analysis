@@ -1,0 +1,13 @@
+producer_id,respondent,field_id,sowing_shift_days,stage_scale,kc_scale,p_shift,rating_bias,note
+p01,1,soriano,0,1.00,1.00,0.00,0.00,"Soriano, 400 ha"
+p02,2,sim_flores,3,1.05,0.98,0.02,0.03,"Soriano, 2400 ha"
+p03,3,sim_durazno,-4,0.95,1.02,-0.02,-0.03,"Soriano, 3500 ha"
+p04,4,soriano,6,1.00,1.00,0.00,0.02,"Soriano, 80 ha"
+p05,5,sim_rio_negro,-2,1.03,0.99,0.01,0.00,"Soriano, 4500 ha"
+p06,6,sim_rio_negro,2,0.97,1.01,0.00,-0.02,"Rio Negro, 4000 ha"
+p07,7,sim_paysandu,0,1.00,1.00,-0.01,0.04,"Paysandu, 700 ha"
+p08,8,sim_salto,-5,0.95,1.03,-0.03,-0.04,"Paysandu, 1500 ha"
+p09,9,sim_paysandu,4,1.05,0.97,0.02,0.01,"Rio Negro, 1500 ha"
+p10,10,sim_florida,-3,1.02,1.00,0.01,-0.01,"Rio Negro, 800 ha"
+p11,11,la_estanzuela,5,0.98,1.02,0.00,0.02,"Rio Negro, 900 ha"
+p12,12,sim_rio_negro,-1,1.00,0.99,0.02,0.00,"Rio Negro, 4000 ha"

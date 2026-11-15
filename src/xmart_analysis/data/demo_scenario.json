@@ -16,7 +16,7 @@
     "agronomist": {
       "soil_test": {"date": "2026-07", "om_pct": 2.6, "p_bray_ppm": 16, "ph": 6.0},
       "erosion_t_ha_yr": 2.7,
-      "soil_type": {"coneat": "10.8b", "name": "Brunosol", "confirmed": true}
+      "soil_type": {"coneat": "11.4", "name": "Brunosol", "confirmed": true}
     }
   }
 }

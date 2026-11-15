@@ -1,5 +1,8 @@
 """Single reader of the model's data (`data/`).
 
+A site of kind `climate` holds only NASA POWER and its point (a field of the learning panel whose other data is simulated); a site of kind `field` also holds SMAP, MODIS and a soil
+calibration, and only a `field` site can run the model.
+
 Layout: shared tables at the top (`model_constants.csv`, `crop_parameters.csv`, `sources.csv`...), one folder per site under
 `sites/<site_id>/` (the climate, the calibration and the constants of that place, and nothing else) and the
 team's own producer survey under `survey/`. `sites.csv` says which site the model runs on (`XMART_SITE` overrides it) and
@@ -148,6 +151,12 @@ def survey_rotations():
     return out
 
 
+def soil_effects():
+    """{crop: {"residue": score, "legume": bool, "cover": bool}}: what each crop does to the soil (`crop_soil_effects.csv`)."""
+    return {r["crop"]: {"residue": float(r["residue_score"]), "legume": bool(int(r["legume"])), "cover": bool(int(r["cover"]))}
+            for r in read("crop_soil_effects")}
+
+
 def survey_crop_map():
     """{(survey crop, previous crop or ""): engine crop or None} (how written crops become modelled crops)."""
     return {(r["survey_crop"], r["previous_crop"]): r["engine_crop"] or None for r in read("survey_crop_map")}
@@ -200,6 +209,10 @@ def provenance():
     rows += [{"table": "datasets", "item": r["path"], "status": "assumption" if r["kind"] == SIMULATED else "data",
               "source_ref": r["source_ref"], "note": f"{r['group']}, {r['role']}" + (", simulated" if r["kind"] == SIMULATED else "")}
              for r in manifest() if r["kind"] != "fit"]
+    rows += [{"table": "soil_order_texture", "item": r["order"], "status": r["status"], "source_ref": "", "note": r["note"]}
+             for r in read("soil_order_texture")]
+    rows += [{"table": "crop_soil_effects", "item": r["crop"], "status": r["status"], "source_ref": "", "note": r["note"]}
+             for r in read("crop_soil_effects")]
     rows += [{"table": "survey_crop_map", "item": f"{r['survey_crop']}|{r['previous_crop']}", "status": "assumption",
               "source_ref": "", "note": r["note"]} for r in read("survey_crop_map")]
     fit = calibration()
@@ -223,7 +236,7 @@ def check_sites():
         if (folder / "constants.csv").exists():
             have = {r["name"] for r in csv.DictReader(open(folder / "constants.csv", encoding="utf-8"))}
             problems += [f"sites/{site_id}/constants.csv: missing {n}" for n in SITE_CONSTANTS if n not in have]
-        if not (folder / "calibration.json").exists():
+        if row["kind"] != "climate" and not (folder / "calibration.json").exists():  # a climate-only site is never calibrated
             problems.append(f"sites/{site_id}: missing calibration.json")
     return problems
 
@@ -236,13 +249,14 @@ def check_manifest():
         if not (DATA_DIR / path).exists():
             problems.append(f"datasets.csv: {path} does not exist")
             continue
-        folder = "survey/" if group == "survey" else f"sites/{group.split(':')[1]}/" if group.startswith("site:") else None
+        folder = ("survey/" if group == "survey" else "learning/" if group == "learning" else "soils/" if group == "soils"
+                  else f"sites/{group.split(':')[1]}/" if group.startswith("site:") else None)
         if folder is None or not path.startswith(folder) or (group.startswith("site:") and group.split(":")[1] not in sites()):
             problems.append(f"datasets.csv: {path} does not belong to group {group!r}")
         for key, value in describe(path).items():
             if row[key] != value:
                 problems.append(f"datasets.csv: {path} {key} is {value!r}, the manifest says {row[key]!r} (refresh it if intended)")
-    on_disk = {str(p.relative_to(DATA_DIR)) for pattern in ("sites/*/*", "survey/*") for p in DATA_DIR.glob(pattern)
+    on_disk = {str(p.relative_to(DATA_DIR)) for pattern in ("sites/*/*", "survey/*", "learning/*", "soils/*") for p in DATA_DIR.glob(pattern)
                if p.is_file() and p.name != "constants.csv"}
     problems += [f"datasets.csv: {p} is not listed" for p in sorted(on_disk - listed)]
     return problems

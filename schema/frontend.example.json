@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.2",
+  "schema_version": "3.0",
   "generated_at": "2026-11-14T10:30:00+00:00",
   "site": {
     "climate": {
@@ -29,7 +29,7 @@
       "es": "Modo demo · datos simulados"
     },
     "simulated_inputs": [
-      "sensor_readings"
+      "training_panel"
     ],
     "exploratory": true,
     "validated_for_field": false,
@@ -41,9 +41,9 @@
     "simulated_reading": true,
     "values_by_status": {
       "pending": 13,
-      "assumption": 64,
+      "assumption": 148,
       "source": 1,
-      "data": 12,
+      "data": 24,
       "fitted": 6
     },
     "sources": [
@@ -81,6 +81,26 @@
         "id": "simulated_sensor",
         "title": "Simulated soil-moisture sensor readings, one year",
         "publisher": "XmartAgro team"
+      },
+      {
+        "id": "fao56",
+        "title": "FAO Irrigation and Drainage Paper 56, tables 11, 12 and 22",
+        "publisher": "FAO"
+      },
+      {
+        "id": "fao33",
+        "title": "FAO Irrigation and Drainage Paper 33, yield response to water (Ky)",
+        "publisher": "FAO"
+      },
+      {
+        "id": "simulated_panel",
+        "title": "Simulated fields, sensor nodes, producers and seasons of the learning layer",
+        "publisher": "XmartAgro team"
+      },
+      {
+        "id": "mgap_coneat",
+        "title": "CONEAT soil groups of Uruguay (map and description of the groups)",
+        "publisher": "MGAP"
       }
     ]
   },
@@ -95,1850 +115,1821 @@
     "mock": false,
     "generated_at": "2026-11-14T10:30:00+00:00",
     "water": {
-      "mm": 82.1,
+      "mm": 94.4,
       "capacity_mm": 163.5,
-      "source": "sensor",
+      "source": "smap_corrected",
       "reliability": "low",
       "updated_at": "2026-11-13T12:00:00+00:00",
       "mm_status": "derived_from_assumptions",
       "is_simulated": true,
-      "volumetric_moisture": 0.27149676615364915,
-      "reading_moisture": 0.2654,
+      "volumetric_moisture": 0.2837659316241298,
+      "reading_moisture": 0.3095,
       "series": {
         "method": "state_correction",
         "gain": 0.3,
-        "days": 365,
+        "days": 357,
         "period": [
           "2025-11-14",
-          "2026-11-13"
+          "2026-11-05"
         ],
         "history": [
           {
             "date": "2025-11-14",
-            "reading": 0.2318,
-            "modeled": 0.2302
+            "reading": 0.2563,
+            "modeled": 0.2538
           },
           {
             "date": "2025-11-15",
-            "reading": 0.206,
-            "modeled": 0.2213
+            "reading": 0.2535,
+            "modeled": 0.251
           },
           {
             "date": "2025-11-16",
-            "reading": 0.2281,
-            "modeled": 0.2377
+            "reading": 0.2578,
+            "modeled": 0.2668
           },
           {
             "date": "2025-11-17",
-            "reading": 0.2404,
-            "modeled": 0.2371
+            "reading": 0.26,
+            "modeled": 0.2624
           },
           {
             "date": "2025-11-18",
-            "reading": 0.2503,
-            "modeled": 0.2393
+            "reading": 0.2602,
+            "modeled": 0.2592
           },
           {
             "date": "2025-11-19",
-            "reading": 0.2506,
-            "modeled": 0.241
+            "reading": 0.2563,
+            "modeled": 0.2559
           },
           {
             "date": "2025-11-20",
-            "reading": 0.2598,
-            "modeled": 0.2491
+            "reading": 0.2546,
+            "modeled": 0.2573
           },
           {
             "date": "2025-11-21",
-            "reading": 0.2464,
-            "modeled": 0.2545
+            "reading": 0.2644,
+            "modeled": 0.2655
           },
           {
             "date": "2025-11-22",
-            "reading": 0.2436,
-            "modeled": 0.2493
+            "reading": 0.2617,
+            "modeled": 0.2621
           },
           {
             "date": "2025-11-23",
-            "reading": 0.2271,
-            "modeled": 0.2407
+            "reading": 0.2594,
+            "modeled": 0.2589
           },
           {
             "date": "2025-11-24",
-            "reading": 0.2421,
-            "modeled": 0.2393
+            "reading": 0.2565,
+            "modeled": 0.2557
           },
           {
             "date": "2025-11-25",
-            "reading": 0.2387,
-            "modeled": 0.237
+            "reading": 0.2537,
+            "modeled": 0.2523
           },
           {
             "date": "2025-11-26",
-            "reading": 0.2069,
-            "modeled": 0.226
+            "reading": 0.2511,
+            "modeled": 0.2494
           },
           {
             "date": "2025-11-27",
-            "reading": 0.2613,
-            "modeled": 0.235
+            "reading": 0.2485,
+            "modeled": 0.2465
           },
           {
             "date": "2025-11-28",
-            "reading": 0.2655,
-            "modeled": 0.2424
+            "reading": 0.2467,
+            "modeled": 0.2444
           },
           {
             "date": "2025-11-29",
-            "reading": 0.2473,
-            "modeled": 0.2459
-          },
-          {
-            "date": "2025-11-30",
-            "reading": 0.2543,
-            "modeled": 0.2489
-          },
-          {
-            "date": "2025-12-01",
-            "reading": 0.2244,
-            "modeled": 0.2412
-          },
-          {
-            "date": "2025-12-02",
-            "reading": 0.2207,
-            "modeled": 0.2332
-          },
-          {
-            "date": "2025-12-03",
-            "reading": 0.2051,
-            "modeled": 0.2256
-          },
-          {
-            "date": "2025-12-04",
-            "reading": 0.2471,
-            "modeled": 0.2305
-          },
-          {
-            "date": "2025-12-05",
-            "reading": 0.2353,
-            "modeled": 0.2301
-          },
-          {
-            "date": "2025-12-06",
-            "reading": 0.2269,
-            "modeled": 0.2273
-          },
-          {
-            "date": "2025-12-07",
-            "reading": 0.2447,
-            "modeled": 0.2311
-          },
-          {
-            "date": "2025-12-08",
-            "reading": 0.2515,
-            "modeled": 0.2373
-          },
-          {
-            "date": "2025-12-09",
-            "reading": 0.2713,
-            "modeled": 0.2511
-          },
-          {
-            "date": "2025-12-10",
-            "reading": 0.2236,
-            "modeled": 0.2422
-          },
-          {
-            "date": "2025-12-11",
-            "reading": 0.2495,
-            "modeled": 0.2431
-          },
-          {
-            "date": "2025-12-12",
-            "reading": 0.2301,
-            "modeled": 0.2371
-          },
-          {
-            "date": "2025-12-13",
-            "reading": 0.2073,
-            "modeled": 0.2259
-          },
-          {
-            "date": "2025-12-14",
-            "reading": 0.2716,
-            "modeled": 0.2395
-          },
-          {
-            "date": "2025-12-15",
-            "reading": 0.2228,
-            "modeled": 0.2357
-          },
-          {
-            "date": "2025-12-16",
-            "reading": 0.2544,
-            "modeled": 0.2398
-          },
-          {
-            "date": "2025-12-17",
-            "reading": 0.2765,
-            "modeled": 0.2486
-          },
-          {
-            "date": "2025-12-18",
-            "reading": 0.2549,
-            "modeled": 0.2477
-          },
-          {
-            "date": "2025-12-19",
-            "reading": 0.2578,
-            "modeled": 0.248
-          },
-          {
-            "date": "2025-12-20",
-            "reading": 0.2809,
-            "modeled": 0.2611
-          },
-          {
-            "date": "2025-12-21",
-            "reading": 0.2436,
-            "modeled": 0.2536
-          },
-          {
-            "date": "2025-12-22",
-            "reading": 0.2531,
-            "modeled": 0.2511
-          },
-          {
-            "date": "2025-12-23",
-            "reading": 0.254,
-            "modeled": 0.2525
-          },
-          {
-            "date": "2025-12-24",
-            "reading": 0.3044,
-            "modeled": 0.2654
-          },
-          {
-            "date": "2025-12-25",
-            "reading": 0.2554,
-            "modeled": 0.2598
-          },
-          {
-            "date": "2025-12-26",
-            "reading": 0.265,
-            "modeled": 0.258
-          },
-          {
-            "date": "2025-12-27",
-            "reading": 0.2183,
-            "modeled": 0.2432
-          },
-          {
-            "date": "2025-12-28",
-            "reading": 0.2532,
-            "modeled": 0.2441
-          },
-          {
-            "date": "2025-12-29",
-            "reading": 0.2563,
-            "modeled": 0.2451
-          },
-          {
-            "date": "2025-12-30",
-            "reading": 0.2294,
-            "modeled": 0.2377
-          },
-          {
-            "date": "2025-12-31",
-            "reading": 0.2564,
-            "modeled": 0.2409
-          },
-          {
-            "date": "2026-01-01",
-            "reading": 0.2408,
-            "modeled": 0.239
-          },
-          {
-            "date": "2026-01-02",
-            "reading": 0.2273,
-            "modeled": 0.2345
-          },
-          {
-            "date": "2026-01-03",
-            "reading": 0.2313,
-            "modeled": 0.2324
-          },
-          {
-            "date": "2026-01-04",
-            "reading": 0.2388,
-            "modeled": 0.2328
-          },
-          {
-            "date": "2026-01-05",
-            "reading": 0.2085,
-            "modeled": 0.2237
-          },
-          {
-            "date": "2026-01-06",
-            "reading": 0.2334,
-            "modeled": 0.2251
-          },
-          {
-            "date": "2026-01-07",
-            "reading": 0.2074,
-            "modeled": 0.2185
-          },
-          {
-            "date": "2026-01-08",
-            "reading": 0.2351,
-            "modeled": 0.2224
-          },
-          {
-            "date": "2026-01-09",
-            "reading": 0.2569,
-            "modeled": 0.2389
-          },
-          {
-            "date": "2026-01-10",
-            "reading": 0.2583,
-            "modeled": 0.248
-          },
-          {
-            "date": "2026-01-11",
-            "reading": 0.2175,
-            "modeled": 0.2365
-          },
-          {
-            "date": "2026-01-12",
-            "reading": 0.2672,
-            "modeled": 0.2434
-          },
-          {
-            "date": "2026-01-13",
-            "reading": 0.2172,
-            "modeled": 0.2334
-          },
-          {
-            "date": "2026-01-14",
-            "reading": 0.2316,
-            "modeled": 0.2309
-          },
-          {
-            "date": "2026-01-15",
-            "reading": 0.2394,
-            "modeled": 0.2327
-          },
-          {
-            "date": "2026-01-16",
-            "reading": 0.2489,
-            "modeled": 0.236
-          },
-          {
-            "date": "2026-01-17",
-            "reading": 0.2082,
-            "modeled": 0.2256
-          },
-          {
-            "date": "2026-01-18",
-            "reading": 0.2243,
-            "modeled": 0.224
-          },
-          {
-            "date": "2026-01-19",
-            "reading": 0.2676,
-            "modeled": 0.2358
-          },
-          {
-            "date": "2026-01-20",
-            "reading": 0.2131,
-            "modeled": 0.2271
-          },
-          {
-            "date": "2026-01-21",
-            "reading": 0.2485,
-            "modeled": 0.232
-          },
-          {
-            "date": "2026-01-22",
-            "reading": 0.2121,
-            "modeled": 0.2243
-          },
-          {
-            "date": "2026-01-23",
-            "reading": 0.2575,
-            "modeled": 0.2327
-          },
-          {
-            "date": "2026-01-24",
-            "reading": 0.2408,
-            "modeled": 0.2333
-          },
-          {
-            "date": "2026-01-25",
-            "reading": 0.2275,
-            "modeled": 0.2296
-          },
-          {
-            "date": "2026-01-26",
-            "reading": 0.2037,
-            "modeled": 0.2202
-          },
-          {
-            "date": "2026-01-27",
-            "reading": 0.2674,
-            "modeled": 0.2333
-          },
-          {
-            "date": "2026-01-28",
-            "reading": 0.2094,
-            "modeled": 0.2244
-          },
-          {
-            "date": "2026-01-29",
-            "reading": 0.2388,
-            "modeled": 0.2272
-          },
-          {
-            "date": "2026-01-30",
-            "reading": 0.2075,
-            "modeled": 0.2197
-          },
-          {
-            "date": "2026-01-31",
-            "reading": 0.2126,
-            "modeled": 0.2165
-          },
-          {
-            "date": "2026-02-01",
-            "reading": 0.2399,
-            "modeled": 0.2225
-          },
-          {
-            "date": "2026-02-02",
-            "reading": 0.2018,
-            "modeled": 0.215
-          },
-          {
-            "date": "2026-02-03",
-            "reading": 0.2393,
-            "modeled": 0.2211
-          },
-          {
-            "date": "2026-02-04",
-            "reading": 0.229,
-            "modeled": 0.2222
-          },
-          {
-            "date": "2026-02-05",
-            "reading": 0.209,
-            "modeled": 0.2172
-          },
-          {
-            "date": "2026-02-06",
-            "reading": 0.2026,
-            "modeled": 0.2137
-          },
-          {
-            "date": "2026-02-07",
-            "reading": 0.201,
-            "modeled": 0.2089
-          },
-          {
-            "date": "2026-02-08",
-            "reading": 0.1843,
-            "modeled": 0.2022
-          },
-          {
-            "date": "2026-02-09",
-            "reading": 0.2356,
-            "modeled": 0.2117
-          },
-          {
-            "date": "2026-02-10",
-            "reading": 0.2258,
-            "modeled": 0.215
-          },
-          {
-            "date": "2026-02-11",
-            "reading": 0.1875,
-            "modeled": 0.2064
-          },
-          {
-            "date": "2026-02-12",
-            "reading": 0.2536,
-            "modeled": 0.2264
-          },
-          {
-            "date": "2026-02-13",
-            "reading": 0.2273,
-            "modeled": 0.2255
-          },
-          {
-            "date": "2026-02-14",
-            "reading": 0.2116,
-            "modeled": 0.22
-          },
-          {
-            "date": "2026-02-15",
-            "reading": 0.2281,
-            "modeled": 0.2296
-          },
-          {
-            "date": "2026-02-16",
-            "reading": 0.2662,
-            "modeled": 0.2392
-          },
-          {
-            "date": "2026-02-17",
-            "reading": 0.2297,
-            "modeled": 0.2345
-          },
-          {
-            "date": "2026-02-18",
-            "reading": 0.2385,
-            "modeled": 0.234
-          },
-          {
-            "date": "2026-02-19",
-            "reading": 0.2832,
-            "modeled": 0.2549
-          },
-          {
-            "date": "2026-02-20",
-            "reading": 0.2629,
-            "modeled": 0.2551
-          },
-          {
-            "date": "2026-02-21",
-            "reading": 0.2354,
+            "reading": 0.2459,
             "modeled": 0.2468
           },
           {
-            "date": "2026-02-22",
-            "reading": 0.2165,
-            "modeled": 0.2357
+            "date": "2025-11-30",
+            "reading": 0.2617,
+            "modeled": 0.2518
           },
           {
-            "date": "2026-02-23",
-            "reading": 0.2695,
-            "modeled": 0.2471
+            "date": "2025-12-01",
+            "reading": 0.2568,
+            "modeled": 0.2528
           },
           {
-            "date": "2026-02-24",
-            "reading": 0.2317,
-            "modeled": 0.2424
+            "date": "2025-12-02",
+            "reading": 0.2544,
+            "modeled": 0.251
           },
           {
-            "date": "2026-02-25",
-            "reading": 0.2353,
+            "date": "2025-12-03",
+            "reading": 0.251,
+            "modeled": 0.2511
+          },
+          {
+            "date": "2025-12-04",
+            "reading": 0.2478,
+            "modeled": 0.2474
+          },
+          {
+            "date": "2025-12-05",
+            "reading": 0.2446,
+            "modeled": 0.2439
+          },
+          {
+            "date": "2025-12-06",
+            "reading": 0.242,
+            "modeled": 0.2409
+          },
+          {
+            "date": "2025-12-07",
+            "reading": 0.2404,
             "modeled": 0.2389
           },
           {
-            "date": "2026-02-26",
-            "reading": 0.26,
-            "modeled": 0.2437
+            "date": "2025-12-08",
+            "reading": 0.2395,
+            "modeled": 0.2389
           },
           {
-            "date": "2026-02-27",
+            "date": "2025-12-09",
+            "reading": 0.2404,
+            "modeled": 0.2429
+          },
+          {
+            "date": "2025-12-10",
+            "reading": 0.2414,
+            "modeled": 0.2421
+          },
+          {
+            "date": "2025-12-11",
+            "reading": 0.2399,
+            "modeled": 0.2402
+          },
+          {
+            "date": "2025-12-12",
+            "reading": 0.2394,
+            "modeled": 0.238
+          },
+          {
+            "date": "2025-12-13",
+            "reading": 0.2369,
+            "modeled": 0.2353
+          },
+          {
+            "date": "2025-12-14",
             "reading": 0.2361,
-            "modeled": 0.2397
+            "modeled": 0.2351
           },
           {
-            "date": "2026-02-28",
-            "reading": 0.259,
-            "modeled": 0.2438
+            "date": "2025-12-15",
+            "reading": 0.2372,
+            "modeled": 0.2371
           },
           {
-            "date": "2026-03-01",
-            "reading": 0.2362,
-            "modeled": 0.2396
+            "date": "2025-12-16",
+            "reading": 0.2363,
+            "modeled": 0.2353
           },
           {
-            "date": "2026-03-02",
-            "reading": 0.2239,
+            "date": "2025-12-17",
+            "reading": 0.2349,
             "modeled": 0.2331
           },
           {
-            "date": "2026-03-03",
-            "reading": 0.2189,
-            "modeled": 0.2282
+            "date": "2025-12-18",
+            "reading": 0.2332,
+            "modeled": 0.2311
           },
           {
-            "date": "2026-03-04",
-            "reading": 0.2478,
-            "modeled": 0.2328
+            "date": "2025-12-19",
+            "reading": 0.2314,
+            "modeled": 0.2292
           },
           {
-            "date": "2026-03-05",
-            "reading": 0.248,
-            "modeled": 0.236
+            "date": "2025-12-20",
+            "reading": 0.2312,
+            "modeled": 0.2338
           },
           {
-            "date": "2026-03-06",
-            "reading": 0.2337,
-            "modeled": 0.2348
+            "date": "2025-12-21",
+            "reading": 0.2355,
+            "modeled": 0.2331
           },
           {
-            "date": "2026-03-07",
+            "date": "2025-12-22",
+            "reading": 0.2392,
+            "modeled": 0.2333
+          },
+          {
+            "date": "2025-12-23",
+            "reading": 0.236,
+            "modeled": 0.2354
+          },
+          {
+            "date": "2025-12-24",
+            "reading": 0.2342,
+            "modeled": 0.2331
+          },
+          {
+            "date": "2025-12-25",
+            "reading": 0.2329,
+            "modeled": 0.2316
+          },
+          {
+            "date": "2025-12-26",
+            "reading": 0.2309,
+            "modeled": 0.2294
+          },
+          {
+            "date": "2025-12-27",
+            "reading": 0.2291,
+            "modeled": 0.2276
+          },
+          {
+            "date": "2025-12-28",
+            "reading": 0.2276,
+            "modeled": 0.2261
+          },
+          {
+            "date": "2025-12-29",
+            "reading": 0.2269,
+            "modeled": 0.2246
+          },
+          {
+            "date": "2025-12-30",
+            "reading": 0.2255,
+            "modeled": 0.2231
+          },
+          {
+            "date": "2025-12-31",
+            "reading": 0.2232,
+            "modeled": 0.2214
+          },
+          {
+            "date": "2026-01-01",
+            "reading": 0.2223,
+            "modeled": 0.2206
+          },
+          {
+            "date": "2026-01-02",
+            "reading": 0.2218,
+            "modeled": 0.2206
+          },
+          {
+            "date": "2026-01-03",
+            "reading": 0.2222,
+            "modeled": 0.2203
+          },
+          {
+            "date": "2026-01-04",
+            "reading": 0.2224,
+            "modeled": 0.2199
+          },
+          {
+            "date": "2026-01-05",
+            "reading": 0.2208,
+            "modeled": 0.2189
+          },
+          {
+            "date": "2026-01-06",
+            "reading": 0.2204,
+            "modeled": 0.218
+          },
+          {
+            "date": "2026-01-07",
+            "reading": 0.2197,
+            "modeled": 0.2175
+          },
+          {
+            "date": "2026-01-08",
+            "reading": 0.2183,
+            "modeled": 0.2167
+          },
+          {
+            "date": "2026-01-09",
+            "reading": 0.2209,
+            "modeled": 0.2242
+          },
+          {
+            "date": "2026-01-10",
+            "reading": 0.2295,
+            "modeled": 0.2294
+          },
+          {
+            "date": "2026-01-11",
+            "reading": 0.2293,
+            "modeled": 0.2278
+          },
+          {
+            "date": "2026-01-12",
+            "reading": 0.2272,
+            "modeled": 0.2258
+          },
+          {
+            "date": "2026-01-13",
+            "reading": 0.2261,
+            "modeled": 0.2244
+          },
+          {
+            "date": "2026-01-14",
+            "reading": 0.226,
+            "modeled": 0.2233
+          },
+          {
+            "date": "2026-01-15",
+            "reading": 0.2247,
+            "modeled": 0.2233
+          },
+          {
+            "date": "2026-01-16",
+            "reading": 0.2252,
+            "modeled": 0.2226
+          },
+          {
+            "date": "2026-01-17",
+            "reading": 0.2233,
+            "modeled": 0.2214
+          },
+          {
+            "date": "2026-01-18",
+            "reading": 0.2224,
+            "modeled": 0.2206
+          },
+          {
+            "date": "2026-01-19",
+            "reading": 0.2217,
+            "modeled": 0.2198
+          },
+          {
+            "date": "2026-01-20",
+            "reading": 0.2209,
+            "modeled": 0.2189
+          },
+          {
+            "date": "2026-01-21",
+            "reading": 0.2202,
+            "modeled": 0.2181
+          },
+          {
+            "date": "2026-01-22",
+            "reading": 0.2192,
+            "modeled": 0.2172
+          },
+          {
+            "date": "2026-01-23",
+            "reading": 0.2177,
+            "modeled": 0.2161
+          },
+          {
+            "date": "2026-01-24",
+            "reading": 0.2168,
+            "modeled": 0.2152
+          },
+          {
+            "date": "2026-01-25",
+            "reading": 0.2165,
+            "modeled": 0.2145
+          },
+          {
+            "date": "2026-01-26",
+            "reading": 0.2159,
+            "modeled": 0.2139
+          },
+          {
+            "date": "2026-01-27",
+            "reading": 0.2163,
+            "modeled": 0.2138
+          },
+          {
+            "date": "2026-01-28",
+            "reading": 0.2158,
+            "modeled": 0.2134
+          },
+          {
+            "date": "2026-01-29",
+            "reading": 0.2151,
+            "modeled": 0.2129
+          },
+          {
+            "date": "2026-01-30",
+            "reading": 0.2148,
+            "modeled": 0.2125
+          },
+          {
+            "date": "2026-01-31",
+            "reading": 0.2145,
+            "modeled": 0.2123
+          },
+          {
+            "date": "2026-02-01",
+            "reading": 0.2138,
+            "modeled": 0.2118
+          },
+          {
+            "date": "2026-02-02",
+            "reading": 0.2136,
+            "modeled": 0.2115
+          },
+          {
+            "date": "2026-02-03",
+            "reading": 0.2131,
+            "modeled": 0.211
+          },
+          {
+            "date": "2026-02-04",
+            "reading": 0.2134,
+            "modeled": 0.2109
+          },
+          {
+            "date": "2026-02-05",
+            "reading": 0.2148,
+            "modeled": 0.2114
+          },
+          {
+            "date": "2026-02-06",
+            "reading": 0.2165,
+            "modeled": 0.214
+          },
+          {
+            "date": "2026-02-07",
+            "reading": 0.216,
+            "modeled": 0.2136
+          },
+          {
+            "date": "2026-02-08",
+            "reading": 0.2149,
+            "modeled": 0.213
+          },
+          {
+            "date": "2026-02-09",
+            "reading": 0.2139,
+            "modeled": 0.2123
+          },
+          {
+            "date": "2026-02-10",
+            "reading": 0.2136,
+            "modeled": 0.2118
+          },
+          {
+            "date": "2026-02-11",
+            "reading": 0.2131,
+            "modeled": 0.2114
+          },
+          {
+            "date": "2026-02-12",
+            "reading": 0.2176,
+            "modeled": 0.2189
+          },
+          {
+            "date": "2026-02-13",
+            "reading": 0.2217,
+            "modeled": 0.2188
+          },
+          {
+            "date": "2026-02-14",
+            "reading": 0.22,
+            "modeled": 0.2181
+          },
+          {
+            "date": "2026-02-15",
+            "reading": 0.2207,
+            "modeled": 0.2261
+          },
+          {
+            "date": "2026-02-16",
+            "reading": 0.2227,
+            "modeled": 0.2238
+          },
+          {
+            "date": "2026-02-17",
+            "reading": 0.2221,
+            "modeled": 0.222
+          },
+          {
+            "date": "2026-02-18",
+            "reading": 0.2207,
+            "modeled": 0.2204
+          },
+          {
+            "date": "2026-02-19",
             "reading": 0.2205,
-            "modeled": 0.2314
+            "modeled": 0.2269
           },
           {
-            "date": "2026-03-08",
-            "reading": 0.2038,
+            "date": "2026-02-20",
+            "reading": 0.2213,
+            "modeled": 0.224
+          },
+          {
+            "date": "2026-02-21",
+            "reading": 0.2199,
+            "modeled": 0.2215
+          },
+          {
+            "date": "2026-02-22",
+            "reading": 0.2194,
+            "modeled": 0.2198
+          },
+          {
+            "date": "2026-02-23",
+            "reading": 0.2189,
+            "modeled": 0.2212
+          },
+          {
+            "date": "2026-02-24",
+            "reading": 0.2214,
             "modeled": 0.2219
           },
           {
+            "date": "2026-02-25",
+            "reading": 0.2218,
+            "modeled": 0.2211
+          },
+          {
+            "date": "2026-02-26",
+            "reading": 0.2209,
+            "modeled": 0.22
+          },
+          {
+            "date": "2026-02-27",
+            "reading": 0.22,
+            "modeled": 0.219
+          },
+          {
+            "date": "2026-02-28",
+            "reading": 0.2193,
+            "modeled": 0.2181
+          },
+          {
+            "date": "2026-03-01",
+            "reading": 0.2186,
+            "modeled": 0.2173
+          },
+          {
+            "date": "2026-03-02",
+            "reading": 0.2175,
+            "modeled": 0.2164
+          },
+          {
+            "date": "2026-03-03",
+            "reading": 0.2171,
+            "modeled": 0.2163
+          },
+          {
+            "date": "2026-03-04",
+            "reading": 0.2169,
+            "modeled": 0.2156
+          },
+          {
+            "date": "2026-03-05",
+            "reading": 0.2165,
+            "modeled": 0.2151
+          },
+          {
+            "date": "2026-03-06",
+            "reading": 0.2169,
+            "modeled": 0.2157
+          },
+          {
+            "date": "2026-03-07",
+            "reading": 0.224,
+            "modeled": 0.2195
+          },
+          {
+            "date": "2026-03-08",
+            "reading": 0.2219,
+            "modeled": 0.2194
+          },
+          {
             "date": "2026-03-09",
-            "reading": 0.2256,
-            "modeled": 0.2221
+            "reading": 0.2206,
+            "modeled": 0.2189
           },
           {
             "date": "2026-03-10",
-            "reading": 0.2577,
-            "modeled": 0.2318
+            "reading": 0.2198,
+            "modeled": 0.2183
           },
           {
             "date": "2026-03-11",
-            "reading": 0.2495,
-            "modeled": 0.2359
+            "reading": 0.2196,
+            "modeled": 0.2178
           },
           {
             "date": "2026-03-12",
-            "reading": 0.2538,
-            "modeled": 0.2399
+            "reading": 0.2197,
+            "modeled": 0.2176
           },
           {
             "date": "2026-03-13",
-            "reading": 0.2396,
-            "modeled": 0.2384
+            "reading": 0.2194,
+            "modeled": 0.2173
           },
           {
             "date": "2026-03-14",
-            "reading": 0.2232,
-            "modeled": 0.2324
+            "reading": 0.219,
+            "modeled": 0.217
           },
           {
             "date": "2026-03-15",
-            "reading": 0.2382,
-            "modeled": 0.2327
+            "reading": 0.2183,
+            "modeled": 0.2165
           },
           {
             "date": "2026-03-16",
-            "reading": 0.2247,
-            "modeled": 0.2289
+            "reading": 0.2181,
+            "modeled": 0.2161
           },
           {
             "date": "2026-03-17",
-            "reading": 0.2191,
-            "modeled": 0.2304
+            "reading": 0.2193,
+            "modeled": 0.2218
           },
           {
             "date": "2026-03-18",
-            "reading": 0.2535,
-            "modeled": 0.2363
+            "reading": 0.224,
+            "modeled": 0.2216
           },
           {
             "date": "2026-03-19",
-            "reading": 0.2249,
-            "modeled": 0.2315
+            "reading": 0.2231,
+            "modeled": 0.2211
           },
           {
             "date": "2026-03-20",
-            "reading": 0.1998,
-            "modeled": 0.2207
+            "reading": 0.2226,
+            "modeled": 0.2206
           },
           {
             "date": "2026-03-21",
-            "reading": 0.2787,
-            "modeled": 0.282
+            "reading": 0.2385,
+            "modeled": 0.2699
           },
           {
             "date": "2026-03-22",
-            "reading": 0.2792,
-            "modeled": 0.279
+            "reading": 0.2477,
+            "modeled": 0.2614
           },
           {
             "date": "2026-03-23",
-            "reading": 0.2975,
-            "modeled": 0.2956
+            "reading": 0.2449,
+            "modeled": 0.2678
           },
           {
             "date": "2026-03-24",
-            "reading": 0.3014,
-            "modeled": 0.2956
+            "reading": 0.2417,
+            "modeled": 0.2589
           },
           {
             "date": "2026-03-25",
-            "reading": 0.3082,
-            "modeled": 0.297
+            "reading": 0.2391,
+            "modeled": 0.2514
           },
           {
             "date": "2026-03-26",
-            "reading": 0.2709,
-            "modeled": 0.2865
+            "reading": 0.2394,
+            "modeled": 0.2462
           },
           {
             "date": "2026-03-27",
-            "reading": 0.3241,
-            "modeled": 0.3029
+            "reading": 0.2389,
+            "modeled": 0.2502
           },
           {
             "date": "2026-03-28",
-            "reading": 0.3065,
-            "modeled": 0.3105
+            "reading": 0.2392,
+            "modeled": 0.2543
           },
           {
             "date": "2026-03-29",
-            "reading": 0.2949,
-            "modeled": 0.3038
+            "reading": 0.243,
+            "modeled": 0.25
           },
           {
             "date": "2026-03-30",
-            "reading": 0.3102,
-            "modeled": 0.3031
+            "reading": 0.2428,
+            "modeled": 0.2465
           },
           {
             "date": "2026-03-31",
-            "reading": 0.2645,
-            "modeled": 0.2891
+            "reading": 0.2442,
+            "modeled": 0.2446
           },
           {
             "date": "2026-04-01",
-            "reading": 0.3015,
-            "modeled": 0.2909
+            "reading": 0.2432,
+            "modeled": 0.2433
           },
           {
             "date": "2026-04-02",
-            "reading": 0.2883,
-            "modeled": 0.2887
+            "reading": 0.2431,
+            "modeled": 0.2426
           },
           {
             "date": "2026-04-03",
-            "reading": 0.2939,
-            "modeled": 0.2879
+            "reading": 0.2428,
+            "modeled": 0.2414
           },
           {
             "date": "2026-04-04",
-            "reading": 0.3009,
-            "modeled": 0.2996
+            "reading": 0.2488,
+            "modeled": 0.2522
           },
           {
             "date": "2026-04-05",
-            "reading": 0.3065,
-            "modeled": 0.3
+            "reading": 0.2494,
+            "modeled": 0.2505
           },
           {
             "date": "2026-04-06",
-            "reading": 0.3161,
-            "modeled": 0.307
+            "reading": 0.2518,
+            "modeled": 0.2536
           },
           {
             "date": "2026-04-07",
-            "reading": 0.3416,
-            "modeled": 0.3323
+            "reading": 0.2793,
+            "modeled": 0.2766
           },
           {
             "date": "2026-04-08",
-            "reading": 0.321,
-            "modeled": 0.3274
-          },
-          {
-            "date": "2026-04-09",
-            "reading": 0.3128,
-            "modeled": 0.3214
-          },
-          {
-            "date": "2026-04-10",
-            "reading": 0.3157,
-            "modeled": 0.3176
-          },
-          {
-            "date": "2026-04-11",
-            "reading": 0.3014,
-            "modeled": 0.3107
-          },
-          {
-            "date": "2026-04-12",
-            "reading": 0.3282,
-            "modeled": 0.3139
-          },
-          {
-            "date": "2026-04-13",
-            "reading": 0.3172,
-            "modeled": 0.3127
-          },
-          {
-            "date": "2026-04-14",
-            "reading": 0.3303,
-            "modeled": 0.3194
-          },
-          {
-            "date": "2026-04-15",
-            "reading": 0.3563,
-            "modeled": 0.3428
-          },
-          {
-            "date": "2026-04-16",
-            "reading": 0.3518,
-            "modeled": 0.3489
-          },
-          {
-            "date": "2026-04-17",
-            "reading": 0.3232,
-            "modeled": 0.3388
-          },
-          {
-            "date": "2026-04-18",
-            "reading": 0.3236,
-            "modeled": 0.3323
-          },
-          {
-            "date": "2026-04-19",
-            "reading": 0.3547,
-            "modeled": 0.3364
-          },
-          {
-            "date": "2026-04-20",
-            "reading": 0.3405,
-            "modeled": 0.3366
-          },
-          {
-            "date": "2026-04-21",
-            "reading": 0.3548,
-            "modeled": 0.3406
-          },
-          {
-            "date": "2026-04-22",
-            "reading": 0.3092,
-            "modeled": 0.3295
-          },
-          {
-            "date": "2026-04-23",
-            "reading": 0.2948,
-            "modeled": 0.3173
-          },
-          {
-            "date": "2026-04-24",
-            "reading": 0.3031,
-            "modeled": 0.3111
-          },
-          {
-            "date": "2026-04-25",
-            "reading": 0.3282,
-            "modeled": 0.3145
-          },
-          {
-            "date": "2026-04-26",
-            "reading": 0.3066,
-            "modeled": 0.312
-          },
-          {
-            "date": "2026-04-27",
-            "reading": 0.3427,
-            "modeled": 0.3199
-          },
-          {
-            "date": "2026-04-28",
-            "reading": 0.3359,
-            "modeled": 0.3233
-          },
-          {
-            "date": "2026-04-29",
-            "reading": 0.2777,
-            "modeled": 0.3081
-          },
-          {
-            "date": "2026-04-30",
-            "reading": 0.3367,
-            "modeled": 0.3148
-          },
-          {
-            "date": "2026-05-01",
-            "reading": 0.2814,
-            "modeled": 0.3032
-          },
-          {
-            "date": "2026-05-02",
-            "reading": 0.3004,
-            "modeled": 0.3012
-          },
-          {
-            "date": "2026-05-03",
-            "reading": 0.3386,
-            "modeled": 0.311
-          },
-          {
-            "date": "2026-05-04",
-            "reading": 0.3137,
-            "modeled": 0.3102
-          },
-          {
-            "date": "2026-05-05",
-            "reading": 0.322,
-            "modeled": 0.3187
-          },
-          {
-            "date": "2026-05-06",
-            "reading": 0.3377,
-            "modeled": 0.326
-          },
-          {
-            "date": "2026-05-07",
-            "reading": 0.335,
-            "modeled": 0.3374
-          },
-          {
-            "date": "2026-05-08",
-            "reading": 0.321,
-            "modeled": 0.3318
-          },
-          {
-            "date": "2026-05-09",
-            "reading": 0.2853,
-            "modeled": 0.322
-          },
-          {
-            "date": "2026-05-10",
-            "reading": 0.3163,
-            "modeled": 0.3193
-          },
-          {
-            "date": "2026-05-11",
-            "reading": 0.3574,
-            "modeled": 0.3281
-          },
-          {
-            "date": "2026-05-12",
-            "reading": 0.3079,
-            "modeled": 0.3206
-          },
-          {
-            "date": "2026-05-13",
-            "reading": 0.3178,
-            "modeled": 0.3187
-          },
-          {
-            "date": "2026-05-14",
-            "reading": 0.31,
-            "modeled": 0.315
-          },
-          {
-            "date": "2026-05-15",
-            "reading": 0.3156,
-            "modeled": 0.3139
-          },
-          {
-            "date": "2026-05-16",
-            "reading": 0.3081,
-            "modeled": 0.311
-          },
-          {
-            "date": "2026-05-17",
-            "reading": 0.3096,
-            "modeled": 0.3103
-          },
-          {
-            "date": "2026-05-18",
-            "reading": 0.3475,
-            "modeled": 0.3203
-          },
-          {
-            "date": "2026-05-19",
-            "reading": 0.3204,
-            "modeled": 0.3192
-          },
-          {
-            "date": "2026-05-20",
-            "reading": 0.3054,
-            "modeled": 0.3139
-          },
-          {
-            "date": "2026-05-21",
-            "reading": 0.3363,
-            "modeled": 0.3196
-          },
-          {
-            "date": "2026-05-22",
-            "reading": 0.3143,
-            "modeled": 0.317
-          },
-          {
-            "date": "2026-05-23",
-            "reading": 0.2772,
-            "modeled": 0.3041
-          },
-          {
-            "date": "2026-05-24",
-            "reading": 0.3111,
-            "modeled": 0.3051
-          },
-          {
-            "date": "2026-05-25",
-            "reading": 0.3139,
-            "modeled": 0.3067
-          },
-          {
-            "date": "2026-05-26",
-            "reading": 0.3132,
-            "modeled": 0.3076
-          },
-          {
-            "date": "2026-05-27",
-            "reading": 0.274,
-            "modeled": 0.2964
-          },
-          {
-            "date": "2026-05-28",
-            "reading": 0.3002,
-            "modeled": 0.2965
-          },
-          {
-            "date": "2026-05-29",
-            "reading": 0.2997,
-            "modeled": 0.2966
-          },
-          {
-            "date": "2026-05-30",
-            "reading": 0.2809,
-            "modeled": 0.2909
-          },
-          {
-            "date": "2026-05-31",
-            "reading": 0.3068,
-            "modeled": 0.2947
-          },
-          {
-            "date": "2026-06-01",
-            "reading": 0.2853,
-            "modeled": 0.2909
-          },
-          {
-            "date": "2026-06-02",
-            "reading": 0.269,
-            "modeled": 0.2835
-          },
-          {
-            "date": "2026-06-03",
-            "reading": 0.2527,
-            "modeled": 0.2733
-          },
-          {
-            "date": "2026-06-04",
-            "reading": 0.2808,
-            "modeled": 0.2747
-          },
-          {
-            "date": "2026-06-05",
-            "reading": 0.2848,
-            "modeled": 0.2768
-          },
-          {
-            "date": "2026-06-06",
-            "reading": 0.2871,
-            "modeled": 0.2791
-          },
-          {
-            "date": "2026-06-07",
-            "reading": 0.2896,
-            "modeled": 0.2822
-          },
-          {
-            "date": "2026-06-08",
-            "reading": 0.3101,
-            "modeled": 0.3005
-          },
-          {
-            "date": "2026-06-09",
-            "reading": 0.3157,
-            "modeled": 0.3042
-          },
-          {
-            "date": "2026-06-10",
-            "reading": 0.3081,
-            "modeled": 0.3046
-          },
-          {
-            "date": "2026-06-11",
-            "reading": 0.2958,
-            "modeled": 0.3013
-          },
-          {
-            "date": "2026-06-12",
-            "reading": 0.3147,
-            "modeled": 0.3043
-          },
-          {
-            "date": "2026-06-13",
-            "reading": 0.2853,
-            "modeled": 0.2979
-          },
-          {
-            "date": "2026-06-14",
-            "reading": 0.2489,
-            "modeled": 0.2829
-          },
-          {
-            "date": "2026-06-15",
-            "reading": 0.3347,
-            "modeled": 0.2977
-          },
-          {
-            "date": "2026-06-16",
-            "reading": 0.2978,
-            "modeled": 0.2968
-          },
-          {
-            "date": "2026-06-17",
-            "reading": 0.2831,
-            "modeled": 0.2918
-          },
-          {
-            "date": "2026-06-18",
-            "reading": 0.3276,
-            "modeled": 0.3082
-          },
-          {
-            "date": "2026-06-19",
-            "reading": 0.3185,
-            "modeled": 0.3136
-          },
-          {
-            "date": "2026-06-20",
-            "reading": 0.3069,
-            "modeled": 0.3106
-          },
-          {
-            "date": "2026-06-21",
-            "reading": 0.2983,
-            "modeled": 0.3063
-          },
-          {
-            "date": "2026-06-22",
-            "reading": 0.2792,
-            "modeled": 0.2975
-          },
-          {
-            "date": "2026-06-23",
-            "reading": 0.3158,
-            "modeled": 0.3022
-          },
-          {
-            "date": "2026-06-24",
-            "reading": 0.2681,
-            "modeled": 0.2916
-          },
-          {
-            "date": "2026-06-25",
-            "reading": 0.3137,
-            "modeled": 0.2975
-          },
-          {
-            "date": "2026-06-26",
-            "reading": 0.3094,
-            "modeled": 0.3001
-          },
-          {
-            "date": "2026-06-27",
-            "reading": 0.2875,
-            "modeled": 0.2954
-          },
-          {
-            "date": "2026-06-28",
-            "reading": 0.3087,
-            "modeled": 0.2986
-          },
-          {
-            "date": "2026-06-29",
-            "reading": 0.2898,
-            "modeled": 0.2953
-          },
-          {
-            "date": "2026-06-30",
-            "reading": 0.3172,
-            "modeled": 0.3009
-          },
-          {
-            "date": "2026-07-01",
-            "reading": 0.3038,
-            "modeled": 0.3009
-          },
-          {
-            "date": "2026-07-02",
-            "reading": 0.2579,
-            "modeled": 0.2874
-          },
-          {
-            "date": "2026-07-03",
-            "reading": 0.2659,
-            "modeled": 0.2803
-          },
-          {
-            "date": "2026-07-04",
-            "reading": 0.2859,
-            "modeled": 0.2813
-          },
-          {
-            "date": "2026-07-05",
-            "reading": 0.2861,
-            "modeled": 0.2834
-          },
-          {
-            "date": "2026-07-06",
-            "reading": 0.3007,
-            "modeled": 0.2882
-          },
-          {
-            "date": "2026-07-07",
-            "reading": 0.3209,
-            "modeled": 0.2971
-          },
-          {
-            "date": "2026-07-08",
-            "reading": 0.289,
-            "modeled": 0.2937
-          },
-          {
-            "date": "2026-07-09",
-            "reading": 0.2799,
-            "modeled": 0.2886
-          },
-          {
-            "date": "2026-07-10",
-            "reading": 0.2967,
-            "modeled": 0.2901
-          },
-          {
-            "date": "2026-07-11",
-            "reading": 0.2865,
-            "modeled": 0.2883
-          },
-          {
-            "date": "2026-07-12",
-            "reading": 0.2751,
-            "modeled": 0.2837
-          },
-          {
-            "date": "2026-07-13",
-            "reading": 0.2815,
-            "modeled": 0.2823
-          },
-          {
-            "date": "2026-07-14",
-            "reading": 0.3273,
-            "modeled": 0.295
-          },
-          {
-            "date": "2026-07-15",
-            "reading": 0.2972,
-            "modeled": 0.2946
-          },
-          {
-            "date": "2026-07-16",
-            "reading": 0.2763,
-            "modeled": 0.2882
-          },
-          {
-            "date": "2026-07-17",
-            "reading": 0.2554,
-            "modeled": 0.2774
-          },
-          {
-            "date": "2026-07-18",
-            "reading": 0.3057,
-            "modeled": 0.2947
-          },
-          {
-            "date": "2026-07-19",
-            "reading": 0.2471,
-            "modeled": 0.2832
-          },
-          {
-            "date": "2026-07-20",
-            "reading": 0.302,
-            "modeled": 0.2889
-          },
-          {
-            "date": "2026-07-21",
-            "reading": 0.3319,
-            "modeled": 0.3013
-          },
-          {
-            "date": "2026-07-22",
-            "reading": 0.3073,
-            "modeled": 0.3101
-          },
-          {
-            "date": "2026-07-23",
-            "reading": 0.2938,
-            "modeled": 0.3043
-          },
-          {
-            "date": "2026-07-24",
-            "reading": 0.3416,
-            "modeled": 0.3146
-          },
-          {
-            "date": "2026-07-25",
-            "reading": 0.2741,
-            "modeled": 0.3013
-          },
-          {
-            "date": "2026-07-26",
-            "reading": 0.2683,
-            "modeled": 0.2904
-          },
-          {
-            "date": "2026-07-27",
-            "reading": 0.2835,
-            "modeled": 0.2874
-          },
-          {
-            "date": "2026-07-28",
-            "reading": 0.2914,
-            "modeled": 0.2876
-          },
-          {
-            "date": "2026-07-29",
-            "reading": 0.2807,
-            "modeled": 0.2845
-          },
-          {
-            "date": "2026-07-30",
-            "reading": 0.3104,
-            "modeled": 0.2912
-          },
-          {
-            "date": "2026-07-31",
-            "reading": 0.2609,
-            "modeled": 0.2816
-          },
-          {
-            "date": "2026-08-01",
-            "reading": 0.3729,
-            "modeled": 0.332
-          },
-          {
-            "date": "2026-08-02",
-            "reading": 0.3537,
-            "modeled": 0.3422
-          },
-          {
-            "date": "2026-08-03",
-            "reading": 0.3219,
-            "modeled": 0.3353
-          },
-          {
-            "date": "2026-08-04",
-            "reading": 0.3079,
-            "modeled": 0.326
-          },
-          {
-            "date": "2026-08-05",
-            "reading": 0.3557,
-            "modeled": 0.3341
-          },
-          {
-            "date": "2026-08-06",
-            "reading": 0.2991,
-            "modeled": 0.3354
-          },
-          {
-            "date": "2026-08-07",
-            "reading": 0.3272,
-            "modeled": 0.332
-          },
-          {
-            "date": "2026-08-08",
-            "reading": 0.3394,
-            "modeled": 0.3331
-          },
-          {
-            "date": "2026-08-09",
-            "reading": 0.3779,
-            "modeled": 0.3378
-          },
-          {
-            "date": "2026-08-10",
-            "reading": 0.3428,
-            "modeled": 0.3382
-          },
-          {
-            "date": "2026-08-11",
-            "reading": 0.3501,
-            "modeled": 0.3406
-          },
-          {
-            "date": "2026-08-12",
-            "reading": 0.3303,
-            "modeled": 0.3365
-          },
-          {
-            "date": "2026-08-13",
-            "reading": 0.3292,
-            "modeled": 0.334
-          },
-          {
-            "date": "2026-08-14",
-            "reading": 0.3336,
-            "modeled": 0.3325
-          },
-          {
-            "date": "2026-08-15",
-            "reading": 0.3423,
-            "modeled": 0.3343
-          },
-          {
-            "date": "2026-08-16",
-            "reading": 0.3122,
-            "modeled": 0.3287
-          },
-          {
-            "date": "2026-08-17",
-            "reading": 0.3267,
-            "modeled": 0.3399
-          },
-          {
-            "date": "2026-08-18",
-            "reading": 0.3447,
-            "modeled": 0.3439
-          },
-          {
-            "date": "2026-08-19",
-            "reading": 0.3405,
-            "modeled": 0.3416
-          },
-          {
-            "date": "2026-08-20",
-            "reading": 0.311,
-            "modeled": 0.3351
-          },
-          {
-            "date": "2026-08-21",
-            "reading": 0.3561,
-            "modeled": 0.3394
-          },
-          {
-            "date": "2026-08-22",
-            "reading": 0.3553,
-            "modeled": 0.3421
-          },
-          {
-            "date": "2026-08-23",
-            "reading": 0.3461,
-            "modeled": 0.3419
-          },
-          {
-            "date": "2026-08-24",
-            "reading": 0.3285,
-            "modeled": 0.3365
-          },
-          {
-            "date": "2026-08-25",
-            "reading": 0.3253,
-            "modeled": 0.3317
-          },
-          {
-            "date": "2026-08-26",
-            "reading": 0.3406,
-            "modeled": 0.333
-          },
-          {
-            "date": "2026-08-27",
-            "reading": 0.3544,
-            "modeled": 0.3401
-          },
-          {
-            "date": "2026-08-28",
-            "reading": 0.3234,
-            "modeled": 0.3342
-          },
-          {
-            "date": "2026-08-29",
-            "reading": 0.3297,
-            "modeled": 0.3311
-          },
-          {
-            "date": "2026-08-30",
-            "reading": 0.3113,
-            "modeled": 0.3233
-          },
-          {
-            "date": "2026-08-31",
-            "reading": 0.322,
-            "modeled": 0.3209
-          },
-          {
-            "date": "2026-09-01",
-            "reading": 0.3256,
-            "modeled": 0.3203
-          },
-          {
-            "date": "2026-09-02",
-            "reading": 0.3416,
-            "modeled": 0.3247
-          },
-          {
-            "date": "2026-09-03",
-            "reading": 0.312,
-            "modeled": 0.3211
-          },
-          {
-            "date": "2026-09-04",
-            "reading": 0.2975,
-            "modeled": 0.3124
-          },
-          {
-            "date": "2026-09-05",
-            "reading": 0.3145,
-            "modeled": 0.3117
-          },
-          {
-            "date": "2026-09-06",
-            "reading": 0.3011,
-            "modeled": 0.3071
-          },
-          {
-            "date": "2026-09-07",
-            "reading": 0.3056,
-            "modeled": 0.3051
-          },
-          {
-            "date": "2026-09-08",
-            "reading": 0.2936,
-            "modeled": 0.2997
-          },
-          {
-            "date": "2026-09-09",
-            "reading": 0.2844,
-            "modeled": 0.2939
-          },
-          {
-            "date": "2026-09-10",
-            "reading": 0.2914,
-            "modeled": 0.2914
-          },
-          {
-            "date": "2026-09-11",
-            "reading": 0.2921,
-            "modeled": 0.2901
-          },
-          {
-            "date": "2026-09-12",
-            "reading": 0.2933,
-            "modeled": 0.2901
-          },
-          {
-            "date": "2026-09-13",
-            "reading": 0.3055,
-            "modeled": 0.2932
-          },
-          {
-            "date": "2026-09-14",
-            "reading": 0.3117,
-            "modeled": 0.2971
-          },
-          {
-            "date": "2026-09-15",
-            "reading": 0.2838,
-            "modeled": 0.291
-          },
-          {
-            "date": "2026-09-16",
-            "reading": 0.2677,
-            "modeled": 0.2822
-          },
-          {
-            "date": "2026-09-17",
-            "reading": 0.3011,
-            "modeled": 0.2858
-          },
-          {
-            "date": "2026-09-18",
-            "reading": 0.2481,
-            "modeled": 0.2725
-          },
-          {
-            "date": "2026-09-19",
-            "reading": 0.2838,
-            "modeled": 0.2741
-          },
-          {
-            "date": "2026-09-20",
-            "reading": 0.2935,
-            "modeled": 0.2832
-          },
-          {
-            "date": "2026-09-21",
-            "reading": 0.2773,
-            "modeled": 0.2808
-          },
-          {
-            "date": "2026-09-22",
-            "reading": 0.2654,
-            "modeled": 0.2749
-          },
-          {
-            "date": "2026-09-23",
-            "reading": 0.2522,
-            "modeled": 0.2665
-          },
-          {
-            "date": "2026-09-24",
-            "reading": 0.2422,
-            "modeled": 0.2574
-          },
-          {
-            "date": "2026-09-25",
-            "reading": 0.2571,
-            "modeled": 0.2556
-          },
-          {
-            "date": "2026-09-26",
-            "reading": 0.283,
-            "modeled": 0.264
-          },
-          {
-            "date": "2026-09-27",
-            "reading": 0.2833,
-            "modeled": 0.2801
-          },
-          {
-            "date": "2026-09-28",
-            "reading": 0.3088,
-            "modeled": 0.2905
-          },
-          {
-            "date": "2026-09-29",
-            "reading": 0.2965,
-            "modeled": 0.2924
-          },
-          {
-            "date": "2026-09-30",
-            "reading": 0.2602,
-            "modeled": 0.2807
-          },
-          {
-            "date": "2026-10-01",
-            "reading": 0.2772,
-            "modeled": 0.2816
-          },
-          {
-            "date": "2026-10-02",
-            "reading": 0.2796,
-            "modeled": 0.2792
-          },
-          {
-            "date": "2026-10-03",
-            "reading": 0.2881,
-            "modeled": 0.2868
-          },
-          {
-            "date": "2026-10-04",
-            "reading": 0.2906,
-            "modeled": 0.2857
-          },
-          {
-            "date": "2026-10-05",
-            "reading": 0.2542,
-            "modeled": 0.2746
-          },
-          {
-            "date": "2026-10-06",
-            "reading": 0.3069,
-            "modeled": 0.2825
-          },
-          {
-            "date": "2026-10-07",
-            "reading": 0.3492,
-            "modeled": 0.3369
-          },
-          {
-            "date": "2026-10-08",
-            "reading": 0.3351,
-            "modeled": 0.3461
-          },
-          {
-            "date": "2026-10-09",
-            "reading": 0.3023,
-            "modeled": 0.3318
-          },
-          {
-            "date": "2026-10-10",
-            "reading": 0.3196,
-            "modeled": 0.3268
-          },
-          {
-            "date": "2026-10-11",
-            "reading": 0.3068,
-            "modeled": 0.3188
-          },
-          {
-            "date": "2026-10-12",
-            "reading": 0.3105,
-            "modeled": 0.314
-          },
-          {
-            "date": "2026-10-13",
-            "reading": 0.3311,
-            "modeled": 0.3169
-          },
-          {
-            "date": "2026-10-14",
-            "reading": 0.3515,
-            "modeled": 0.3271
-          },
-          {
-            "date": "2026-10-15",
-            "reading": 0.3583,
-            "modeled": 0.3361
-          },
-          {
-            "date": "2026-10-16",
-            "reading": 0.3028,
-            "modeled": 0.3255
-          },
-          {
-            "date": "2026-10-17",
-            "reading": 0.3123,
-            "modeled": 0.3195
-          },
-          {
-            "date": "2026-10-18",
-            "reading": 0.3064,
-            "modeled": 0.3135
-          },
-          {
-            "date": "2026-10-19",
-            "reading": 0.2832,
-            "modeled": 0.3018
-          },
-          {
-            "date": "2026-10-20",
-            "reading": 0.3311,
-            "modeled": 0.3078
-          },
-          {
-            "date": "2026-10-21",
-            "reading": 0.3345,
-            "modeled": 0.3136
-          },
-          {
-            "date": "2026-10-22",
-            "reading": 0.347,
-            "modeled": 0.326
-          },
-          {
-            "date": "2026-10-23",
-            "reading": 0.3368,
-            "modeled": 0.3317
-          },
-          {
-            "date": "2026-10-24",
-            "reading": 0.3399,
-            "modeled": 0.3329
-          },
-          {
-            "date": "2026-10-25",
-            "reading": 0.2874,
-            "modeled": 0.3179
-          },
-          {
-            "date": "2026-10-26",
-            "reading": 0.3219,
-            "modeled": 0.3167
-          },
-          {
-            "date": "2026-10-27",
-            "reading": 0.3127,
-            "modeled": 0.3129
-          },
-          {
-            "date": "2026-10-28",
-            "reading": 0.3082,
-            "modeled": 0.3086
-          },
-          {
-            "date": "2026-10-29",
-            "reading": 0.2985,
-            "modeled": 0.3033
-          },
-          {
-            "date": "2026-10-30",
-            "reading": 0.3022,
-            "modeled": 0.3076
-          },
-          {
-            "date": "2026-10-31",
-            "reading": 0.3191,
-            "modeled": 0.3092
-          },
-          {
-            "date": "2026-11-01",
-            "reading": 0.2586,
-            "modeled": 0.2915
-          },
-          {
-            "date": "2026-11-02",
-            "reading": 0.3199,
-            "modeled": 0.2987
-          },
-          {
-            "date": "2026-11-03",
-            "reading": 0.2983,
-            "modeled": 0.2974
-          },
-          {
-            "date": "2026-11-04",
-            "reading": 0.3349,
-            "modeled": 0.325
-          },
-          {
-            "date": "2026-11-05",
-            "reading": 0.3252,
-            "modeled": 0.3216
-          },
-          {
-            "date": "2026-11-06",
-            "reading": 0.2914,
-            "modeled": 0.3093
-          },
-          {
-            "date": "2026-11-07",
-            "reading": 0.3151,
-            "modeled": 0.31
-          },
-          {
-            "date": "2026-11-08",
-            "reading": 0.2993,
-            "modeled": 0.3037
-          },
-          {
-            "date": "2026-11-09",
-            "reading": 0.3182,
-            "modeled": 0.3046
-          },
-          {
-            "date": "2026-11-10",
-            "reading": 0.2469,
-            "modeled": 0.2836
-          },
-          {
-            "date": "2026-11-11",
-            "reading": 0.2873,
-            "modeled": 0.287
-          },
-          {
-            "date": "2026-11-12",
-            "reading": 0.2659,
+            "reading": 0.2843,
             "modeled": 0.2778
           },
           {
-            "date": "2026-11-13",
-            "reading": 0.2654,
-            "modeled": 0.2715
+            "date": "2026-04-09",
+            "reading": 0.2788,
+            "modeled": 0.2768
+          },
+          {
+            "date": "2026-04-10",
+            "reading": 0.2744,
+            "modeled": 0.2745
+          },
+          {
+            "date": "2026-04-11",
+            "reading": 0.2723,
+            "modeled": 0.2723
+          },
+          {
+            "date": "2026-04-12",
+            "reading": 0.27,
+            "modeled": 0.2701
+          },
+          {
+            "date": "2026-04-13",
+            "reading": 0.2686,
+            "modeled": 0.2681
+          },
+          {
+            "date": "2026-04-14",
+            "reading": 0.2678,
+            "modeled": 0.2699
+          },
+          {
+            "date": "2026-04-15",
+            "reading": 0.2719,
+            "modeled": 0.284
+          },
+          {
+            "date": "2026-04-16",
+            "reading": 0.2858,
+            "modeled": 0.2895
+          },
+          {
+            "date": "2026-04-17",
+            "reading": 0.2822,
+            "modeled": 0.286
+          },
+          {
+            "date": "2026-04-18",
+            "reading": 0.2791,
+            "modeled": 0.2823
+          },
+          {
+            "date": "2026-04-19",
+            "reading": 0.2781,
+            "modeled": 0.2793
+          },
+          {
+            "date": "2026-04-20",
+            "reading": 0.277,
+            "modeled": 0.2779
+          },
+          {
+            "date": "2026-04-21",
+            "reading": 0.279,
+            "modeled": 0.2777
+          },
+          {
+            "date": "2026-04-22",
+            "reading": 0.2809,
+            "modeled": 0.2774
+          },
+          {
+            "date": "2026-04-23",
+            "reading": 0.2789,
+            "modeled": 0.2764
+          },
+          {
+            "date": "2026-04-24",
+            "reading": 0.2776,
+            "modeled": 0.2753
+          },
+          {
+            "date": "2026-04-25",
+            "reading": 0.2767,
+            "modeled": 0.2744
+          },
+          {
+            "date": "2026-04-26",
+            "reading": 0.2758,
+            "modeled": 0.275
+          },
+          {
+            "date": "2026-04-27",
+            "reading": 0.275,
+            "modeled": 0.2741
+          },
+          {
+            "date": "2026-04-28",
+            "reading": 0.2744,
+            "modeled": 0.2731
+          },
+          {
+            "date": "2026-04-29",
+            "reading": 0.2735,
+            "modeled": 0.2721
+          },
+          {
+            "date": "2026-04-30",
+            "reading": 0.2731,
+            "modeled": 0.271
+          },
+          {
+            "date": "2026-05-01",
+            "reading": 0.273,
+            "modeled": 0.2705
+          },
+          {
+            "date": "2026-05-02",
+            "reading": 0.2723,
+            "modeled": 0.2702
+          },
+          {
+            "date": "2026-05-03",
+            "reading": 0.2721,
+            "modeled": 0.2698
+          },
+          {
+            "date": "2026-05-04",
+            "reading": 0.2719,
+            "modeled": 0.2693
+          },
+          {
+            "date": "2026-05-05",
+            "reading": 0.2708,
+            "modeled": 0.275
+          },
+          {
+            "date": "2026-05-06",
+            "reading": 0.2721,
+            "modeled": 0.2761
+          },
+          {
+            "date": "2026-05-07",
+            "reading": 0.2841,
+            "modeled": 0.2874
+          },
+          {
+            "date": "2026-05-08",
+            "reading": 0.2863,
+            "modeled": 0.2865
+          },
+          {
+            "date": "2026-05-09",
+            "reading": 0.2835,
+            "modeled": 0.2898
+          },
+          {
+            "date": "2026-05-10",
+            "reading": 0.2821,
+            "modeled": 0.2866
+          },
+          {
+            "date": "2026-05-11",
+            "reading": 0.2814,
+            "modeled": 0.284
+          },
+          {
+            "date": "2026-05-12",
+            "reading": 0.2809,
+            "modeled": 0.2819
+          },
+          {
+            "date": "2026-05-13",
+            "reading": 0.281,
+            "modeled": 0.2807
+          },
+          {
+            "date": "2026-05-14",
+            "reading": 0.2805,
+            "modeled": 0.2798
+          },
+          {
+            "date": "2026-05-15",
+            "reading": 0.2803,
+            "modeled": 0.2789
+          },
+          {
+            "date": "2026-05-16",
+            "reading": 0.28,
+            "modeled": 0.2783
+          },
+          {
+            "date": "2026-05-17",
+            "reading": 0.28,
+            "modeled": 0.2787
+          },
+          {
+            "date": "2026-05-18",
+            "reading": 0.2797,
+            "modeled": 0.2781
+          },
+          {
+            "date": "2026-05-19",
+            "reading": 0.2796,
+            "modeled": 0.2777
+          },
+          {
+            "date": "2026-05-20",
+            "reading": 0.2795,
+            "modeled": 0.2773
+          },
+          {
+            "date": "2026-05-21",
+            "reading": 0.2793,
+            "modeled": 0.2771
+          },
+          {
+            "date": "2026-05-22",
+            "reading": 0.2793,
+            "modeled": 0.277
+          },
+          {
+            "date": "2026-05-23",
+            "reading": 0.2793,
+            "modeled": 0.2769
+          },
+          {
+            "date": "2026-05-24",
+            "reading": 0.2782,
+            "modeled": 0.2765
+          },
+          {
+            "date": "2026-05-25",
+            "reading": 0.2782,
+            "modeled": 0.2762
+          },
+          {
+            "date": "2026-05-26",
+            "reading": 0.2778,
+            "modeled": 0.2758
+          },
+          {
+            "date": "2026-05-27",
+            "reading": 0.2773,
+            "modeled": 0.2754
+          },
+          {
+            "date": "2026-05-28",
+            "reading": 0.2771,
+            "modeled": 0.2751
+          },
+          {
+            "date": "2026-05-29",
+            "reading": 0.2763,
+            "modeled": 0.2748
+          },
+          {
+            "date": "2026-05-30",
+            "reading": 0.2766,
+            "modeled": 0.2746
+          },
+          {
+            "date": "2026-05-31",
+            "reading": 0.2767,
+            "modeled": 0.2744
+          },
+          {
+            "date": "2026-06-01",
+            "reading": 0.2763,
+            "modeled": 0.2742
+          },
+          {
+            "date": "2026-06-02",
+            "reading": 0.2764,
+            "modeled": 0.2742
+          },
+          {
+            "date": "2026-06-03",
+            "reading": 0.2762,
+            "modeled": 0.2739
+          },
+          {
+            "date": "2026-06-04",
+            "reading": 0.276,
+            "modeled": 0.2736
+          },
+          {
+            "date": "2026-06-05",
+            "reading": 0.2758,
+            "modeled": 0.2734
+          },
+          {
+            "date": "2026-06-06",
+            "reading": 0.2754,
+            "modeled": 0.2732
+          },
+          {
+            "date": "2026-06-07",
+            "reading": 0.2759,
+            "modeled": 0.274
+          },
+          {
+            "date": "2026-06-08",
+            "reading": 0.2887,
+            "modeled": 0.2884
+          },
+          {
+            "date": "2026-06-09",
+            "reading": 0.2868,
+            "modeled": 0.2872
+          },
+          {
+            "date": "2026-06-10",
+            "reading": 0.2849,
+            "modeled": 0.2858
+          },
+          {
+            "date": "2026-06-11",
+            "reading": 0.2842,
+            "modeled": 0.2848
+          },
+          {
+            "date": "2026-06-12",
+            "reading": 0.2837,
+            "modeled": 0.2836
+          },
+          {
+            "date": "2026-06-13",
+            "reading": 0.2833,
+            "modeled": 0.283
+          },
+          {
+            "date": "2026-06-14",
+            "reading": 0.2837,
+            "modeled": 0.283
+          },
+          {
+            "date": "2026-06-15",
+            "reading": 0.2838,
+            "modeled": 0.2825
+          },
+          {
+            "date": "2026-06-16",
+            "reading": 0.2838,
+            "modeled": 0.282
+          },
+          {
+            "date": "2026-06-17",
+            "reading": 0.2838,
+            "modeled": 0.2818
+          },
+          {
+            "date": "2026-06-18",
+            "reading": 0.2847,
+            "modeled": 0.2884
+          },
+          {
+            "date": "2026-06-19",
+            "reading": 0.2927,
+            "modeled": 0.2921
+          },
+          {
+            "date": "2026-06-20",
+            "reading": 0.2911,
+            "modeled": 0.2909
+          },
+          {
+            "date": "2026-06-21",
+            "reading": 0.29,
+            "modeled": 0.2901
+          },
+          {
+            "date": "2026-06-22",
+            "reading": 0.2896,
+            "modeled": 0.2893
+          },
+          {
+            "date": "2026-06-23",
+            "reading": 0.2891,
+            "modeled": 0.2886
+          },
+          {
+            "date": "2026-06-24",
+            "reading": 0.2887,
+            "modeled": 0.2883
+          },
+          {
+            "date": "2026-06-25",
+            "reading": 0.2887,
+            "modeled": 0.2877
+          },
+          {
+            "date": "2026-06-26",
+            "reading": 0.2883,
+            "modeled": 0.287
+          },
+          {
+            "date": "2026-06-27",
+            "reading": 0.2882,
+            "modeled": 0.2865
+          },
+          {
+            "date": "2026-06-28",
+            "reading": 0.288,
+            "modeled": 0.2863
+          },
+          {
+            "date": "2026-06-29",
+            "reading": 0.288,
+            "modeled": 0.2862
+          },
+          {
+            "date": "2026-06-30",
+            "reading": 0.2881,
+            "modeled": 0.2859
+          },
+          {
+            "date": "2026-07-01",
+            "reading": 0.2878,
+            "modeled": 0.2857
+          },
+          {
+            "date": "2026-07-02",
+            "reading": 0.2874,
+            "modeled": 0.2857
+          },
+          {
+            "date": "2026-07-03",
+            "reading": 0.2874,
+            "modeled": 0.2856
+          },
+          {
+            "date": "2026-07-04",
+            "reading": 0.2874,
+            "modeled": 0.2854
+          },
+          {
+            "date": "2026-07-05",
+            "reading": 0.2874,
+            "modeled": 0.2867
+          },
+          {
+            "date": "2026-07-06",
+            "reading": 0.287,
+            "modeled": 0.2863
+          },
+          {
+            "date": "2026-07-07",
+            "reading": 0.2863,
+            "modeled": 0.2854
+          },
+          {
+            "date": "2026-07-08",
+            "reading": 0.286,
+            "modeled": 0.2847
+          },
+          {
+            "date": "2026-07-09",
+            "reading": 0.2858,
+            "modeled": 0.2842
+          },
+          {
+            "date": "2026-07-10",
+            "reading": 0.2859,
+            "modeled": 0.2838
+          },
+          {
+            "date": "2026-07-11",
+            "reading": 0.2852,
+            "modeled": 0.2835
+          },
+          {
+            "date": "2026-07-12",
+            "reading": 0.2851,
+            "modeled": 0.2834
+          },
+          {
+            "date": "2026-07-13",
+            "reading": 0.2849,
+            "modeled": 0.2831
+          },
+          {
+            "date": "2026-07-14",
+            "reading": 0.2844,
+            "modeled": 0.2827
+          },
+          {
+            "date": "2026-07-15",
+            "reading": 0.284,
+            "modeled": 0.2822
+          },
+          {
+            "date": "2026-07-16",
+            "reading": 0.2835,
+            "modeled": 0.2817
+          },
+          {
+            "date": "2026-07-17",
+            "reading": 0.2836,
+            "modeled": 0.2814
+          },
+          {
+            "date": "2026-07-18",
+            "reading": 0.2838,
+            "modeled": 0.2909
+          },
+          {
+            "date": "2026-07-19",
+            "reading": 0.2891,
+            "modeled": 0.2932
+          },
+          {
+            "date": "2026-07-20",
+            "reading": 0.2907,
+            "modeled": 0.2924
+          },
+          {
+            "date": "2026-07-21",
+            "reading": 0.2885,
+            "modeled": 0.2907
+          },
+          {
+            "date": "2026-07-22",
+            "reading": 0.2879,
+            "modeled": 0.2969
+          },
+          {
+            "date": "2026-07-23",
+            "reading": 0.2876,
+            "modeled": 0.2932
+          },
+          {
+            "date": "2026-07-24",
+            "reading": 0.2872,
+            "modeled": 0.2906
+          },
+          {
+            "date": "2026-07-25",
+            "reading": 0.2869,
+            "modeled": 0.2885
+          },
+          {
+            "date": "2026-07-26",
+            "reading": 0.2868,
+            "modeled": 0.2871
+          },
+          {
+            "date": "2026-07-27",
+            "reading": 0.2868,
+            "modeled": 0.2861
+          },
+          {
+            "date": "2026-07-28",
+            "reading": 0.2866,
+            "modeled": 0.2853
+          },
+          {
+            "date": "2026-07-29",
+            "reading": 0.2866,
+            "modeled": 0.2846
+          },
+          {
+            "date": "2026-07-30",
+            "reading": 0.2858,
+            "modeled": 0.2839
+          },
+          {
+            "date": "2026-07-31",
+            "reading": 0.2858,
+            "modeled": 0.284
+          },
+          {
+            "date": "2026-08-01",
+            "reading": 0.3105,
+            "modeled": 0.321
+          },
+          {
+            "date": "2026-08-02",
+            "reading": 0.3126,
+            "modeled": 0.3225
+          },
+          {
+            "date": "2026-08-03",
+            "reading": 0.3062,
+            "modeled": 0.3167
+          },
+          {
+            "date": "2026-08-04",
+            "reading": 0.3028,
+            "modeled": 0.3115
+          },
+          {
+            "date": "2026-08-05",
+            "reading": 0.3013,
+            "modeled": 0.3085
+          },
+          {
+            "date": "2026-08-06",
+            "reading": 0.311,
+            "modeled": 0.3242
+          },
+          {
+            "date": "2026-08-07",
+            "reading": 0.3184,
+            "modeled": 0.3215
+          },
+          {
+            "date": "2026-08-08",
+            "reading": 0.3135,
+            "modeled": 0.318
+          },
+          {
+            "date": "2026-08-09",
+            "reading": 0.3112,
+            "modeled": 0.3147
+          },
+          {
+            "date": "2026-08-10",
+            "reading": 0.3094,
+            "modeled": 0.312
+          },
+          {
+            "date": "2026-08-11",
+            "reading": 0.3084,
+            "modeled": 0.3098
+          },
+          {
+            "date": "2026-08-12",
+            "reading": 0.3082,
+            "modeled": 0.3083
+          },
+          {
+            "date": "2026-08-13",
+            "reading": 0.3091,
+            "modeled": 0.3082
+          },
+          {
+            "date": "2026-08-14",
+            "reading": 0.309,
+            "modeled": 0.3071
+          },
+          {
+            "date": "2026-08-15",
+            "reading": 0.3081,
+            "modeled": 0.3063
+          },
+          {
+            "date": "2026-08-16",
+            "reading": 0.3115,
+            "modeled": 0.3088
+          },
+          {
+            "date": "2026-08-17",
+            "reading": 0.3157,
+            "modeled": 0.3233
+          },
+          {
+            "date": "2026-08-18",
+            "reading": 0.3232,
+            "modeled": 0.3259
+          },
+          {
+            "date": "2026-08-19",
+            "reading": 0.3208,
+            "modeled": 0.3231
+          },
+          {
+            "date": "2026-08-20",
+            "reading": 0.3233,
+            "modeled": 0.3265
+          },
+          {
+            "date": "2026-08-21",
+            "reading": 0.3232,
+            "modeled": 0.3244
+          },
+          {
+            "date": "2026-08-22",
+            "reading": 0.3207,
+            "modeled": 0.322
+          },
+          {
+            "date": "2026-08-23",
+            "reading": 0.3188,
+            "modeled": 0.3196
+          },
+          {
+            "date": "2026-08-24",
+            "reading": 0.3175,
+            "modeled": 0.3177
+          },
+          {
+            "date": "2026-08-25",
+            "reading": 0.3172,
+            "modeled": 0.3161
+          },
+          {
+            "date": "2026-08-26",
+            "reading": 0.3164,
+            "modeled": 0.3147
+          },
+          {
+            "date": "2026-08-27",
+            "reading": 0.3169,
+            "modeled": 0.3166
+          },
+          {
+            "date": "2026-08-28",
+            "reading": 0.317,
+            "modeled": 0.3158
+          },
+          {
+            "date": "2026-08-29",
+            "reading": 0.3158,
+            "modeled": 0.3141
+          },
+          {
+            "date": "2026-08-30",
+            "reading": 0.3141,
+            "modeled": 0.3122
+          },
+          {
+            "date": "2026-08-31",
+            "reading": 0.3123,
+            "modeled": 0.3102
+          },
+          {
+            "date": "2026-09-01",
+            "reading": 0.3115,
+            "modeled": 0.3086
+          },
+          {
+            "date": "2026-09-02",
+            "reading": 0.3101,
+            "modeled": 0.307
+          },
+          {
+            "date": "2026-09-03",
+            "reading": 0.3094,
+            "modeled": 0.308
+          },
+          {
+            "date": "2026-09-04",
+            "reading": 0.3087,
+            "modeled": 0.3066
+          },
+          {
+            "date": "2026-09-05",
+            "reading": 0.3072,
+            "modeled": 0.3054
+          },
+          {
+            "date": "2026-09-06",
+            "reading": 0.3064,
+            "modeled": 0.3043
+          },
+          {
+            "date": "2026-09-07",
+            "reading": 0.3054,
+            "modeled": 0.3031
+          },
+          {
+            "date": "2026-09-08",
+            "reading": 0.3045,
+            "modeled": 0.3016
+          },
+          {
+            "date": "2026-09-09",
+            "reading": 0.3037,
+            "modeled": 0.301
+          },
+          {
+            "date": "2026-09-10",
+            "reading": 0.3024,
+            "modeled": 0.2995
+          },
+          {
+            "date": "2026-09-11",
+            "reading": 0.301,
+            "modeled": 0.2983
+          },
+          {
+            "date": "2026-09-12",
+            "reading": 0.3005,
+            "modeled": 0.2979
+          },
+          {
+            "date": "2026-09-13",
+            "reading": 0.2991,
+            "modeled": 0.2967
+          },
+          {
+            "date": "2026-09-14",
+            "reading": 0.2987,
+            "modeled": 0.2955
+          },
+          {
+            "date": "2026-09-15",
+            "reading": 0.2973,
+            "modeled": 0.294
+          },
+          {
+            "date": "2026-09-16",
+            "reading": 0.2957,
+            "modeled": 0.2926
+          },
+          {
+            "date": "2026-09-17",
+            "reading": 0.2945,
+            "modeled": 0.2909
+          },
+          {
+            "date": "2026-09-18",
+            "reading": 0.2918,
+            "modeled": 0.2891
+          },
+          {
+            "date": "2026-09-19",
+            "reading": 0.2903,
+            "modeled": 0.2873
+          },
+          {
+            "date": "2026-09-20",
+            "reading": 0.289,
+            "modeled": 0.2908
+          },
+          {
+            "date": "2026-09-21",
+            "reading": 0.2912,
+            "modeled": 0.2902
+          },
+          {
+            "date": "2026-09-22",
+            "reading": 0.2899,
+            "modeled": 0.2887
+          },
+          {
+            "date": "2026-09-23",
+            "reading": 0.2893,
+            "modeled": 0.287
+          },
+          {
+            "date": "2026-09-24",
+            "reading": 0.288,
+            "modeled": 0.2851
+          },
+          {
+            "date": "2026-09-25",
+            "reading": 0.2863,
+            "modeled": 0.283
+          },
+          {
+            "date": "2026-09-26",
+            "reading": 0.2837,
+            "modeled": 0.2826
+          },
+          {
+            "date": "2026-09-27",
+            "reading": 0.2869,
+            "modeled": 0.2939
+          },
+          {
+            "date": "2026-09-28",
+            "reading": 0.2982,
+            "modeled": 0.2967
+          },
+          {
+            "date": "2026-09-29",
+            "reading": 0.3065,
+            "modeled": 0.2996
+          },
+          {
+            "date": "2026-09-30",
+            "reading": 0.304,
+            "modeled": 0.2988
+          },
+          {
+            "date": "2026-10-01",
+            "reading": 0.3023,
+            "modeled": 0.3016
+          },
+          {
+            "date": "2026-10-02",
+            "reading": 0.3007,
+            "modeled": 0.2991
+          },
+          {
+            "date": "2026-10-03",
+            "reading": 0.303,
+            "modeled": 0.305
+          },
+          {
+            "date": "2026-10-04",
+            "reading": 0.3065,
+            "modeled": 0.3029
+          },
+          {
+            "date": "2026-10-05",
+            "reading": 0.3031,
+            "modeled": 0.301
+          },
+          {
+            "date": "2026-10-06",
+            "reading": 0.3016,
+            "modeled": 0.2989
+          },
+          {
+            "date": "2026-10-07",
+            "reading": 0.3036,
+            "modeled": 0.3336
+          },
+          {
+            "date": "2026-10-08",
+            "reading": 0.3261,
+            "modeled": 0.3434
+          },
+          {
+            "date": "2026-10-09",
+            "reading": 0.3191,
+            "modeled": 0.3354
+          },
+          {
+            "date": "2026-10-10",
+            "reading": 0.3148,
+            "modeled": 0.3279
+          },
+          {
+            "date": "2026-10-11",
+            "reading": 0.3121,
+            "modeled": 0.3212
+          },
+          {
+            "date": "2026-10-12",
+            "reading": 0.3109,
+            "modeled": 0.3158
+          },
+          {
+            "date": "2026-10-13",
+            "reading": 0.3097,
+            "modeled": 0.3117
+          },
+          {
+            "date": "2026-10-14",
+            "reading": 0.3086,
+            "modeled": 0.3106
+          },
+          {
+            "date": "2026-10-15",
+            "reading": 0.3084,
+            "modeled": 0.3112
+          },
+          {
+            "date": "2026-10-16",
+            "reading": 0.3089,
+            "modeled": 0.3099
+          },
+          {
+            "date": "2026-10-17",
+            "reading": 0.3082,
+            "modeled": 0.3074
+          },
+          {
+            "date": "2026-10-18",
+            "reading": 0.3063,
+            "modeled": 0.305
+          },
+          {
+            "date": "2026-10-19",
+            "reading": 0.3045,
+            "modeled": 0.3022
+          },
+          {
+            "date": "2026-10-20",
+            "reading": 0.3025,
+            "modeled": 0.2995
+          },
+          {
+            "date": "2026-10-21",
+            "reading": 0.3005,
+            "modeled": 0.2977
+          },
+          {
+            "date": "2026-10-22",
+            "reading": 0.3044,
+            "modeled": 0.302
+          },
+          {
+            "date": "2026-10-23",
+            "reading": 0.3298,
+            "modeled": 0.3128
+          },
+          {
+            "date": "2026-10-24",
+            "reading": 0.3221,
+            "modeled": 0.3144
+          },
+          {
+            "date": "2026-10-25",
+            "reading": 0.3169,
+            "modeled": 0.3137
+          },
+          {
+            "date": "2026-10-26",
+            "reading": 0.3139,
+            "modeled": 0.3114
+          },
+          {
+            "date": "2026-10-27",
+            "reading": 0.3116,
+            "modeled": 0.3089
+          },
+          {
+            "date": "2026-10-28",
+            "reading": 0.3091,
+            "modeled": 0.306
+          },
+          {
+            "date": "2026-10-29",
+            "reading": 0.3068,
+            "modeled": 0.304
+          },
+          {
+            "date": "2026-10-30",
+            "reading": 0.3067,
+            "modeled": 0.3095
+          },
+          {
+            "date": "2026-10-31",
+            "reading": 0.307,
+            "modeled": 0.3068
+          },
+          {
+            "date": "2026-11-01",
+            "reading": 0.3049,
+            "modeled": 0.3037
+          },
+          {
+            "date": "2026-11-02",
+            "reading": 0.3032,
+            "modeled": 0.302
+          },
+          {
+            "date": "2026-11-03",
+            "reading": 0.3017,
+            "modeled": 0.3006
+          },
+          {
+            "date": "2026-11-04",
+            "reading": 0.3142,
+            "modeled": 0.3211
+          },
+          {
+            "date": "2026-11-05",
+            "reading": 0.3095,
+            "modeled": 0.3142
           }
-        ]
+        ],
+        "carried_days": 8
+      },
+      "correction": {
+        "model": "B",
+        "version": 1,
+        "last_satellite_day": "2026-11-05",
+        "note": {
+          "key": "learn.start.note",
+          "en": "Starting water: the satellite corrected by model B, which learned from the panel's fields (simulated sensors). Not a sensor reading.",
+          "es": "Agua de partida: el satélite corregido por el modelo B, que aprendió de los campos del panel (sensores simulados). No es una lectura de sensor."
+        }
       }
     },
     "soil": {
@@ -1970,6 +1961,12 @@
         "is_current": true,
         "water_risk": null,
         "drops": null,
+        "risk_basis": {
+          "source": "fixed_cuts",
+          "model_version": null,
+          "fixed_cuts_drops": null,
+          "fixed_cuts_water_risk": null
+        },
         "sentence": {
           "key": "card.cycle_ended",
           "en": "Day 156 of a 150-day cycle: the cycle of this sowing has already ended; there is no deficit scenario to show.",
@@ -2010,6 +2007,16 @@
           "ok": 4,
           "tight": 2,
           "out": 4
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 4,
+            "tight": 2,
+            "out": 4
+          },
+          "fixed_cuts_water_risk": "medium"
         },
         "sentence": {
           "key": "front.sentence",
@@ -2116,6 +2123,16 @@
           "ok": 4,
           "tight": 2,
           "out": 4
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 4,
+            "tight": 2,
+            "out": 4
+          },
+          "fixed_cuts_water_risk": "medium"
         },
         "sentence": {
           "key": "front.sentence",
@@ -2225,16 +2242,26 @@
           "es": "Rotación observada 3"
         },
         "is_current": false,
-        "water_risk": "low",
+        "water_risk": "medium",
         "drops": {
           "ok": 4,
-          "tight": 3,
-          "out": 3
+          "tight": 2,
+          "out": 4
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 4,
+            "tight": 3,
+            "out": 3
+          },
+          "fixed_cuts_water_risk": "low"
         },
         "sentence": {
           "key": "front.sentence",
-          "en": "In 3 of every 10 historical seasons, water ran short in the critical stage.",
-          "es": "En 3 de cada 10 zafras históricas faltó agua en la etapa crítica."
+          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
         },
         "soil_effect": null,
         "soil_reason": null,
@@ -2307,16 +2334,26 @@
           "es": "Rotación observada 4"
         },
         "is_current": false,
-        "water_risk": "low",
+        "water_risk": "medium",
         "drops": {
           "ok": 4,
-          "tight": 3,
-          "out": 3
+          "tight": 2,
+          "out": 4
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 4,
+            "tight": 3,
+            "out": 3
+          },
+          "fixed_cuts_water_risk": "low"
         },
         "sentence": {
           "key": "front.sentence",
-          "en": "In 3 of every 10 historical seasons, water ran short in the critical stage.",
-          "es": "En 3 de cada 10 zafras históricas faltó agua en la etapa crítica."
+          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
         },
         "soil_effect": null,
         "soil_reason": null,
@@ -2402,6 +2439,16 @@
           "ok": 4,
           "tight": 2,
           "out": 4
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 4,
+            "tight": 2,
+            "out": 4
+          },
+          "fixed_cuts_water_risk": "medium"
         },
         "sentence": {
           "key": "front.sentence",
@@ -2498,13 +2545,23 @@
         "water_risk": "medium",
         "drops": {
           "ok": 3,
-          "tight": 3,
-          "out": 4
+          "tight": 2,
+          "out": 5
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 3,
+            "tight": 3,
+            "out": 4
+          },
+          "fixed_cuts_water_risk": "medium"
         },
         "sentence": {
           "key": "front.sentence",
-          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
-          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
+          "en": "In 5 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 5 de cada 10 zafras históricas faltó agua en la etapa crítica."
         },
         "soil_effect": null,
         "soil_reason": null,
@@ -2587,14 +2644,24 @@
         "is_current": false,
         "water_risk": "medium",
         "drops": {
-          "ok": 4,
+          "ok": 3,
           "tight": 2,
-          "out": 4
+          "out": 5
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 4,
+            "tight": 2,
+            "out": 4
+          },
+          "fixed_cuts_water_risk": "medium"
         },
         "sentence": {
           "key": "front.sentence",
-          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
-          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
+          "en": "In 5 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 5 de cada 10 zafras históricas faltó agua en la etapa crítica."
         },
         "soil_effect": null,
         "soil_reason": null,
@@ -2710,13 +2777,23 @@
         "water_risk": "medium",
         "drops": {
           "ok": 2,
-          "tight": 3,
-          "out": 5
+          "tight": 2,
+          "out": 6
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 2,
+            "tight": 3,
+            "out": 5
+          },
+          "fixed_cuts_water_risk": "medium"
         },
         "sentence": {
           "key": "front.sentence",
-          "en": "In 5 of every 10 historical seasons, water ran short in the critical stage.",
-          "es": "En 5 de cada 10 zafras históricas faltó agua en la etapa crítica."
+          "en": "In 6 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 6 de cada 10 zafras históricas faltó agua en la etapa crítica."
         },
         "soil_effect": null,
         "soil_reason": null,
@@ -2791,14 +2868,24 @@
         "is_current": false,
         "water_risk": "medium",
         "drops": {
-          "ok": 4,
+          "ok": 3,
           "tight": 2,
-          "out": 4
+          "out": 5
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 4,
+            "tight": 2,
+            "out": 4
+          },
+          "fixed_cuts_water_risk": "medium"
         },
         "sentence": {
           "key": "front.sentence",
-          "en": "In 4 of every 10 historical seasons, water ran short in the critical stage.",
-          "es": "En 4 de cada 10 zafras históricas faltó agua en la etapa crítica."
+          "en": "In 5 of every 10 historical seasons, water ran short in the critical stage.",
+          "es": "En 5 de cada 10 zafras históricas faltó agua en la etapa crítica."
         },
         "soil_effect": null,
         "soil_reason": null,
@@ -2884,6 +2971,16 @@
           "ok": 3,
           "tight": 2,
           "out": 5
+        },
+        "risk_basis": {
+          "source": "model_a",
+          "model_version": 1,
+          "fixed_cuts_drops": {
+            "ok": 3,
+            "tight": 2,
+            "out": 5
+          },
+          "fixed_cuts_water_risk": "medium"
         },
         "sentence": {
           "key": "front.sentence",
@@ -3018,7 +3115,7 @@
       },
       "erosion_t_ha_yr": 2.7,
       "soil_type": {
-        "description": "CONEAT 10.8b, Brunosol",
+        "description": "CONEAT 11.4, Brunosol",
         "confirmed": true
       }
     }
@@ -3832,6 +3929,19 @@
         }
       },
       {
+        "id": "pending",
+        "badge": {
+          "key": "front.mode.pending",
+          "en": "Calculating your field · ready tomorrow",
+          "es": "Estamos calculando tu campo · estará listo mañana"
+        },
+        "meaning": {
+          "key": "front.mode.meaning.pending",
+          "en": "The field is new and the nightly run has not reached it yet: show this message and no numbers.",
+          "es": "El campo es nuevo y la corrida de la noche todavía no llegó: mostrar este mensaje y ningún número."
+        }
+      },
+      {
         "id": "error",
         "badge": {
           "key": "front.mode.error",
@@ -3860,6 +3970,343 @@
     ]
   },
   "charts": [
+    {
+      "id": "retro_drops",
+      "figure": "retrospective",
+      "group": "retrospective",
+      "title": {
+        "key": "retro.drops",
+        "en": "Soybean (1st sowing) sown in 2022/23: what the tool would have said (of 10 seasons)",
+        "es": "Soja de primera sembrado en 2022/23: lo que habría dicho la herramienta (de cada 10 zafras)"
+      },
+      "note": {
+        "key": "retro.note",
+        "en": "Simulated panel: fields, sowing dates and outcomes come from the model with the crop table (parameters pending). Backtest: the season itself is left out of its scenarios. It is not a check against a real field.",
+        "es": "Panel simulado: campos, fechas de siembra y resultados salen del modelo con la tabla de cultivos (parámetros pendientes). Retrospectiva: la zafra misma queda fuera de sus escenarios. No es una verificación contra un campo real."
+      },
+      "x": {
+        "type": "category",
+        "label": null,
+        "values": [
+          "soriano",
+          "sim_salto",
+          "sim_paysandu",
+          "sim_rio_negro",
+          "sim_flores",
+          "sim_durazno",
+          "sim_florida",
+          "la_estanzuela"
+        ],
+        "names": [
+          {
+            "key": "department.Soriano",
+            "en": "Soriano",
+            "es": "Soriano"
+          },
+          {
+            "key": "department.Salto",
+            "en": "Salto",
+            "es": "Salto"
+          },
+          {
+            "key": "department.Paysandu",
+            "en": "Paysandu",
+            "es": "Paysandu"
+          },
+          {
+            "key": "department.Rio Negro",
+            "en": "Rio Negro",
+            "es": "Rio Negro"
+          },
+          {
+            "key": "department.Flores",
+            "en": "Flores",
+            "es": "Flores"
+          },
+          {
+            "key": "department.Durazno",
+            "en": "Durazno",
+            "es": "Durazno"
+          },
+          {
+            "key": "department.Florida",
+            "en": "Florida",
+            "es": "Florida"
+          },
+          {
+            "key": "department.Colonia",
+            "en": "Colonia",
+            "es": "Colonia"
+          }
+        ],
+        "tags": null
+      },
+      "y": {
+        "label": {
+          "key": "sowing.axis.seasons",
+          "en": "Historical seasons",
+          "es": "Zafras historicas"
+        },
+        "unit": null
+      },
+      "stacked": true,
+      "simulated": true,
+      "source": "simulated_panel",
+      "series": [
+        {
+          "id": "ok",
+          "label": {
+            "key": "sowing.drop.ok",
+            "en": "ok (low deficit)",
+            "es": "ok (deficit bajo)"
+          },
+          "style": "bar",
+          "values": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            2
+          ]
+        },
+        {
+          "id": "tight",
+          "label": {
+            "key": "sowing.drop.tight",
+            "en": "tight (moderate deficit)",
+            "es": "ajustado (deficit moderado)"
+          },
+          "style": "bar",
+          "values": [
+            2,
+            3,
+            2,
+            2,
+            2,
+            2,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "out",
+          "label": {
+            "key": "sowing.drop.out",
+            "en": "out (high deficit)",
+            "es": "fuera (deficit alto)"
+          },
+          "style": "bar",
+          "values": [
+            7,
+            6,
+            7,
+            7,
+            7,
+            7,
+            8,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "retro_actual",
+      "figure": "retrospective",
+      "group": "retrospective",
+      "title": {
+        "key": "retro.actual",
+        "en": "What the season was: stress in the critical stage",
+        "es": "Cómo fue la zafra: estrés en la etapa crítica"
+      },
+      "note": {
+        "key": "retro.note",
+        "en": "Simulated panel: fields, sowing dates and outcomes come from the model with the crop table (parameters pending). Backtest: the season itself is left out of its scenarios. It is not a check against a real field.",
+        "es": "Panel simulado: campos, fechas de siembra y resultados salen del modelo con la tabla de cultivos (parámetros pendientes). Retrospectiva: la zafra misma queda fuera de sus escenarios. No es una verificación contra un campo real."
+      },
+      "x": {
+        "type": "category",
+        "label": null,
+        "values": [
+          "soriano",
+          "sim_salto",
+          "sim_paysandu",
+          "sim_rio_negro",
+          "sim_flores",
+          "sim_durazno",
+          "sim_florida",
+          "la_estanzuela"
+        ],
+        "names": [
+          {
+            "key": "department.Soriano",
+            "en": "Soriano",
+            "es": "Soriano"
+          },
+          {
+            "key": "department.Salto",
+            "en": "Salto",
+            "es": "Salto"
+          },
+          {
+            "key": "department.Paysandu",
+            "en": "Paysandu",
+            "es": "Paysandu"
+          },
+          {
+            "key": "department.Rio Negro",
+            "en": "Rio Negro",
+            "es": "Rio Negro"
+          },
+          {
+            "key": "department.Flores",
+            "en": "Flores",
+            "es": "Flores"
+          },
+          {
+            "key": "department.Durazno",
+            "en": "Durazno",
+            "es": "Durazno"
+          },
+          {
+            "key": "department.Florida",
+            "en": "Florida",
+            "es": "Florida"
+          },
+          {
+            "key": "department.Colonia",
+            "en": "Colonia",
+            "es": "Colonia"
+          }
+        ],
+        "tags": null
+      },
+      "y": {
+        "label": {
+          "key": "validation.axis.critical_stress",
+          "en": "Modelled unmet demand in the critical stage",
+          "es": "Demanda no cubierta modelada en la etapa critica"
+        },
+        "unit": null
+      },
+      "stacked": false,
+      "simulated": true,
+      "source": "simulated_panel",
+      "series": [
+        {
+          "id": "actual_stress",
+          "label": {
+            "key": "retro.actual",
+            "en": "What the season was: stress in the critical stage",
+            "es": "Cómo fue la zafra: estrés en la etapa crítica"
+          },
+          "style": "bar",
+          "values": [
+            0.896,
+            0.771,
+            0.972,
+            0.926,
+            0.989,
+            0.993,
+            0.965,
+            0.88
+          ]
+        }
+      ]
+    },
+    {
+      "id": "retro_share",
+      "figure": "retrospective",
+      "group": "retrospective",
+      "title": {
+        "key": "retro.title",
+        "en": "What the tool would have said before each past season, and what the season was",
+        "es": "Qué habría dicho la herramienta antes de cada zafra pasada, y cómo fue la zafra"
+      },
+      "note": {
+        "key": "retro.note",
+        "en": "Simulated panel: fields, sowing dates and outcomes come from the model with the crop table (parameters pending). Backtest: the season itself is left out of its scenarios. It is not a check against a real field.",
+        "es": "Panel simulado: campos, fechas de siembra y resultados salen del modelo con la tabla de cultivos (parámetros pendientes). Retrospectiva: la zafra misma queda fuera de sus escenarios. No es una verificación contra un campo real."
+      },
+      "x": {
+        "type": "category",
+        "label": null,
+        "values": [
+          "soybean_1st",
+          "maize",
+          "wheat",
+          "barley"
+        ],
+        "names": [
+          {
+            "key": "crops.soybean_1st.name",
+            "en": "Soybean (1st sowing)",
+            "es": "Soja de primera"
+          },
+          {
+            "key": "crops.maize.name",
+            "en": "Maize (1st sowing)",
+            "es": "Maíz de primera"
+          },
+          {
+            "key": "crops.wheat.name",
+            "en": "Wheat",
+            "es": "Trigo"
+          },
+          {
+            "key": "crops.barley.name",
+            "en": "Barley",
+            "es": "Cebada"
+          }
+        ],
+        "tags": null
+      },
+      "y": {
+        "label": {
+          "key": "retro.share_axis",
+          "en": "Share of cases",
+          "es": "Proporción de casos"
+        },
+        "unit": null
+      },
+      "stacked": false,
+      "simulated": true,
+      "source": "simulated_panel",
+      "series": [
+        {
+          "id": "base_rate",
+          "label": {
+            "key": "retro.base",
+            "en": "Share of seasons that ended without water",
+            "es": "Proporción de zafras que terminaron sin agua"
+          },
+          "style": "bar",
+          "values": [
+            0.641,
+            0.628,
+            0.093,
+            0.061
+          ]
+        },
+        {
+          "id": "warned",
+          "label": {
+            "key": "retro.warned",
+            "en": "Seasons without water that had been warned (risk medium or high)",
+            "es": "Zafras sin agua que habían sido avisadas (riesgo medio o alto)"
+          },
+          "style": "bar",
+          "values": [
+            1.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
     {
       "id": "sowing_soybean_1st",
       "figure": "sowing",
@@ -8058,5 +8505,1074 @@
         }
       ]
     }
-  ]
+  ],
+  "learning": {
+    "simulated": true,
+    "note": {
+      "key": "learn.note",
+      "en": "Predictions of three small machine-learning models trained on a simulated panel of fields, producers and seasons. They show that the method works; they are not accuracy on real fields.",
+      "es": "Predicciones de tres modelos chicos de machine learning entrenados con un panel simulado de campos, productores y zafras. Muestran que el método funciona; no son precisión en campos reales."
+    },
+    "models": [
+      {
+        "id": "B",
+        "role": {
+          "key": "learn.model.B.role",
+          "en": "Model B: how wrong the satellite is",
+          "es": "Modelo B: cuánto se equivoca el satélite"
+        },
+        "version": 1,
+        "state": "published",
+        "trained_on": "2026-11-15",
+        "examples": 2909,
+        "fields": 8,
+        "simulated_data": true,
+        "metric": {
+          "name": {
+            "key": "learn.metric.regional_rmse",
+            "en": "Error of the corrected satellite on fields kept apart (m3/m3)",
+            "es": "Error del satélite corregido en campos apartados (m3/m3)"
+          },
+          "value": 0.0251,
+          "fixed_rule": 0.03,
+          "fixed_rule_name": {
+            "key": "learn.metric.satellite_rmse",
+            "en": "Error of the satellite as it is (m3/m3)",
+            "es": "Error del satélite tal cual (m3/m3)"
+          },
+          "lower_is_better": true,
+          "better": true
+        },
+        "reason": "beats the fixed rule on fields apart"
+      },
+      {
+        "id": "A",
+        "role": {
+          "key": "learn.model.A.role",
+          "en": "Model A: what a bad season is",
+          "es": "Modelo A: qué es una mala zafra"
+        },
+        "version": 1,
+        "state": "published",
+        "trained_on": "2026-11-15",
+        "examples": 2858,
+        "fields": 8,
+        "simulated_data": true,
+        "metric": {
+          "name": {
+            "key": "learn.metric.accuracy",
+            "en": "Accuracy on fields kept apart",
+            "es": "Acierto en campos apartados"
+          },
+          "value": 0.8137,
+          "fixed_rule": 0.8105,
+          "fixed_rule_name": {
+            "key": "learn.metric.fixed_cuts_accuracy",
+            "en": "Accuracy of the fixed cuts",
+            "es": "Acierto de los cortes fijos"
+          },
+          "lower_is_better": false,
+          "better": true
+        },
+        "reason": "beats the fixed rule on fields apart"
+      },
+      {
+        "id": "C",
+        "role": {
+          "key": "learn.model.C.role",
+          "en": "Model C: crop history",
+          "es": "Modelo C: historial de cultivos"
+        },
+        "version": 1,
+        "state": "published",
+        "trained_on": "2026-11-15",
+        "examples": 3180,
+        "fields": 8,
+        "simulated_data": true,
+        "metric": {
+          "name": {
+            "key": "learn.metric.accuracy",
+            "en": "Accuracy on fields kept apart",
+            "es": "Acierto en campos apartados"
+          },
+          "value": 0.8406,
+          "fixed_rule": 0.1008,
+          "fixed_rule_name": {
+            "key": "learn.metric.most_common_accuracy",
+            "en": "Accuracy of always naming the most common crop",
+            "es": "Acierto de nombrar siempre el cultivo más común"
+          },
+          "lower_is_better": false,
+          "better": true
+        },
+        "reason": "beats the fixed rule on fields apart"
+      }
+    ],
+    "options": [
+      {
+        "id": "survey_01",
+        "model_version": 1,
+        "seasons": 273,
+        "of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "fixed_cuts_water_risk": "medium"
+      },
+      {
+        "id": "survey_02",
+        "model_version": 1,
+        "seasons": 273,
+        "of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "fixed_cuts_water_risk": "medium"
+      },
+      {
+        "id": "survey_03",
+        "model_version": 1,
+        "seasons": 156,
+        "of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 4,
+          "tight": 3,
+          "out": 3
+        },
+        "fixed_cuts_water_risk": "low"
+      },
+      {
+        "id": "survey_04",
+        "model_version": 1,
+        "seasons": 156,
+        "of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 4,
+          "tight": 3,
+          "out": 3
+        },
+        "fixed_cuts_water_risk": "low"
+      },
+      {
+        "id": "survey_07",
+        "model_version": 1,
+        "seasons": 234,
+        "of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "fixed_cuts_water_risk": "medium"
+      },
+      {
+        "id": "survey_08",
+        "model_version": 1,
+        "seasons": 195,
+        "of_10": {
+          "ok": 3,
+          "tight": 2,
+          "out": 5
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 3,
+          "tight": 3,
+          "out": 4
+        },
+        "fixed_cuts_water_risk": "medium"
+      },
+      {
+        "id": "survey_09",
+        "model_version": 1,
+        "seasons": 312,
+        "of_10": {
+          "ok": 3,
+          "tight": 2,
+          "out": 5
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "fixed_cuts_water_risk": "medium"
+      },
+      {
+        "id": "survey_10",
+        "model_version": 1,
+        "seasons": 156,
+        "of_10": {
+          "ok": 2,
+          "tight": 2,
+          "out": 6
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 2,
+          "tight": 3,
+          "out": 5
+        },
+        "fixed_cuts_water_risk": "medium"
+      },
+      {
+        "id": "survey_11",
+        "model_version": 1,
+        "seasons": 117,
+        "of_10": {
+          "ok": 3,
+          "tight": 2,
+          "out": 5
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 4,
+          "tight": 2,
+          "out": 4
+        },
+        "fixed_cuts_water_risk": "medium"
+      },
+      {
+        "id": "survey_12",
+        "model_version": 1,
+        "seasons": 156,
+        "of_10": {
+          "ok": 3,
+          "tight": 2,
+          "out": 5
+        },
+        "water_risk": "medium",
+        "fixed_cuts_of_10": {
+          "ok": 3,
+          "tight": 2,
+          "out": 5
+        },
+        "fixed_cuts_water_risk": "medium"
+      }
+    ],
+    "satellite": {
+      "model_version": 1,
+      "field_id": "soriano",
+      "dates": [
+        "2026-08-08",
+        "2026-08-09",
+        "2026-08-10",
+        "2026-08-11",
+        "2026-08-12",
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-17",
+        "2026-08-18",
+        "2026-08-19",
+        "2026-08-20",
+        "2026-08-21",
+        "2026-08-22",
+        "2026-08-23",
+        "2026-08-24",
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-27",
+        "2026-08-28",
+        "2026-08-29",
+        "2026-08-30",
+        "2026-08-31",
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-05",
+        "2026-09-06",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10",
+        "2026-09-11",
+        "2026-09-12",
+        "2026-09-13",
+        "2026-09-14",
+        "2026-09-15",
+        "2026-09-16",
+        "2026-09-17",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+        "2026-09-25",
+        "2026-09-26",
+        "2026-09-27",
+        "2026-09-28",
+        "2026-09-29",
+        "2026-09-30",
+        "2026-10-01",
+        "2026-10-02",
+        "2026-10-03",
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08",
+        "2026-10-09",
+        "2026-10-10",
+        "2026-10-11",
+        "2026-10-12",
+        "2026-10-13",
+        "2026-10-14",
+        "2026-10-15",
+        "2026-10-16",
+        "2026-10-17",
+        "2026-10-18",
+        "2026-10-19",
+        "2026-10-20",
+        "2026-10-21",
+        "2026-10-22",
+        "2026-10-23",
+        "2026-10-24",
+        "2026-10-25",
+        "2026-10-26",
+        "2026-10-27",
+        "2026-10-28",
+        "2026-10-29",
+        "2026-10-30",
+        "2026-10-31",
+        "2026-11-01",
+        "2026-11-02",
+        "2026-11-03",
+        "2026-11-04",
+        "2026-11-05"
+      ],
+      "satellite": [
+        0.3229887375,
+        0.3199265875,
+        0.3175035,
+        0.3163187,
+        0.31610506250000003,
+        0.3175603,
+        0.3176621,
+        0.31656275,
+        0.321346825,
+        0.32743951250000003,
+        0.3380757625,
+        0.3348381625,
+        0.338612275,
+        0.3386242375,
+        0.33529765,
+        0.332881175,
+        0.3312800375,
+        0.3311005125,
+        0.3301644125,
+        0.33117386249999997,
+        0.3315657875,
+        0.3300423375,
+        0.3279700625,
+        0.3257132125,
+        0.324773625,
+        0.323132125,
+        0.322444525,
+        0.3216676,
+        0.3199202,
+        0.3190381875,
+        0.317966,
+        0.31692995,
+        0.3161590375,
+        0.3146631125,
+        0.312997625,
+        0.3125705125,
+        0.31085065,
+        0.31065405,
+        0.3090584875,
+        0.3071365625,
+        0.3056814,
+        0.302358925,
+        0.3005399125,
+        0.2990014375,
+        0.3023714,
+        0.300973525,
+        0.3004502625,
+        0.29893105,
+        0.2968626875,
+        0.293632575,
+        0.2984106125,
+        0.3144686125,
+        0.3263954125,
+        0.3232132125,
+        0.32125385,
+        0.319292725,
+        0.32292235,
+        0.328048875,
+        0.32370535,
+        0.32192506249999997,
+        0.325128325,
+        0.3568039125,
+        0.3473354625,
+        0.3417451,
+        0.3384033875,
+        0.337007225,
+        0.3356796875,
+        0.3345213125,
+        0.3346728375,
+        0.3357494,
+        0.3350293,
+        0.332819475,
+        0.3306185875,
+        0.3282153625,
+        0.3257598375,
+        0.331567675,
+        0.367253575,
+        0.3568668,
+        0.3500509,
+        0.34620493750000003,
+        0.34336185,
+        0.3401951375,
+        0.337363675,
+        0.3376603875,
+        0.3384575375,
+        0.3357569125,
+        0.33377239999999997,
+        0.33204113749999997,
+        0.34974818750000003,
+        0.3435850125
+      ],
+      "corrected": [
+        0.3198,
+        0.3175,
+        0.3156,
+        0.3147,
+        0.3144,
+        0.3153,
+        0.3153,
+        0.3144,
+        0.3177,
+        0.322,
+        0.3295,
+        0.327,
+        0.3296,
+        0.3295,
+        0.3269,
+        0.325,
+        0.3237,
+        0.3235,
+        0.3226,
+        0.3232,
+        0.3233,
+        0.322,
+        0.3204,
+        0.3186,
+        0.3177,
+        0.3163,
+        0.3157,
+        0.3149,
+        0.3135,
+        0.3126,
+        0.3117,
+        0.3107,
+        0.31,
+        0.3087,
+        0.3073,
+        0.3068,
+        0.3053,
+        0.305,
+        0.3036,
+        0.302,
+        0.3007,
+        0.2981,
+        0.2966,
+        0.2952,
+        0.2974,
+        0.2962,
+        0.2956,
+        0.2942,
+        0.2925,
+        0.2899,
+        0.2931,
+        0.3044,
+        0.3128,
+        0.3102,
+        0.3086,
+        0.3069,
+        0.3093,
+        0.3127,
+        0.3093,
+        0.3078,
+        0.3099,
+        0.3324,
+        0.3253,
+        0.321,
+        0.3184,
+        0.3171,
+        0.3159,
+        0.3148,
+        0.3147,
+        0.3152,
+        0.3144,
+        0.3126,
+        0.3107,
+        0.3087,
+        0.3067,
+        0.3106,
+        0.336,
+        0.3283,
+        0.3232,
+        0.3201,
+        0.3178,
+        0.3153,
+        0.313,
+        0.313,
+        0.3133,
+        0.3111,
+        0.3094,
+        0.3079,
+        0.3204,
+        0.3158
+      ],
+      "sensor": [
+        0.3296,
+        0.3299,
+        0.3369,
+        0.3326,
+        0.3492,
+        0.3505,
+        0.3519,
+        0.3189,
+        0.3403,
+        0.3376,
+        0.3084,
+        0.3311,
+        0.3301,
+        0.3543,
+        0.3409,
+        0.3416,
+        0.3413,
+        0.3383,
+        0.314,
+        0.3233,
+        0.3327,
+        0.3176,
+        0.3337,
+        0.3223,
+        0.3234,
+        0.29,
+        0.2921,
+        0.3089,
+        0.3119,
+        0.3127,
+        0.3293,
+        0.3126,
+        0.2914,
+        0.2922,
+        0.2887,
+        0.3063,
+        0.2797,
+        0.2783,
+        0.2845,
+        0.2846,
+        0.2762,
+        0.2923,
+        0.2999,
+        0.2719,
+        0.2666,
+        0.3032,
+        0.2435,
+        0.2598,
+        0.2576,
+        0.2833,
+        0.2984,
+        0.2868,
+        0.2632,
+        0.2976,
+        0.3196,
+        0.2798,
+        0.2832,
+        0.3041,
+        0.2924,
+        0.2869,
+        0.3324,
+        0.3422,
+        0.3506,
+        0.3431,
+        0.322,
+        0.3333,
+        0.3335,
+        0.3332,
+        0.3335,
+        0.3269,
+        0.3367,
+        0.32,
+        0.2896,
+        0.3145,
+        0.3241,
+        0.3268,
+        0.3019,
+        0.3102,
+        0.3206,
+        0.3124,
+        0.2906,
+        0.3081,
+        0.3064,
+        0.2973,
+        0.3227,
+        0.317,
+        0.2647,
+        0.294,
+        0.3031,
+        0.2951
+      ],
+      "rmse": {
+        "satellite": 0.0266,
+        "corrected": 0.0199
+      },
+      "unit": "m3/m3",
+      "sensor_simulated": true,
+      "in_sample": true,
+      "note": {
+        "key": "learn.satellite.note",
+        "en": "Demo field: real SMAP, simulated sensor. The field is one of the fields the model learned from, so this is not a test.",
+        "es": "Campo del demo: SMAP real, sensor simulado. El campo es uno de los que el modelo aprendió, así que esto no es una prueba."
+      }
+    },
+    "crop_history": [
+      {
+        "season": "2002/03",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.82,
+        "action": "propose",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 198,
+        "peak_value": 0.7972,
+        "duration_days": 368,
+        "peaks": 5
+      },
+      {
+        "season": "2003/04",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.88,
+        "action": "propose",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 182,
+        "peak_value": 0.7237,
+        "duration_days": 352,
+        "peaks": 7
+      },
+      {
+        "season": "2004/05",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.35,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 5,
+        "peak_offset": 307,
+        "peak_value": 0.9017,
+        "duration_days": 320,
+        "peaks": 7
+      },
+      {
+        "season": "2005/06",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.33,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 339,
+        "peak_value": 0.8542,
+        "duration_days": 304,
+        "peaks": 3
+      },
+      {
+        "season": "2006/07",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.33,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 339,
+        "peak_value": 0.854,
+        "duration_days": 272,
+        "peaks": 3
+      },
+      {
+        "season": "2007/08",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.82,
+        "action": "propose",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 198,
+        "peak_value": 0.842,
+        "duration_days": 192,
+        "peaks": 3
+      },
+      {
+        "season": "2008/09",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.33,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 5,
+        "peak_offset": 339,
+        "peak_value": 0.7021,
+        "duration_days": 320,
+        "peaks": 4
+      },
+      {
+        "season": "2009/10",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.33,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 339,
+        "peak_value": 0.7943,
+        "duration_days": 368,
+        "peaks": 3
+      },
+      {
+        "season": "2010/11",
+        "crop": "sorghum_1st",
+        "crop_name": {
+          "key": "crops.sorghum_1st.name",
+          "en": "Sorghum (1st sowing)",
+          "es": "Sorgo de primera"
+        },
+        "confidence": 0.37,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 323,
+        "peak_value": 0.8134,
+        "duration_days": 352,
+        "peaks": 4
+      },
+      {
+        "season": "2011/12",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.34,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 355,
+        "peak_value": 0.8682,
+        "duration_days": 272,
+        "peaks": 2
+      },
+      {
+        "season": "2012/13",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.89,
+        "action": "propose",
+        "confirmed": false,
+        "start_offset": 5,
+        "peak_offset": 181,
+        "peak_value": 0.8687,
+        "duration_days": 336,
+        "peaks": 4
+      },
+      {
+        "season": "2013/14",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.35,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 339,
+        "peak_value": 0.8935,
+        "duration_days": 272,
+        "peaks": 4
+      },
+      {
+        "season": "2014/15",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.35,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 339,
+        "peak_value": 0.8933,
+        "duration_days": 304,
+        "peaks": 4
+      },
+      {
+        "season": "2015/16",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.35,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 307,
+        "peak_value": 0.8719,
+        "duration_days": 240,
+        "peaks": 4
+      },
+      {
+        "season": "2016/17",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.35,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 21,
+        "peak_offset": 323,
+        "peak_value": 0.906,
+        "duration_days": 288,
+        "peaks": 3
+      },
+      {
+        "season": "2017/18",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.89,
+        "action": "propose",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 150,
+        "peak_value": 0.8186,
+        "duration_days": 256,
+        "peaks": 3
+      },
+      {
+        "season": "2018/19",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.89,
+        "action": "propose",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 166,
+        "peak_value": 0.7903,
+        "duration_days": 352,
+        "peaks": 4
+      },
+      {
+        "season": "2019/20",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.35,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 355,
+        "peak_value": 0.8901,
+        "duration_days": 352,
+        "peaks": 4
+      },
+      {
+        "season": "2020/21",
+        "crop": "sorghum_1st",
+        "crop_name": {
+          "key": "crops.sorghum_1st.name",
+          "en": "Sorghum (1st sowing)",
+          "es": "Sorgo de primera"
+        },
+        "confidence": 0.36,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 5,
+        "peak_offset": 323,
+        "peak_value": 0.8468,
+        "duration_days": 320,
+        "peaks": 3
+      },
+      {
+        "season": "2021/22",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.35,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 323,
+        "peak_value": 0.8809,
+        "duration_days": 304,
+        "peaks": 3
+      },
+      {
+        "season": "2022/23",
+        "crop": "sorghum_1st",
+        "crop_name": {
+          "key": "crops.sorghum_1st.name",
+          "en": "Sorghum (1st sowing)",
+          "es": "Sorgo de primera"
+        },
+        "confidence": 0.36,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 307,
+        "peak_value": 0.7195,
+        "duration_days": 336,
+        "peaks": 3
+      },
+      {
+        "season": "2023/24",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.34,
+        "action": "ask",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 323,
+        "peak_value": 0.869,
+        "duration_days": 336,
+        "peaks": 4
+      },
+      {
+        "season": "2024/25",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.89,
+        "action": "propose",
+        "confirmed": false,
+        "start_offset": 5,
+        "peak_offset": 149,
+        "peak_value": 0.8506,
+        "duration_days": 352,
+        "peaks": 4
+      },
+      {
+        "season": "2025/26",
+        "crop": "rapeseed",
+        "crop_name": {
+          "key": "crops.rapeseed.name",
+          "en": "Rapeseed (canola)",
+          "es": "Colza (canola)"
+        },
+        "confidence": 0.89,
+        "action": "propose",
+        "confirmed": false,
+        "start_offset": 6,
+        "peak_offset": 166,
+        "peak_value": 0.7624,
+        "duration_days": 352,
+        "peaks": 4
+      }
+    ]
+  }
 }

@@ -32,15 +32,20 @@ class Built(unittest.TestCase):
 
     def test_every_figure_of_the_experiment_log_has_charts(self):
         figures = {c["figure"] for c in self.charts}
-        self.assertEqual(figures, {"sowing", "survey", "smap", "ndvi", "imerg", "rain_decision", "sensor", "sensor_windows", "sensor_recalibration"})
+        self.assertEqual(figures, {"retrospective", "sowing", "survey", "smap", "ndvi", "imerg", "rain_decision", "sensor", "sensor_windows", "sensor_recalibration"})
 
     def test_what_comes_from_a_simulation_says_so_and_what_comes_from_nasa_data_does_not(self):
         for chart in self.charts:
-            if chart["group"] == "sensor" or chart["id"].startswith("sowing"):
+            if chart["group"] in ("sensor", "retrospective") or chart["id"].startswith("sowing"):
                 self.assertTrue(chart["simulated"], chart["id"])
             if chart["source"] in ("smap_l3", "modis_ndvi", "gpm_imerg", "producer_survey"):
                 self.assertFalse(chart["simulated"], chart["id"])
         self.assertTrue(all(c["source"] == "simulated_sensor" for c in self.charts if c["group"] == "sensor"))
+
+    def test_the_retrospective_says_it_comes_from_the_simulated_panel(self):
+        mine = [c for c in self.charts if c["figure"] == "retrospective"]
+        self.assertEqual({c["id"] for c in mine}, {"retro_drops", "retro_actual", "retro_share"})
+        self.assertEqual({(c["source"], c["simulated"], c["group"]) for c in mine}, {("simulated_panel", True, "retrospective")})
 
     def test_stacked_bars_count_whole_seasons(self):
         for chart in self.charts:

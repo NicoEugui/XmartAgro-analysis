@@ -1,2 +1,9 @@
 site_id,name,department,kind,active,note
-soriano,Soriano field,Soriano,field,1,the field of the demo coordinate; the only site
+soriano,Soriano field,Soriano,field,1,the field of the demo coordinate; the first site
+la_estanzuela,La Estanzuela field,Colonia,field,0,"second NASA point: climate, SMAP and MODIS; not the demo site"
+sim_salto,Farm in Salto,Salto,climate,0,"NASA POWER climate only: the other data of this field in the learning panel is simulated"
+sim_paysandu,Farm in Paysandu,Paysandu,climate,0,"NASA POWER climate only: the other data of this field in the learning panel is simulated"
+sim_rio_negro,Farm in Rio Negro,Rio Negro,climate,0,"NASA POWER climate only: the other data of this field in the learning panel is simulated"
+sim_flores,Farm in Flores,Flores,climate,0,"NASA POWER climate only: the other data of this field in the learning panel is simulated"
+sim_durazno,Farm in Durazno,Durazno,climate,0,"NASA POWER climate only: the other data of this field in the learning panel is simulated"
+sim_florida,Farm in Florida,Florida,climate,0,"NASA POWER climate only: the other data of this field in the learning panel is simulated"

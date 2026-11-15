@@ -24,9 +24,9 @@ def load_calibration():
     return json.loads(CALIBRATION_PATH.read_text(encoding="utf-8"))
 
 
-def reference_et(day, weather):
-    """Reference evapotranspiration (mm/day), Hargreaves with extraterrestrial radiation from latitude."""
-    latitude = math.radians(LATITUDE)
+def reference_et(day, weather, latitude_deg=None):
+    """Reference evapotranspiration (mm/day), Hargreaves with extraterrestrial radiation from latitude (the active site's by default)."""
+    latitude = math.radians(LATITUDE if latitude_deg is None else latitude_deg)
     angle = 2 * math.pi * day.timetuple().tm_yday / 365
     declination = 0.409 * math.sin(angle - 1.39)
     sunset = math.acos(-math.tan(latitude) * math.tan(declination))
@@ -82,8 +82,8 @@ def has_all_days(weather, start, end_inclusive):
     return all(start + timedelta(days=i) in weather for i in range((end_inclusive - start).days + 1))
 
 
-def precompute_et0(weather):
-    return {day: reference_et(day, w) for day, w in weather.items()}
+def precompute_et0(weather, latitude_deg=None):
+    return {day: reference_et(day, w, latitude_deg) for day, w in weather.items()}
 
 
 def water_from_theta(theta, theta_min, capacity):

@@ -48,3 +48,48 @@ sensor_start_window_days,30,assumption,,days from the start of the series over w
 sensor_train_share,0.5,assumption,,share of the sensor series used to fit the soil; the rest is kept to test it
 fit_grid_points,15,assumption,,points per parameter of the grid search that fits the soil to a sensor series
 fit_rounds,4,assumption,,rounds of the grid search; each one narrows the search around the best point
+learn_seed,20261115,assumption,,seed of every simulated draw of the learning layer: the same seed gives the same panel
+learn_smap_noise_sd,0.015,assumption,,"standard deviation of the simulated satellite noise, m3/m3"
+learn_reference_noise_sd,0.005,assumption,,"error of the reference measurement (a weighed and dried soil sample) that calibrates a node, m3/m3"
+learn_panel_seasons,5,assumption,,seasons of history per producer in the simulated panel (the app asks for the last five)
+learn_spinup_days,60,assumption,,days simulated before sowing so a season starts from the water its own climate left
+learn_start_theta,0.28,assumption,,"moisture at the start of the spin-up of every simulated season, m3/m3"
+learn_yield_noise_sd,0.08,assumption,,standard deviation of everything the water does not explain in a simulated yield (relative yield)
+learn_rating_cuts,0.55;0.75;0.90;1.00,assumption,,"relative yield below which a producer rates a season very bad, bad, good and very good; above the last, excellent"
+learn_ndvi_bare,0.2,assumption,,NDVI of bare soil or stubble in the simulated curves
+learn_ndvi_noise_sd,0.04,assumption,,standard deviation of the simulated NDVI noise
+learn_ndvi_cloud_share,0.05,assumption,,share of simulated composites pulled down by cloud residue
+learn_ndvi_stress_loss,0.5,assumption,,share of the peak NDVI lost at full water stress in the simulated curves
+learn_pool_k_b,30,assumption,,days of own sensor data a field needs to weigh as much as the region in model B
+learn_pool_k_a,4,assumption,,seasons of own data a crop needs to weigh as much as the region in model A
+learn_holdout_share,0.25,assumption,,share of the fields kept apart to validate a model
+learn_holdout_rounds,20,assumption,,random splits of fields averaged in every validation
+learn_min_days_b,90,assumption,,days of overlap with a calibrated node a field needs for its own correction (spec)
+learn_min_examples_a,20,assumption,,seasons per crop needed to publish model A (spec)
+learn_min_examples_c,60,assumption,,seasons needed to publish model C (spec)
+learn_forest_trees,100,assumption,,trees of the random forest of model C
+learn_ndvi_good_cut,0.15,assumption,,rise over bare soil that marks the start of green in a curve summary
+soil_good_score,0.5,assumption,,soil score from which the state is good (provisional)
+soil_poor_score,-0.5,assumption,,soil score below which the state is poor (provisional)
+soil_trend_delta,0.3,assumption,,change of the season score between the first and the second half of the history that counts as a trend
+soil_soy_streak_penalty,0.5,assumption,,score lost for every consecutive soybean season after the first
+soil_soy_streak_cap,2,assumption,,most score that a soybean streak can cost
+soil_cover_bonus,0.5,assumption,,score gained in a season with a cover crop or a pasture
+soil_bare_months_ok,4,assumption,,months of bare soil per year that cost nothing
+soil_bare_month_penalty,0.1,assumption,,score lost for every bare month per year above the ones that cost nothing
+soil_erosion_tolerance,7,assumption,,estimated erosion in t/ha/year above which the soil loses score (provisional)
+soil_organic_low,2.5,assumption,,organic matter in percent below which the soil loses score
+soil_organic_high,4,assumption,,organic matter in percent from which the soil gains score
+soil_analysis_adjust,0.3,assumption,,score moved by a low or a high organic matter
+soil_unmodelled_cycle_days,150,assumption,,"days a crop with no calendar in the table (sunflower, double crop) occupies the soil"
+soil_min_seasons_trend,4,assumption,,seasons of history needed to say whether the soil improves or worsens
+soil_index_low,50,assumption,,productivity index (CONEAT: 100 is the national average) at or below which a soil unit holds the least water of the panel (provisional)
+soil_index_mid,100,assumption,,productivity index at which a soil unit holds as much water as the model was calibrated with
+soil_index_high,230,assumption,,productivity index at or above which a soil unit holds the most water of the panel
+soil_capacity_low,0.8,assumption,,capacity factor of the simulated soil at the lowest index
+soil_capacity_high,1.25,assumption,,capacity factor of the simulated soil at the highest index
+learn_smap_offset_by_texture,0.1;0.03;-0.05,assumption,,"planted offset of the simulated satellite by soil texture class (light, medium, heavy), m3/m3: the satellite reads light soils wetter and heavy ones drier"
+learn_smap_scale_by_texture,0.75;0.92;1.05,assumption,,"planted scale of the simulated satellite by soil texture class (light, medium, heavy)"
+learn_smap_offset_jitter,0.02,assumption,,how far a field strays from its texture class in the planted satellite offset
+learn_smap_scale_jitter,0.03,assumption,,how far a field strays from its texture class in the planted satellite scale
+learn_propose_min_confidence,0.6,assumption,,share of the forest votes model C needs for the app to propose a crop; below it the app asks the producer instead

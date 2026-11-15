@@ -17,6 +17,7 @@ from .i18n import label
 
 SIMULATED_THETA = tables.constant("simulated_theta")  # illustrative value, NOT a field measurement
 SENSOR_SOURCE = "simulated_iot_sensor"
+CORRECTED_SOURCE = "smap_corrected"  # the satellite as model B corrects it, standing in for a sensor
 
 
 MAX_THETA = tables.constant("max_theta")  # beyond any soil porosity: a sensor fault, not moisture
@@ -67,6 +68,7 @@ def soil_water_block(theta=SIMULATED_THETA, source_info=None):
     block["source_warnings"] = list(info.get("warnings", []))
     block["raw_moisture"] = info.get("raw_moisture")  # the last reading, when the state shown is the model's corrected by a series
     block["series"] = info.get("series")
+    block["model_b"] = info.get("model_b")  # set when model B's corrected satellite stands in for the sensor
     block["requirements_before_real_sensors"] = {
         "note": label("soil_water.requirements.note"),
         "items": [label("soil_water.requirements.depth"), label("soil_water.requirements.calibration"),

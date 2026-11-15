@@ -102,9 +102,9 @@ class Demo(unittest.TestCase):
         self.assertEqual(self.water["reading_moisture"], series["history"][-1]["reading"])
         self.assertEqual(self.water["updated_at"][:10], series["period"][1])
 
-    def test_the_four_states_of_the_panel_are_described_with_both_languages(self):
+    def test_the_five_states_of_the_panel_are_described_with_both_languages(self):
         modes = self.doc["catalog"]["modes"]
-        self.assertEqual([m["id"] for m in modes], ["demo", "live", "error", "offline"])
+        self.assertEqual([m["id"] for m in modes], ["demo", "live", "pending", "error", "offline"])
         for mode in modes:
             for key in ("badge", "meaning"):
                 self.assertTrue(mode[key]["en"].strip() and mode[key]["es"].strip())

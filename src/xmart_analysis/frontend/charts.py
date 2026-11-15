@@ -10,7 +10,7 @@ import copy
 from functools import cache
 
 from ..engine import context as engine_context
-from ..engine import crops_uy
+from ..engine import crops_uy, tables
 from ..engine.i18n import label
 from ..report import scenario_runs
 from ..validation import documents
@@ -145,7 +145,24 @@ def sowing(doc):
     return charts
 
 
-BUILDERS = {"sowing": sowing, "survey": survey, "smap": smap, "ndvi": ndvi, "imerg": imerg, "rain_decision": rain_decision,
+def retrospective(doc):
+    feat = doc["featured"]
+    rows, crops = feat["rows"], doc["crops"]
+    departments = {f["field_id"]: f["department"] for f in tables.read("learning/fields")}
+    proper = lambda name: {"key": f"department.{name}", "en": name, "es": name}  # noqa: E731  (a place name reads the same in both languages)
+    x = _x("category", [r["field_id"] for r in rows], names=[proper(departments[r["field_id"]]) for r in rows])
+    common = {"group": "retrospective", "source": "simulated_panel", "simulated": True, "note": label("retro.note")}
+    return [
+        _chart("retro_drops", "retrospective", title=label("retro.drops", crop=_crop(feat["crop"]), season=feat["season"]), x=x, y=_y(label("sowing.axis.seasons")), stacked=True,
+               series=[_s(name, label(f"sowing.drop.{name}"), "bar", [r["drops"][name] for r in rows]) for name in ("ok", "tight", "out")], **common),
+        _chart("retro_actual", "retrospective", title=label("retro.actual"), x=x, y=_y(label("validation.axis.critical_stress")),
+               series=[_s("actual_stress", label("retro.actual"), "bar", [r["actual_stress"] for r in rows])], **common),
+        _chart("retro_share", "retrospective", title=label("retro.title"), x=_x("category", list(crops), names=[_crop(c) for c in crops]), y=_y(label("retro.share_axis")),
+               series=[_s("base_rate", label("retro.base"), "bar", [doc["by_crop"][c]["base_rate_out"] for c in crops]),
+                       _s("warned", label("retro.warned"), "bar", [doc["by_crop"][c]["warned_of_out"] for c in crops])], **common)]
+
+
+BUILDERS = {"retrospective": retrospective, "sowing": sowing, "survey": survey, "smap": smap, "ndvi": ndvi, "imerg": imerg, "rain_decision": rain_decision,
             "sensor": sensor, "sensor_windows": sensor_windows, "sensor_recalibration": sensor_recalibration}
 
 

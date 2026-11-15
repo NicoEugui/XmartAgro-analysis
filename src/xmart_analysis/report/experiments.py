@@ -85,7 +85,17 @@ def rain_decision_table(doc):
     return ["item", "POWER rain", "IMERG rain"], rows
 
 
+def retrospective_table(doc):
+    feat = doc["featured"]
+    rows = [[f"{r['field_id']}: {feat['crop']} {feat['season']}", r["drops"]["ok"], r["drops"]["tight"], r["drops"]["out"], r["actual_stress"], ""] for r in feat["rows"]]
+    for crop in doc["crops"]:
+        rows.append([f"{crop}: seasons that ended without water", "", "", "", "", doc["by_crop"][crop]["base_rate_out"]])
+        rows.append([f"{crop}: those that had been warned", "", "", "", "", doc["by_crop"][crop]["warned_of_out"]])
+    return ["item", "ok (of 10)", "tight (of 10)", "out (of 10)", "actual stress", "share"], rows
+
+
 FIGURES = {
+    "retrospective": (figures.plot_retrospective, retrospective_table),
     "rain_decision": (figures.plot_rain_decision, rain_decision_table),
     "sensor_windows": (figures.plot_sensor_windows, sensor_windows_table),
     "sensor_recalibration": (figures.plot_sensor_recalibration, sensor_recalibration_table),
@@ -158,6 +168,24 @@ def _options(frontend):
     return _md(["option", "kind", "water risk", "ok", "tight", "out"], rows)
 
 
+def _retrospective_reading(doc):
+    feat, by_crop, rows = doc["featured"], doc["by_crop"], doc["featured"]["rows"]
+    soy, maize, wheat, barley = (by_crop[c] for c in ("soybean_1st", "maize", "wheat", "barley"))
+    named = sorted(doc["survey_check"], key=lambda r: -r["producers_naming_it"])[:2]
+    top = {crop: sorted(doc["survey_check"], key=lambda r: -r[f"{crop}_mean_stress"])[:2] for crop in ("soybean_1st", "maize")}
+    agree = {crop: {r["season"] for r in rows_} == {r["season"] for r in named} for crop, rows_ in top.items()}
+    return (f"{feat['crop']} sown in {feat['season']}: the warning would have been high in {sum(r['risk'] == 'high' for r in rows)} of {len(rows)} fields "
+            f"(between {min(r['drops']['out'] for r in rows)} and {max(r['drops']['out'] for r in rows)} of 10 seasons without water) and the season ended without water in "
+            f"{sum(r['ended_out'] for r in rows)} of them, with a stress between {min(r['actual_stress'] for r in rows)} and {max(r['actual_stress'] for r in rows)}: worse than "
+            f"{min(r['worse_than_share'] for r in rows):.0%} to {max(r['worse_than_share'] for r in rows):.0%} of the other seasons. But the summer crops end without water in "
+            f"about {soy['base_rate_out']:.0%} of seasons (the crop parameters are pending, so soybean 'fails' in most years), so a high warning adds little: of {soy['high_risk_cases']} "
+            f"soybean cases warned high, {soy['out_of_high_risk']:.0%} ended without water against a base rate of {soy['base_rate_out']:.0%}. Wheat and barley rarely end without water "
+            f"({wheat['base_rate_out']:.0%}, {barley['base_rate_out']:.0%}) and the tool had warned {wheat['warned_of_out']:.0%} of those cases. Over {doc['summary']['cases']} cases "
+            f"({len(doc['crops'])} crops, {len(rows)} fields, every complete season). Against the real survey: the two seasons most named as unfavourable are "
+            f"{', '.join(r['season'] for r in named)}; they are the two with the highest mean stress for soybean ({agree['soybean_1st']}) and for maize ({agree['maize']}). "
+            "The fields, sowing dates and outcomes are simulated: this is the consistency of the tool's warning, not a check against a real field.")
+
+
 def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
     """Write `experiments.md` and `figures/` into `out`; `files` maps the input files (smap_l3, smap_l4, modis_ndvi, imerg) to paths."""
     files = files or {}
@@ -166,7 +194,8 @@ def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
     parts = [f"# XmartAgro experiment log\n\nSite: `{tables.active_site()}` ({tables.constants_of(tables.active_site())['latitude']}, "
              f"{tables.constants_of(tables.active_site())['longitude']}). Generated {date.today()} by `xmart-analysis report`. "
              "Exploratory: nothing here validates a crop or rotation outcome.",
-             "## 1. Data architecture\n\nOnly NASA data and the team's own producer survey enter the repository.\n\n"
+             "## 1. Data architecture\n\nNASA data and the team's own producer survey enter the repository, plus the CONEAT soil map (MGAP) as an optional plug-in: its table of groups and the unit of each field, not the 120 MB map. "
+             "Everything else that trains the models (fields beyond the two with NASA satellite data, sensors, producers' seasons, outcomes, soil analyses) is simulated and marked `simulated`.\n\n"
              "```\nNASA POWER (daily climate) --> water-balance engine --> scenarios per historical season --> frontend JSON\n"
              "NASA SMAP L4 -----------------> calibration (soil parameters, fitted) ----^\n"
              "simulated sensor year ---------> state correction (the demo starts from it; the series is simulated)\n"
@@ -182,6 +211,10 @@ def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
              + "\n\nRisk comes from how many of the 39 historical seasons end in high deficit; the drops are counts, not probabilities."]
     n = 4
     sections = (
+        ("retrospective", "What the tool would have said before each past season",
+         "If a producer had had XmartAgro before sowing, what would it have said, and what was the season? Each past season is a case: the tool applies the climate of the "
+         "other seasons to the water of the sowing day and says how many of 10 ended without water; the season itself is then looked at with its real climate.",
+         _retrospective_reading),
         ("sowing", "What happens if a crop is sown on a given date",
          "For each crop and sowing date (the default calendar day and four shifted by 15 and 30 days; each day is applied to every historical season with complete weather), how many of the historical seasons end in low, moderate or high deficit "
          "in the critical stage?",

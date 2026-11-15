@@ -1,0 +1,9 @@
+field_id,system,code,productivity_index,dominant_orders,source_ref
+soriano,coneat,11.4,214.0,Brunosol;Regosol;Planosol,mgap_coneat
+sim_salto,coneat,12.11,162.0,Vertisol;Brunosol,mgap_coneat
+sim_paysandu,coneat,9.6,101.0,Brunosol,mgap_coneat
+sim_rio_negro,coneat,10.1,219.0,Brunosol;Vertisol;Planosol,mgap_coneat
+sim_flores,coneat,10.3,140.0,Brunosol,mgap_coneat
+sim_durazno,coneat,8.02a,57.0,Litosol,mgap_coneat
+sim_florida,coneat,10.8a,105.0,Vertisol;Brunosol,mgap_coneat
+la_estanzuela,coneat,10.6a,168.5,Brunosol,mgap_coneat

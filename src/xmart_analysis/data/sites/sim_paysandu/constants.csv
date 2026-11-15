@@ -1,0 +1,5 @@
+name,value,status,source_ref,note
+latitude,-32.33938,data,nasa_power,point latitude (degrees) of a farm in Paysandu; used by the Hargreaves ET0
+longitude,-57.177956,data,nasa_power,point longitude (degrees) of a farm in Paysandu
+season_first_year,1987,data,nasa_power,first season whose window lies inside the POWER record (record starts 1 Jul 1986)
+season_last_year,2025,data,nasa_power,last season whose window lies inside the POWER record (the record ends 13 Nov 2026 inside the 2026 season which is not complete)

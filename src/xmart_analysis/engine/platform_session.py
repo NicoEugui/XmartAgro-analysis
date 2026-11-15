@@ -156,7 +156,7 @@ def _md(value):
 
 
 def _season_classes(doc):
-    return [{"season": r["season"], "class": r["class"]} for r in doc["season_results"]]
+    return [{"season": r["season"], "class": r["class"], "stress": r["stress"]} for r in doc["season_results"]]
 
 
 def _crop_card(crop, sowing, theta, reading_md, is_current, kw, info):
@@ -199,7 +199,7 @@ def _rotation_card(rotation_id, kw):
     return {"kind": "rotation", "id": rotation_id, "is_current": False, "title": label("rotation.title", n=r["respondent"]),
             "crops": crops, "crops_modelled": r["crops_modelled"], "combinations": r["combinations"],
             "high_deficit_combinations": r["season_counts"]["high_deficit"], "season_counts": r["season_counts"],
-            "split_in_10_parts": r["split_in_10_parts"], "season_classes": r["season_classes"], "note": label("rotation.note"),
+            "split_in_10_parts": r["split_in_10_parts"], "season_classes": r["season_classes"], "crop_seasons": r["crop_seasons"], "note": label("rotation.note"),
             "warnings": [], "soil": {"state": "no_field_diagnosis"}, "confidence": "low", "metadata": rotations.METADATA}
 
 

@@ -31,6 +31,20 @@ class BundledNasaFiles(unittest.TestCase):
         for name in BUNDLED:
             self.assertNotIn("@", self.path(name).read_text(encoding="utf-8"), name)
 
+    def test_the_requests_keep_what_was_asked_and_nothing_about_who_asked(self):
+        import json
+        folder = tables.DATA_DIR / "requests"
+        files = sorted(folder.glob("*.json"))
+        self.assertEqual([f.name for f in files], ["la_estanzuela_mod13q1.json", "la_estanzuela_spl3smpe.json", "la_estanzuela_spl4smgp.json",
+                                                    "soriano_mod13q1.json", "soriano_spl3smpe.json", "soriano_spl4smgp.json"])
+        for f in files:
+            text = f.read_text(encoding="utf-8")
+            doc = json.loads(text)
+            self.assertEqual(set(doc), {"task_name", "task_type", "params"}, f.name)
+            self.assertTrue(doc["task_name"].lower().startswith("xmartagro"), f.name)
+            self.assertNotIn("@", text, f.name)
+            self.assertEqual(len(doc["params"]["coordinates"]), 1, f.name)
+
     def test_smap_reproduces_the_quoted_correlations(self):
         scores = smap.run(self.path("smap_l3.csv"), self.path("smap_l4.csv"), self.context)["periods"]["validation"]["scores"]
         self.assertEqual((scores["model"]["spearman"], scores["model"]["anomaly_r"]), (0.781, 0.63))

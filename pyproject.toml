@@ -12,6 +12,8 @@ dependencies = ["pymongo>=4.7"]
 [project.optional-dependencies]
 plots = ["matplotlib>=3.8"]
 calibrate = ["scipy>=1.11"]
+learn = ["numpy>=1.26", "scipy>=1.11", "scikit-learn>=1.4"]
+coneat = ["pyshp>=2.3", "pyproj>=3.6"]
 dev = ["jsonschema>=4"]
 
 [project.scripts]

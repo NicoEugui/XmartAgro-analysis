@@ -406,5 +406,61 @@
  "front.mode.meaning.offline": {
   "en": "The panel could not read the file. The panel decides this itself, so no document exists for it: show the badge, keep the last data on screen marked as old and offer to retry.",
   "es": "El panel no pudo leer el archivo. Lo decide el propio panel, por eso no hay documento: mostrar la etiqueta, dejar los últimos datos marcados como viejos y ofrecer reintentar."
+ },
+ "learn.note": {
+  "en": "Predictions of three small machine-learning models trained on a simulated panel of fields, producers and seasons. They show that the method works; they are not accuracy on real fields.",
+  "es": "Predicciones de tres modelos chicos de machine learning entrenados con un panel simulado de campos, productores y zafras. Muestran que el método funciona; no son precisión en campos reales."
+ },
+ "learn.model.A.role": {
+  "en": "Model A: what a bad season is",
+  "es": "Modelo A: qué es una mala zafra"
+ },
+ "learn.model.B.role": {
+  "en": "Model B: how wrong the satellite is",
+  "es": "Modelo B: cuánto se equivoca el satélite"
+ },
+ "learn.model.C.role": {
+  "en": "Model C: crop history",
+  "es": "Modelo C: historial de cultivos"
+ },
+ "learn.metric.accuracy": {
+  "en": "Accuracy on fields kept apart",
+  "es": "Acierto en campos apartados"
+ },
+ "learn.metric.fixed_cuts_accuracy": {
+  "en": "Accuracy of the fixed cuts",
+  "es": "Acierto de los cortes fijos"
+ },
+ "learn.metric.most_common_accuracy": {
+  "en": "Accuracy of always naming the most common crop",
+  "es": "Acierto de nombrar siempre el cultivo más común"
+ },
+ "learn.metric.regional_rmse": {
+  "en": "Error of the corrected satellite on fields kept apart (m3/m3)",
+  "es": "Error del satélite corregido en campos apartados (m3/m3)"
+ },
+ "learn.metric.satellite_rmse": {
+  "en": "Error of the satellite as it is (m3/m3)",
+  "es": "Error del satélite tal cual (m3/m3)"
+ },
+ "learn.satellite.note": {
+  "en": "Demo field: real SMAP, simulated sensor. The field is one of the fields the model learned from, so this is not a test.",
+  "es": "Campo del demo: SMAP real, sensor simulado. El campo es uno de los que el modelo aprendió, así que esto no es una prueba."
+ },
+ "learn.fallow": {
+  "en": "Fallow",
+  "es": "Barbecho"
+ },
+ "front.mode.pending": {
+  "en": "Calculating your field · ready tomorrow",
+  "es": "Estamos calculando tu campo · estará listo mañana"
+ },
+ "front.mode.meaning.pending": {
+  "en": "The field is new and the nightly run has not reached it yet: show this message and no numbers.",
+  "es": "El campo es nuevo y la corrida de la noche todavía no llegó: mostrar este mensaje y ningún número."
+ },
+ "learn.start.note": {
+  "en": "Starting water: the satellite corrected by model B, which learned from the panel's fields (simulated sensors). Not a sensor reading.",
+  "es": "Agua de partida: el satélite corregido por el modelo B, que aprendió de los campos del panel (sensores simulados). No es una lectura de sensor."
  }
 }

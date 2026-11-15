@@ -29,11 +29,12 @@ def span(weather):
     return end - timedelta(days=tables.constant("sensor_days") - 1), end
 
 
-def truth_params(params):
-    """The simulated field's soil: the model's parameters with another wilting point and capacity."""
+def truth_params(params, capacity_factor=None, theta_min_shift=None):
+    """The simulated field's soil: the model's parameters with another wilting point and capacity (the experiment's by default)."""
     theta_min, capacity, *rest = params
-    return [theta_min + tables.constant("sensor_truth_theta_min_shift"),
-            capacity * tables.constant("sensor_truth_capacity_factor"), *rest]
+    shift = tables.constant("sensor_truth_theta_min_shift") if theta_min_shift is None else theta_min_shift
+    factor = tables.constant("sensor_truth_capacity_factor") if capacity_factor is None else capacity_factor
+    return [theta_min + shift, capacity * factor, *rest]
 
 
 def truth(context, window=None):
@@ -43,13 +44,15 @@ def truth(context, window=None):
                                 tables.constant("sensor_truth_start_theta"))
 
 
-def observe(field, first_day):
+def observe(field, first_day, bias=None, sd=None, tag=""):
     """{date: moisture} the simulated sensor reports for a field ({date: moisture}): the truth plus a constant offset and Gaussian
-    noise, within the possible range.
+    noise, within the possible range (the experiment's offset and noise by default).
 
-    The noise is seeded by the seed and the first day, so every window has its own noise and the same window always gets the same."""
-    noise = random.Random(f"{tables.constant('sensor_seed')}:{first_day}")
-    bias, sd = tables.constant("sensor_bias"), tables.constant("sensor_noise_sd")
+    The noise is seeded by the seed, the first day and the sensor's `tag`, so every window and every sensor has its own noise and the
+    same one always gets the same."""
+    noise = random.Random(f"{tables.constant('sensor_seed')}:{first_day}" + (f":{tag}" if tag else ""))
+    bias = tables.constant("sensor_bias") if bias is None else bias
+    sd = tables.constant("sensor_noise_sd") if sd is None else sd
     return {day: round(min(MAX_THETA, max(0.0, theta + bias + noise.gauss(0, sd))), 4) for day, theta in sorted(field.items())}
 
 

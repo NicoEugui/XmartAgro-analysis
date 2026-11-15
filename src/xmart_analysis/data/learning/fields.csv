@@ -1,0 +1,9 @@
+field_id,name,department,site_id,latitude,longitude,kind,capacity_factor,theta_min_shift,slope_pct,note
+soriano,Soriano field,Soriano,soriano,-33.3577778,-58.078806,real,0.75,0.02,2,"the real coordinate: real NASA climate and SMAP; its simulated soil is the unknown soil of the sensor experiment (capacity 0.75x, wilting +0.02), so its capacity factor is stated here and not derived"
+sim_salto,Simulated field Salto,Salto,sim_salto,-31.20,-57.60,simulated,,0.01,4,a farm point with real NASA climate; its soil comes from its CONEAT unit and its slope is simulated
+sim_paysandu,Simulated field Paysandu,Paysandu,sim_paysandu,-32.339380,-57.177956,simulated,,0.00,2,a farm point with real NASA climate; its soil comes from its CONEAT unit and its slope is simulated
+sim_rio_negro,Simulated field Rio Negro,Rio Negro,sim_rio_negro,-32.75,-57.85,simulated,,-0.01,1,a farm point with real NASA climate; its soil comes from its CONEAT unit and its slope is simulated
+sim_flores,Simulated field Flores,Flores,sim_flores,-33.544079,-56.803305,simulated,,0.00,3,a farm point with real NASA climate; its soil comes from its CONEAT unit and its slope is simulated
+sim_durazno,Simulated field Durazno,Durazno,sim_durazno,-33.35,-56.10,simulated,,0.01,5,a farm point with real NASA climate; its soil comes from its CONEAT unit and its slope is simulated
+sim_florida,Simulated field Florida,Florida,sim_florida,-34.152011,-55.800535,simulated,,-0.02,2,a farm point with real NASA climate; its soil comes from its CONEAT unit and its slope is simulated
+la_estanzuela,La Estanzuela field,Colonia,la_estanzuela,-34.3400,-57.6900,real,,0.00,1,"the second real point: real NASA climate, SMAP and MODIS; its simulated sensors read a soil whose capacity comes from its CONEAT unit"

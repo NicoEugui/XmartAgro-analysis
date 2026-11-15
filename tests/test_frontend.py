@@ -193,11 +193,21 @@ class CommittedFiles(unittest.TestCase):
 
     def test_the_committed_example_is_current_and_valid(self):
         with tempfile.TemporaryDirectory() as folder:
-            export(folder)
-            fresh = (Path(folder) / "frontend.json").read_text(encoding="utf-8")
-        committed = (REPO / "schema" / "frontend.example.json").read_text(encoding="utf-8")
+            fresh = export(folder)
+        committed = json.loads((REPO / "schema" / "frontend.example.json").read_text(encoding="utf-8"))
+        self.assertEqual(schema_check.problems(committed, schema.build(), schema.build()), [])
+        # the example carries what a trained registry changes: the learning block, the starting water and the options' drops (their numbers depend on
+        # the libraries that trained it, so only their shape is checked here; `tests/test_frontend_learning.py` trains one and checks them);
+        # everything else must be exactly what the code produces
+        for doc in (committed, fresh):
+            doc["learning"] = doc["status"]["simulated_inputs"] = doc["summary"]["water"] = doc["summary"]["options"] = None
         self.assertEqual(committed, fresh, "regenerate with the command above")
-        self.assertEqual(schema_check.problems(json.loads(committed), schema.build(), schema.build()), [])
+
+    def test_the_committed_example_shows_the_learning_block_filled(self):
+        committed = json.loads((REPO / "schema" / "frontend.example.json").read_text(encoding="utf-8"))
+        self.assertTrue(committed["learning"]["simulated"])
+        self.assertEqual([m["id"] for m in committed["learning"]["models"]], ["B", "A", "C"])
+        self.assertIn("training_panel", committed["status"]["simulated_inputs"])
 
 
 class Command(unittest.TestCase):

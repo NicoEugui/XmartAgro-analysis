@@ -454,5 +454,33 @@
  "chart.reading.axis": {
   "en": "simulated soil moisture at the reading (m3/m3)",
   "es": "humedad simulada del suelo en la lectura (m3/m3)"
+ },
+ "retro.title": {
+  "en": "What the tool would have said before each past season, and what the season was",
+  "es": "Qué habría dicho la herramienta antes de cada zafra pasada, y cómo fue la zafra"
+ },
+ "retro.drops": {
+  "en": "{crop} sown in {season}: what the tool would have said (of 10 seasons)",
+  "es": "{crop} sembrado en {season}: lo que habría dicho la herramienta (de cada 10 zafras)"
+ },
+ "retro.actual": {
+  "en": "What the season was: stress in the critical stage",
+  "es": "Cómo fue la zafra: estrés en la etapa crítica"
+ },
+ "retro.warned": {
+  "en": "Seasons without water that had been warned (risk medium or high)",
+  "es": "Zafras sin agua que habían sido avisadas (riesgo medio o alto)"
+ },
+ "retro.base": {
+  "en": "Share of seasons that ended without water",
+  "es": "Proporción de zafras que terminaron sin agua"
+ },
+ "retro.share_axis": {
+  "en": "Share of cases",
+  "es": "Proporción de casos"
+ },
+ "retro.note": {
+  "en": "Simulated panel: fields, sowing dates and outcomes come from the model with the crop table (parameters pending). Backtest: the season itself is left out of its scenarios. It is not a check against a real field.",
+  "es": "Panel simulado: campos, fechas de siembra y resultados salen del modelo con la tabla de cultivos (parámetros pendientes). Retrospectiva: la zafra misma queda fuera de sus escenarios. No es una verificación contra un campo real."
  }
 }

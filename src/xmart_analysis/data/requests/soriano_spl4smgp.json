@@ -1,0 +1,44 @@
+{
+  "task_name": "xmartagro-punto2-smap-l4",
+  "task_type": "point",
+  "params": {
+    "dates": [
+      {
+        "endDate": "11-07-2026",
+        "recurring": false,
+        "startDate": "04-01-2015",
+        "yearRange": [
+          1950,
+          2050
+        ]
+      }
+    ],
+    "layers": [
+      {
+        "layer": "Geophysical_Data_sm_surface",
+        "product": "SPL4SMGP.008"
+      },
+      {
+        "layer": "Geophysical_Data_sm_rootzone",
+        "product": "SPL4SMGP.008"
+      },
+      {
+        "layer": "Geophysical_Data_sm_profile",
+        "product": "SPL4SMGP.008"
+      }
+    ],
+    "output": {
+      "format": {
+        "type": "geotiff"
+      }
+    },
+    "coordinates": [
+      {
+        "id": "punto2",
+        "category": "soriano",
+        "latitude": -33.357778,
+        "longitude": -58.078806
+      }
+    ]
+  }
+}

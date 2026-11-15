@@ -1,0 +1,48 @@
+{
+  "task_name": "XmartAgro_INIA_La_Estanzuela_SMAP",
+  "task_type": "point",
+  "params": {
+    "dates": [
+      {
+        "endDate": "11-13-2026",
+        "recurring": false,
+        "startDate": "04-01-2015",
+        "yearRange": [
+          1950,
+          2050
+        ]
+      }
+    ],
+    "layers": [
+      {
+        "layer": "Soil_Moisture_Retrieval_Data_AM_soil_moisture",
+        "product": "SPL3SMP_E.006"
+      },
+      {
+        "layer": "Soil_Moisture_Retrieval_Data_PM_soil_moisture_pm",
+        "product": "SPL3SMP_E.006"
+      },
+      {
+        "layer": "Soil_Moisture_Retrieval_Data_AM_retrieval_qual_flag",
+        "product": "SPL3SMP_E.006"
+      },
+      {
+        "layer": "Soil_Moisture_Retrieval_Data_PM_retrieval_qual_flag_pm",
+        "product": "SPL3SMP_E.006"
+      }
+    ],
+    "output": {
+      "format": {
+        "type": "geotiff"
+      }
+    },
+    "coordinates": [
+      {
+        "id": "LaEstanzuela",
+        "category": "INIA",
+        "latitude": -34.34,
+        "longitude": -57.69
+      }
+    ]
+  }
+}

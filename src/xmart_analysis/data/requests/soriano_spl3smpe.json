@@ -1,0 +1,48 @@
+{
+  "task_name": "xmartagro-punto2-smap",
+  "task_type": "point",
+  "params": {
+    "dates": [
+      {
+        "endDate": "11-07-2026",
+        "recurring": false,
+        "startDate": "04-01-2015",
+        "yearRange": [
+          1950,
+          2050
+        ]
+      }
+    ],
+    "layers": [
+      {
+        "layer": "Soil_Moisture_Retrieval_Data_AM_soil_moisture",
+        "product": "SPL3SMP_E.006"
+      },
+      {
+        "layer": "Soil_Moisture_Retrieval_Data_PM_soil_moisture_pm",
+        "product": "SPL3SMP_E.006"
+      },
+      {
+        "layer": "Soil_Moisture_Retrieval_Data_AM_retrieval_qual_flag",
+        "product": "SPL3SMP_E.006"
+      },
+      {
+        "layer": "Soil_Moisture_Retrieval_Data_PM_retrieval_qual_flag_pm",
+        "product": "SPL3SMP_E.006"
+      }
+    ],
+    "output": {
+      "format": {
+        "type": "geotiff"
+      }
+    },
+    "coordinates": [
+      {
+        "id": "point2",
+        "category": "soriano",
+        "latitude": -33.357778,
+        "longitude": -58.078806
+      }
+    ]
+  }
+}

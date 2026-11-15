@@ -1,0 +1,5 @@
+name,value,status,source_ref,note
+latitude,-34.34,data,nasa_power,field point latitude (degrees) of La Estanzuela (Colonia); used by the Hargreaves ET0
+longitude,-57.69,data,nasa_power,field point longitude (degrees) of La Estanzuela (Colonia)
+season_first_year,1987,data,nasa_power,first season whose window lies inside the POWER record (record starts 1 Jul 1986)
+season_last_year,2025,data,nasa_power,last season whose window lies inside the POWER record (the record ends 13 Nov 2026 inside the 2026 season which is not complete)

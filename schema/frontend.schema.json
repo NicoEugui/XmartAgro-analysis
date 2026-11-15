@@ -93,7 +93,7 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "2.2",
+      "const": "3.0",
       "description": "Version of this schema.",
       "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
     },
@@ -213,7 +213,7 @@
             "demo",
             "live"
           ],
-          "description": "demo while any input is simulated, live when every input is measured or entered by a person. The panel adds `offline` itself when it cannot read the file, and the error document says `error`; catalog.modes explains the four.",
+          "description": "demo while any input is simulated, live when every input is measured or entered by a person. The panel decides `pending` (a new field the nightly run has not reached) and `offline` (it cannot read the file) itself, and the error document says `error`; catalog.modes explains the five.",
           "x-used-in": "Badge at the top of every screen"
         },
         "badge": {
@@ -226,7 +226,8 @@
           "items": {
             "type": "string",
             "enum": [
-              "sensor_readings"
+              "sensor_readings",
+              "training_panel"
             ],
             "description": "What is simulated.",
             "x-used-in": "Badge at the top of every screen"
@@ -457,6 +458,11 @@
                       "description": "Days with a reading.",
                       "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
                     },
+                    "carried_days": {
+                      "type": "integer",
+                      "description": "Days after the last reading the model ran on its own to reach the last day of the climate record (0 with a sensor that reports every day).",
+                      "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                    },
                     "period": {
                       "type": "array",
                       "items": {
@@ -505,8 +511,53 @@
                     "method",
                     "gain",
                     "days",
+                    "carried_days",
                     "period",
                     "history"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "correction": {
+              "description": "Set when the satellite as model B corrects it stands in for the sensor: the readings of `series` are that corrected satellite.",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil» · small print",
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "model": {
+                      "type": "string",
+                      "enum": [
+                        "B"
+                      ],
+                      "description": "The model: B.",
+                      "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil» · small print"
+                    },
+                    "version": {
+                      "type": "integer",
+                      "description": "Version of model B used.",
+                      "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil» · small print"
+                    },
+                    "last_satellite_day": {
+                      "type": "string",
+                      "description": "Last day with a satellite value, YYYY-MM-DD.",
+                      "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil» · small print"
+                    },
+                    "note": {
+                      "$ref": "#/$defs/text",
+                      "description": "What this water rests on, to show as small print.",
+                      "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil» · small print"
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "version",
+                    "last_satellite_day",
+                    "note"
                   ],
                   "additionalProperties": false
                 },
@@ -526,7 +577,8 @@
             "is_simulated",
             "volumetric_moisture",
             "reading_moisture",
-            "series"
+            "series",
+            "correction"
           ],
           "additionalProperties": false,
           "description": "Water in the soil.",
@@ -649,7 +701,7 @@
                 ]
               },
               "drops": {
-                "description": "The ten drops to draw; null when nothing was simulated (e.g. the cycle already ended).",
+                "description": "The ten drops to draw; null when nothing was simulated (e.g. the cycle already ended). With `risk_basis.source` model_a they are model A's, otherwise the fixed cuts'.",
                 "x-used-in": "Main screen · option card · ten drops",
                 "anyOf": [
                   {
@@ -659,6 +711,70 @@
                     "type": "null"
                   }
                 ]
+              },
+              "risk_basis": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "enum": [
+                      "model_a",
+                      "fixed_cuts"
+                    ],
+                    "description": "model_a when the published model A reads the seasons, fixed_cuts when only the fixed stress cuts do.",
+                    "x-used-in": "Main screen · option card · small print"
+                  },
+                  "model_version": {
+                    "description": "Version of model A used; null with the fixed cuts.",
+                    "x-used-in": "Main screen · option card · small print",
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "fixed_cuts_drops": {
+                    "description": "The drops the fixed cuts of stress give.",
+                    "x-used-in": "Main screen · option card · small print",
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/drops"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "fixed_cuts_water_risk": {
+                    "description": "low, medium or high from the fixed cuts.",
+                    "x-used-in": "Main screen · option card · small print",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "low",
+                          "medium",
+                          "high"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "source",
+                  "model_version",
+                  "fixed_cuts_drops",
+                  "fixed_cuts_water_risk"
+                ],
+                "additionalProperties": false,
+                "description": "What `drops` and `water_risk` rest on, with the fixed cuts beside them to compare.",
+                "x-used-in": "Main screen · option card · small print"
               },
               "sentence": {
                 "$ref": "#/$defs/text",
@@ -899,6 +1015,7 @@
               "is_current",
               "water_risk",
               "drops",
+              "risk_basis",
               "sentence",
               "soil_effect",
               "soil_reason",
@@ -1364,10 +1481,11 @@
                 "enum": [
                   "demo",
                   "live",
+                  "pending",
                   "error",
                   "offline"
                 ],
-                "description": "demo, live, error or offline.",
+                "description": "demo, live, pending, error or offline.",
                 "x-used-in": "Badge at the top of every screen"
               },
               "badge": {
@@ -1417,7 +1535,7 @@
           },
           "figure": {
             "type": "string",
-            "description": "The figure of reports/experiments.md it mirrors (sowing, survey, smap, ndvi, imerg, rain_decision, sensor, sensor_windows, sensor_recalibration); a figure can have several charts.",
+            "description": "The figure of reports/experiments.md it mirrors (retrospective, sowing, survey, smap, ndvi, imerg, rain_decision, sensor, sensor_windows, sensor_recalibration); a figure can have several charts.",
             "x-used-in": "Charts screen · one chart per entry, mirroring a figure of the experiment log"
           },
           "group": {
@@ -1426,9 +1544,10 @@
               "sowing",
               "validation",
               "rain",
-              "sensor"
+              "sensor",
+              "retrospective"
             ],
-            "description": "Where to file it: sowing (what happens if a crop is sown on a date), validation (against independent data), rain (POWER vs IMERG) or sensor (the simulated-sensor experiments).",
+            "description": "Where to file it: sowing (what happens if a crop is sown on a date), validation (against independent data), rain (POWER vs IMERG), sensor (the simulated-sensor experiments) or retrospective (what the tool would have said before each past season).",
             "x-used-in": "Charts screen · one chart per entry, mirroring a figure of the experiment log"
           },
           "title": {
@@ -1585,7 +1704,7 @@
           },
           "source": {
             "type": "string",
-            "description": "Where the numbers come from: nasa_power, gpm_imerg, smap_l3, modis_ndvi, producer_survey or simulated_sensor.",
+            "description": "Where the numbers come from: nasa_power, gpm_imerg, smap_l3, modis_ndvi, producer_survey, simulated_sensor or simulated_panel.",
             "x-used-in": "Charts screen · one chart per entry, mirroring a figure of the experiment log · small print"
           },
           "series": {
@@ -1664,6 +1783,497 @@
       },
       "description": "The charts, in a fixed order: the data behind every figure of the experiment log.",
       "x-used-in": "Charts screen · one chart per entry, mirroring a figure of the experiment log"
+    },
+    "learning": {
+      "description": "What the models A, B and C add: their versions and how well they did, model A's reading of every option, model B's correction of the satellite and model C's proposal of the crop history. Null when no registry of trained models was given.",
+      "x-used-in": "Model screen · what the three models add to the analysis",
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "simulated": {
+              "type": "boolean",
+              "description": "True while the models were trained on the simulated panel: show the demo badge on it.",
+              "x-used-in": "Model screen · what the three models add to the analysis · badge"
+            },
+            "note": {
+              "$ref": "#/$defs/text",
+              "description": "What the numbers mean and do not mean.",
+              "x-used-in": "Model screen · what the three models add to the analysis · small print"
+            },
+            "models": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "enum": [
+                      "A",
+                      "B",
+                      "C"
+                    ],
+                    "description": "A, B or C.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                  },
+                  "role": {
+                    "$ref": "#/$defs/text",
+                    "description": "What the model does.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                  },
+                  "version": {
+                    "type": "integer",
+                    "description": "Version number of the published model.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                  },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "published",
+                      "candidate",
+                      "retired"
+                    ],
+                    "description": "published, candidate or retired; only published models are shown.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                  },
+                  "trained_on": {
+                    "type": "string",
+                    "description": "Date of the training, YYYY-MM-DD.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                  },
+                  "examples": {
+                    "type": "integer",
+                    "description": "Examples the model learned from.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                  },
+                  "fields": {
+                    "type": "integer",
+                    "description": "Fields those examples come from.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                  },
+                  "simulated_data": {
+                    "type": "boolean",
+                    "description": "True when every example was simulated.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · badge"
+                  },
+                  "metric": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "$ref": "#/$defs/text",
+                        "description": "The metric.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                      },
+                      "value": {
+                        "type": "number",
+                        "description": "The model's value.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                      },
+                      "fixed_rule_name": {
+                        "$ref": "#/$defs/text",
+                        "description": "The metric of the fixed rule.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                      },
+                      "fixed_rule": {
+                        "type": "number",
+                        "description": "The fixed rule's value.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                      },
+                      "lower_is_better": {
+                        "type": "boolean",
+                        "description": "True for an error, false for an accuracy.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                      },
+                      "better": {
+                        "type": "boolean",
+                        "description": "True when the model beats the fixed rule.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "value",
+                      "fixed_rule_name",
+                      "fixed_rule",
+                      "lower_is_better",
+                      "better"
+                    ],
+                    "additionalProperties": false,
+                    "description": "How the model did on fields it never saw, against the fixed rule it replaces.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Why it was published or not.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · model card"
+                  }
+                },
+                "required": [
+                  "id",
+                  "role",
+                  "version",
+                  "state",
+                  "trained_on",
+                  "examples",
+                  "fields",
+                  "simulated_data",
+                  "metric",
+                  "reason"
+                ],
+                "additionalProperties": false,
+                "description": "One published model.",
+                "x-used-in": "Model screen · what the three models add to the analysis · model card"
+              },
+              "description": "The published models, B, A and C.",
+              "x-used-in": "Model screen · what the three models add to the analysis"
+            },
+            "options": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Id of the option, as in summary.options.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · option card"
+                  },
+                  "model_version": {
+                    "type": "integer",
+                    "description": "Version of model A used.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · option card"
+                  },
+                  "seasons": {
+                    "type": "integer",
+                    "description": "Crop-seasons read: the ones the option's drops count (summary.options.evaluated).",
+                    "x-used-in": "Model screen · what the three models add to the analysis · option card"
+                  },
+                  "of_10": {
+                    "type": "object",
+                    "properties": {
+                      "ok": {
+                        "type": "integer",
+                        "description": "Seasons out of 10 with enough water.",
+                        "x-used-in": "Model screen · what the three models add to the analysis"
+                      },
+                      "tight": {
+                        "type": "integer",
+                        "description": "Seasons out of 10 with tight water.",
+                        "x-used-in": "Model screen · what the three models add to the analysis"
+                      },
+                      "out": {
+                        "type": "integer",
+                        "description": "Seasons out of 10 without water.",
+                        "x-used-in": "Model screen · what the three models add to the analysis"
+                      }
+                    },
+                    "required": [
+                      "ok",
+                      "tight",
+                      "out"
+                    ],
+                    "additionalProperties": false,
+                    "description": "Of 10 seasons, how many model A expects the producer to call good (ok), normal (tight) or bad (out).",
+                    "x-used-in": "Model screen · what the three models add to the analysis"
+                  },
+                  "water_risk": {
+                    "description": "low, medium or high from model A's drops.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · option card",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "low",
+                          "medium",
+                          "high"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "fixed_cuts_of_10": {
+                    "type": "object",
+                    "properties": {
+                      "ok": {
+                        "type": "integer",
+                        "description": "Seasons out of 10 with enough water.",
+                        "x-used-in": "Model screen · what the three models add to the analysis"
+                      },
+                      "tight": {
+                        "type": "integer",
+                        "description": "Seasons out of 10 with tight water.",
+                        "x-used-in": "Model screen · what the three models add to the analysis"
+                      },
+                      "out": {
+                        "type": "integer",
+                        "description": "Seasons out of 10 without water.",
+                        "x-used-in": "Model screen · what the three models add to the analysis"
+                      }
+                    },
+                    "required": [
+                      "ok",
+                      "tight",
+                      "out"
+                    ],
+                    "additionalProperties": false,
+                    "description": "The same with the fixed cuts of stress (what summary.options.drops shows).",
+                    "x-used-in": "Model screen · what the three models add to the analysis"
+                  },
+                  "fixed_cuts_water_risk": {
+                    "description": "low, medium or high from the fixed cuts.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · option card",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "low",
+                          "medium",
+                          "high"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "model_version",
+                  "seasons",
+                  "of_10",
+                  "water_risk",
+                  "fixed_cuts_of_10",
+                  "fixed_cuts_water_risk"
+                ],
+                "additionalProperties": false,
+                "description": "Model A's reading of one option, next to the fixed cuts'.",
+                "x-used-in": "Model screen · what the three models add to the analysis · option card"
+              },
+              "description": "One entry per option with seasons to read.",
+              "x-used-in": "Model screen · what the three models add to the analysis"
+            },
+            "satellite": {
+              "description": "Model B on the last days of the demo field: the satellite as it is, corrected, and the sensor.",
+              "x-used-in": "Model screen · what the three models add to the analysis · satellite chart",
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "model_version": {
+                      "type": "integer",
+                      "description": "Version of model B used.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                    },
+                    "field_id": {
+                      "type": "string",
+                      "description": "The field.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                    },
+                    "dates": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "A day, YYYY-MM-DD.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                      },
+                      "description": "The days.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                    },
+                    "satellite": {
+                      "type": "array",
+                      "items": {
+                        "type": "number",
+                        "description": "SMAP root-zone moisture as delivered.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                      },
+                      "description": "One value per day.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                    },
+                    "corrected": {
+                      "type": "array",
+                      "items": {
+                        "type": "number",
+                        "description": "Moisture after model B.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                      },
+                      "description": "One value per day.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                    },
+                    "sensor": {
+                      "type": "array",
+                      "items": {
+                        "type": "number",
+                        "description": "Calibrated sensor moisture of the field.",
+                        "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                      },
+                      "description": "One value per day.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                    },
+                    "rmse": {
+                      "type": "object",
+                      "properties": {
+                        "satellite": {
+                          "type": "number",
+                          "description": "Error of the satellite as it is.",
+                          "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                        },
+                        "corrected": {
+                          "type": "number",
+                          "description": "Error after model B.",
+                          "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                        }
+                      },
+                      "required": [
+                        "satellite",
+                        "corrected"
+                      ],
+                      "additionalProperties": false,
+                      "description": "Error against the sensor over these days.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "description": "m3/m3.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · satellite chart"
+                    },
+                    "sensor_simulated": {
+                      "type": "boolean",
+                      "description": "True while the sensor is simulated.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · badge"
+                    },
+                    "in_sample": {
+                      "type": "boolean",
+                      "description": "True when the field is one the model learned from, so this is not a test.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · small print"
+                    },
+                    "note": {
+                      "$ref": "#/$defs/text",
+                      "description": "The caveat.",
+                      "x-used-in": "Model screen · what the three models add to the analysis · small print"
+                    }
+                  },
+                  "required": [
+                    "model_version",
+                    "field_id",
+                    "dates",
+                    "satellite",
+                    "corrected",
+                    "sensor",
+                    "rmse",
+                    "unit",
+                    "sensor_simulated",
+                    "in_sample",
+                    "note"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "crop_history": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "season": {
+                    "type": "string",
+                    "description": "The season, e.g. 2022/23.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal"
+                  },
+                  "crop": {
+                    "type": "string",
+                    "description": "Crop id or `fallow`.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal"
+                  },
+                  "crop_name": {
+                    "$ref": "#/$defs/text",
+                    "description": "Name of the crop.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal"
+                  },
+                  "confidence": {
+                    "type": "number",
+                    "description": "Share of the forest's votes the answer got, 0 to 1; low confidence means ask instead of propose.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "propose",
+                      "ask"
+                    ],
+                    "description": "propose when the confidence is enough to suggest the crop, ask when it is not and the app should ask the producer.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal"
+                  },
+                  "confirmed": {
+                    "type": "boolean",
+                    "description": "False: the producer has not confirmed it.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal"
+                  },
+                  "start_offset": {
+                    "type": "integer",
+                    "description": "Days from 1 April when the field turns green, -1 if it never does.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal · detail"
+                  },
+                  "peak_offset": {
+                    "type": "integer",
+                    "description": "Days from 1 April of the greenest composite.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal · detail"
+                  },
+                  "peak_value": {
+                    "type": "number",
+                    "description": "NDVI at the peak.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal · detail"
+                  },
+                  "duration_days": {
+                    "type": "integer",
+                    "description": "Days the field stays green.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal · detail"
+                  },
+                  "peaks": {
+                    "type": "integer",
+                    "description": "Number of green peaks.",
+                    "x-used-in": "Model screen · what the three models add to the analysis · history proposal · detail"
+                  }
+                },
+                "required": [
+                  "season",
+                  "crop",
+                  "crop_name",
+                  "confidence",
+                  "action",
+                  "confirmed",
+                  "start_offset",
+                  "peak_offset",
+                  "peak_value",
+                  "duration_days",
+                  "peaks"
+                ],
+                "additionalProperties": false,
+                "description": "Model C's proposal of what grew in one season, for the producer to confirm.",
+                "x-used-in": "Model screen · what the three models add to the analysis · history proposal"
+              },
+              "description": "One proposal per season with a complete MODIS curve at the demo field's point (real NASA data, a 250 m pixel that mixes fields).",
+              "x-used-in": "Model screen · what the three models add to the analysis"
+            }
+          },
+          "required": [
+            "simulated",
+            "note",
+            "models",
+            "options",
+            "satellite",
+            "crop_history"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   },
   "required": [
@@ -1675,7 +2285,8 @@
     "inputs",
     "scenarios",
     "catalog",
-    "charts"
+    "charts",
+    "learning"
   ],
   "additionalProperties": false
 }

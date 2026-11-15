@@ -19,7 +19,7 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `site.soil_calibration.fitted_at.longitude` | number | Longitude, degrees. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.note` | text | Warning that the model describes this point only. | Footer of the main screen |
 | `status` | object | How far the results can be trusted. Always show the disclaimer. | Footer of the main screen and the presentation |
-| `status.mode` | one of `demo`, `live` | demo while any input is simulated, live when every input is measured or entered by a person. The panel adds `offline` itself when it cannot read the file, and the error document says `error`; catalog.modes explains the four. | Badge at the top of every screen |
+| `status.mode` | one of `demo`, `live` | demo while any input is simulated, live when every input is measured or entered by a person. The panel decides `pending` (a new field the nightly run has not reached) and `offline` (it cannot read the file) itself, and the error document says `error`; catalog.modes explains the five. | Badge at the top of every screen |
 | `status.badge` | text | The text of the badge for this mode, e.g. «Modo demo · datos simulados». Show it at the top of every screen while the mode is demo. | Badge at the top of every screen |
 | `status.simulated_inputs` | array | The inputs that are simulated, so the badge can say which numbers they feed; empty when the mode is live. | Badge at the top of every screen |
 | `status.exploratory` | boolean | Always true: scenarios from historical climate, not forecasts. | Footer of the main screen |
@@ -55,11 +55,17 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `summary.water.series.method` | one of `state_correction` | state_correction: each day the modelled water moves a share `gain` of the way to the reading. | Main screen · moisture chart «sensor vs modelo» |
 | `summary.water.series.gain` | number | Share of the gap between model and reading corrected each day (0 ignores the sensor, 1 adopts it). | Main screen · moisture chart «sensor vs modelo» |
 | `summary.water.series.days` | integer | Days with a reading. | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.series.carried_days` | integer | Days after the last reading the model ran on its own to reach the last day of the climate record (0 with a sensor that reports every day). | Main screen · moisture chart «sensor vs modelo» |
 | `summary.water.series.period` | array | First and last day of the series. | Main screen · moisture chart «sensor vs modelo» |
 | `summary.water.series.history` | array | Reading and modelled state of every day, oldest first. | Main screen · moisture chart «sensor vs modelo» |
 | `summary.water.series.history[].date` | string | The day, YYYY-MM-DD. | Main screen · moisture chart «sensor vs modelo» |
 | `summary.water.series.history[].reading` | number | The reading of that day, m3/m3. | Main screen · moisture chart «sensor vs modelo» |
 | `summary.water.series.history[].modeled` | number | The model's state that day after correcting toward the reading, m3/m3. | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.correction` | object or null | Set when the satellite as model B corrects it stands in for the sensor: the readings of `series` are that corrected satellite. | Main screen · header «Tu campo hoy: N mm de agua útil» · small print |
+| `summary.water.correction.model` | one of `B` | The model: B. | Main screen · header «Tu campo hoy: N mm de agua útil» · small print |
+| `summary.water.correction.version` | integer | Version of model B used. | Main screen · header «Tu campo hoy: N mm de agua útil» · small print |
+| `summary.water.correction.last_satellite_day` | string | Last day with a satellite value, YYYY-MM-DD. | Main screen · header «Tu campo hoy: N mm de agua útil» · small print |
+| `summary.water.correction.note` | text | What this water rests on, to show as small print. | Main screen · header «Tu campo hoy: N mm de agua útil» · small print |
 | `summary.soil` | object | Soil health. The model has no soil diagnosis yet, so the state is null. | Main screen · card «Tu suelo» |
 | `summary.soil.state` | one of `good`, `fair`, `poor` or null | good, fair or poor; null while there is no diagnosis. | Main screen · card «Tu suelo» |
 | `summary.soil.trend` | one of `improving`, `stable`, `declining` or null | improving, stable or declining; null while there is no diagnosis. | Main screen · card «Tu suelo» |
@@ -71,7 +77,12 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `summary.options[].name` | text | Name of the option, e.g. «Rotación observada 3». | Main screen · option card · title |
 | `summary.options[].is_current` | boolean | True for the crop the producer has sown now: «Tu rotación actual», red outline. | Main screen · option card · badge |
 | `summary.options[].water_risk` | one of `low`, `medium`, `high` or null | low, medium or high, from the number of high-deficit drops (provisional thresholds); null when nothing was simulated. | Main screen · option card · pill «Agua: riesgo …» |
-| `summary.options[].drops` | object or null | The ten drops to draw; null when nothing was simulated (e.g. the cycle already ended). | Main screen · option card · ten drops |
+| `summary.options[].drops` | object or null | The ten drops to draw; null when nothing was simulated (e.g. the cycle already ended). With `risk_basis.source` model_a they are model A's, otherwise the fixed cuts'. | Main screen · option card · ten drops |
+| `summary.options[].risk_basis` | object | What `drops` and `water_risk` rest on, with the fixed cuts beside them to compare. | Main screen · option card · small print |
+| `summary.options[].risk_basis.source` | one of `model_a`, `fixed_cuts` | model_a when the published model A reads the seasons, fixed_cuts when only the fixed stress cuts do. | Main screen · option card · small print |
+| `summary.options[].risk_basis.model_version` | integer or null | Version of model A used; null with the fixed cuts. | Main screen · option card · small print |
+| `summary.options[].risk_basis.fixed_cuts_drops` | object or null | The drops the fixed cuts of stress give. | Main screen · option card · small print |
+| `summary.options[].risk_basis.fixed_cuts_water_risk` | one of `low`, `medium`, `high` or null | low, medium or high from the fixed cuts. | Main screen · option card · small print |
 | `summary.options[].sentence` | text | One sentence for the card, e.g. «En 4 de cada 10 zafras históricas faltó agua en la etapa crítica». | Main screen · option card · sentence |
 | `summary.options[].soil_effect` | one of `improves`, `stays`, `worsens` or null | improves, stays or worsens; always null: the model does not estimate it. | Main screen · option card · «Suelo: …» |
 | `summary.options[].soil_reason` | text or null | Why the soil effect; always null. | Main screen · option card · «Suelo: …» |
@@ -134,13 +145,13 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `catalog.ratings[].label` | text | Button text, e.g. «Muy mal». | Data screen · Productor «Tu campo» · rating buttons |
 | `catalog.seasons` | array | Seasons the history can cover, newest first. | Data screen · Productor «Tu campo» · season selector |
 | `catalog.modes` | array | The four states of the panel with the text of each badge, `offline` included (only the panel can know it). | Badge at the top of every screen |
-| `catalog.modes[].id` | one of `demo`, `live`, `error`, `offline` | demo, live, error or offline. | Badge at the top of every screen |
+| `catalog.modes[].id` | one of `demo`, `live`, `pending`, `error`, `offline` | demo, live, pending, error or offline. | Badge at the top of every screen |
 | `catalog.modes[].badge` | text | Badge text for the state. | Badge at the top of every screen |
 | `catalog.modes[].meaning` | text | When the state applies and what to show. | Badge at the top of every screen |
 | `charts` | array | The charts, in a fixed order: the data behind every figure of the experiment log. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
 | `charts[].id` | string | Stable id of the chart, e.g. sensor_series or sowing_maize. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
-| `charts[].figure` | string | The figure of reports/experiments.md it mirrors (sowing, survey, smap, ndvi, imerg, rain_decision, sensor, sensor_windows, sensor_recalibration); a figure can have several charts. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
-| `charts[].group` | one of `sowing`, `validation`, `rain`, `sensor` | Where to file it: sowing (what happens if a crop is sown on a date), validation (against independent data), rain (POWER vs IMERG) or sensor (the simulated-sensor experiments). | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].figure` | string | The figure of reports/experiments.md it mirrors (retrospective, sowing, survey, smap, ndvi, imerg, rain_decision, sensor, sensor_windows, sensor_recalibration); a figure can have several charts. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `charts[].group` | one of `sowing`, `validation`, `rain`, `sensor`, `retrospective` | Where to file it: sowing (what happens if a crop is sown on a date), validation (against independent data), rain (POWER vs IMERG), sensor (the simulated-sensor experiments) or retrospective (what the tool would have said before each past season). | Charts screen · one chart per entry, mirroring a figure of the experiment log |
 | `charts[].title` | text | Title of the chart. | Charts screen · one chart per entry, mirroring a figure of the experiment log · title |
 | `charts[].note` | text or null | The caveat to print under the chart. | Charts screen · one chart per entry, mirroring a figure of the experiment log · small print |
 | `charts[].x` | object | The horizontal axis, shared by every series. | Charts screen · one chart per entry, mirroring a figure of the experiment log · x axis |
@@ -154,12 +165,72 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `charts[].y.unit` | string or null | Unit of the values: m3/m3 or mm; null for counts, shares and scores. | Charts screen · one chart per entry, mirroring a figure of the experiment log · y axis |
 | `charts[].stacked` | boolean | True when the series are parts of one bar (stack them) instead of bars side by side. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
 | `charts[].simulated` | boolean | True when the data comes from a simulated sensor or a simulated reading: show the demo badge on it. | Charts screen · one chart per entry, mirroring a figure of the experiment log · badge |
-| `charts[].source` | string | Where the numbers come from: nasa_power, gpm_imerg, smap_l3, modis_ndvi, producer_survey or simulated_sensor. | Charts screen · one chart per entry, mirroring a figure of the experiment log · small print |
+| `charts[].source` | string | Where the numbers come from: nasa_power, gpm_imerg, smap_l3, modis_ndvi, producer_survey, simulated_sensor or simulated_panel. | Charts screen · one chart per entry, mirroring a figure of the experiment log · small print |
 | `charts[].series` | array | The series to draw. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
 | `charts[].series[].id` | string | Id of the series. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
 | `charts[].series[].label` | text | Legend entry. | Charts screen · one chart per entry, mirroring a figure of the experiment log · legend |
 | `charts[].series[].style` | one of `bar`, `line`, `points` | How to draw it: bar, line or points. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
 | `charts[].series[].values` | array | One value per position of `x.values`, in the same order; null when there is none. | Charts screen · one chart per entry, mirroring a figure of the experiment log |
+| `learning` | object or null | What the models A, B and C add: their versions and how well they did, model A's reading of every option, model B's correction of the satellite and model C's proposal of the crop history. Null when no registry of trained models was given. | Model screen · what the three models add to the analysis |
+| `learning.simulated` | boolean | True while the models were trained on the simulated panel: show the demo badge on it. | Model screen · what the three models add to the analysis · badge |
+| `learning.note` | text | What the numbers mean and do not mean. | Model screen · what the three models add to the analysis · small print |
+| `learning.models` | array | The published models, B, A and C. | Model screen · what the three models add to the analysis |
+| `learning.models[].id` | one of `A`, `B`, `C` | A, B or C. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].role` | text | What the model does. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].version` | integer | Version number of the published model. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].state` | one of `published`, `candidate`, `retired` | published, candidate or retired; only published models are shown. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].trained_on` | string | Date of the training, YYYY-MM-DD. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].examples` | integer | Examples the model learned from. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].fields` | integer | Fields those examples come from. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].simulated_data` | boolean | True when every example was simulated. | Model screen · what the three models add to the analysis · badge |
+| `learning.models[].metric` | object | How the model did on fields it never saw, against the fixed rule it replaces. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].metric.name` | text | The metric. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].metric.value` | number | The model's value. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].metric.fixed_rule_name` | text | The metric of the fixed rule. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].metric.fixed_rule` | number | The fixed rule's value. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].metric.lower_is_better` | boolean | True for an error, false for an accuracy. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].metric.better` | boolean | True when the model beats the fixed rule. | Model screen · what the three models add to the analysis · model card |
+| `learning.models[].reason` | string | Why it was published or not. | Model screen · what the three models add to the analysis · model card |
+| `learning.options` | array | One entry per option with seasons to read. | Model screen · what the three models add to the analysis |
+| `learning.options[].id` | string | Id of the option, as in summary.options. | Model screen · what the three models add to the analysis · option card |
+| `learning.options[].model_version` | integer | Version of model A used. | Model screen · what the three models add to the analysis · option card |
+| `learning.options[].seasons` | integer | Crop-seasons read: the ones the option's drops count (summary.options.evaluated). | Model screen · what the three models add to the analysis · option card |
+| `learning.options[].of_10` | object | Of 10 seasons, how many model A expects the producer to call good (ok), normal (tight) or bad (out). | Model screen · what the three models add to the analysis |
+| `learning.options[].of_10.ok` | integer | Seasons out of 10 with enough water. | Model screen · what the three models add to the analysis |
+| `learning.options[].of_10.tight` | integer | Seasons out of 10 with tight water. | Model screen · what the three models add to the analysis |
+| `learning.options[].of_10.out` | integer | Seasons out of 10 without water. | Model screen · what the three models add to the analysis |
+| `learning.options[].water_risk` | one of `low`, `medium`, `high` or null | low, medium or high from model A's drops. | Model screen · what the three models add to the analysis · option card |
+| `learning.options[].fixed_cuts_of_10` | object | The same with the fixed cuts of stress (what summary.options.drops shows). | Model screen · what the three models add to the analysis |
+| `learning.options[].fixed_cuts_of_10.ok` | integer | Seasons out of 10 with enough water. | Model screen · what the three models add to the analysis |
+| `learning.options[].fixed_cuts_of_10.tight` | integer | Seasons out of 10 with tight water. | Model screen · what the three models add to the analysis |
+| `learning.options[].fixed_cuts_of_10.out` | integer | Seasons out of 10 without water. | Model screen · what the three models add to the analysis |
+| `learning.options[].fixed_cuts_water_risk` | one of `low`, `medium`, `high` or null | low, medium or high from the fixed cuts. | Model screen · what the three models add to the analysis · option card |
+| `learning.satellite` | object or null | Model B on the last days of the demo field: the satellite as it is, corrected, and the sensor. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.model_version` | integer | Version of model B used. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.field_id` | string | The field. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.dates` | array | The days. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.satellite` | array | One value per day. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.corrected` | array | One value per day. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.sensor` | array | One value per day. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.rmse` | object | Error against the sensor over these days. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.rmse.satellite` | number | Error of the satellite as it is. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.rmse.corrected` | number | Error after model B. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.unit` | string | m3/m3. | Model screen · what the three models add to the analysis · satellite chart |
+| `learning.satellite.sensor_simulated` | boolean | True while the sensor is simulated. | Model screen · what the three models add to the analysis · badge |
+| `learning.satellite.in_sample` | boolean | True when the field is one the model learned from, so this is not a test. | Model screen · what the three models add to the analysis · small print |
+| `learning.satellite.note` | text | The caveat. | Model screen · what the three models add to the analysis · small print |
+| `learning.crop_history` | array | One proposal per season with a complete MODIS curve at the demo field's point (real NASA data, a 250 m pixel that mixes fields). | Model screen · what the three models add to the analysis |
+| `learning.crop_history[].season` | string | The season, e.g. 2022/23. | Model screen · what the three models add to the analysis · history proposal |
+| `learning.crop_history[].crop` | string | Crop id or `fallow`. | Model screen · what the three models add to the analysis · history proposal |
+| `learning.crop_history[].crop_name` | text | Name of the crop. | Model screen · what the three models add to the analysis · history proposal |
+| `learning.crop_history[].confidence` | number | Share of the forest's votes the answer got, 0 to 1; low confidence means ask instead of propose. | Model screen · what the three models add to the analysis · history proposal |
+| `learning.crop_history[].action` | one of `propose`, `ask` | propose when the confidence is enough to suggest the crop, ask when it is not and the app should ask the producer. | Model screen · what the three models add to the analysis · history proposal |
+| `learning.crop_history[].confirmed` | boolean | False: the producer has not confirmed it. | Model screen · what the three models add to the analysis · history proposal |
+| `learning.crop_history[].start_offset` | integer | Days from 1 April when the field turns green, -1 if it never does. | Model screen · what the three models add to the analysis · history proposal · detail |
+| `learning.crop_history[].peak_offset` | integer | Days from 1 April of the greenest composite. | Model screen · what the three models add to the analysis · history proposal · detail |
+| `learning.crop_history[].peak_value` | number | NDVI at the peak. | Model screen · what the three models add to the analysis · history proposal · detail |
+| `learning.crop_history[].duration_days` | integer | Days the field stays green. | Model screen · what the three models add to the analysis · history proposal · detail |
+| `learning.crop_history[].peaks` | integer | Number of green peaks. | Model screen · what the three models add to the analysis · history proposal · detail |
 
 ## The error document
 

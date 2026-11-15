@@ -1,6 +1,7 @@
 """Figures of the validation documents (`xmart_analysis.validation`)."""
 
 import datetime
+import textwrap
 
 import matplotlib
 
@@ -287,5 +288,46 @@ def plot_sensor_recalibration(doc, path, lang="en"):
     fig.suptitle(T("sensor_recal.title", lang), x=0.01, ha="left", fontsize=10.5, fontweight="bold")
     fig.text(0.01, 0.01, T("sensor_recal.note", lang), fontsize=7.2, color=MUTED, style="italic")
     fig.tight_layout(rect=(0, 0.04, 1, 0.93))
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
+def plot_retrospective(doc, path, lang="en"):
+    feat = doc["featured"]
+    rows, crops = feat["rows"], doc["crops"]
+    names = [r["field_id"].replace("sim_", "").replace("_", " ") for r in rows]
+    fig, (drops, actual, share) = plt.subplots(1, 3, figsize=(13.5, 4.4), dpi=130, gridspec_kw={"width_ratios": [1.25, 1, 1.25]})
+    bottom = [0] * len(rows)
+    for name, color in (("ok", "#2d6a8f"), ("tight", "#e0b13f"), ("out", "#c0392b")):
+        values = [r["drops"][name] for r in rows]
+        drops.bar(names, values, bottom=bottom, color=color, label=T(f"sowing.drop.{name}", lang))
+        bottom = [b + v for b, v in zip(bottom, values)]
+    wrap = lambda text: "\n".join(textwrap.wrap(text, 38))  # noqa: E731
+    drops.set_title(wrap(T("retro.drops", lang, crop=T(crops_uy.name_label_key(feat["crop"]), lang), season=feat["season"])), loc="left", fontsize=8.5, fontweight="bold")
+    drops.legend(frameon=False, fontsize=7.5, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.34))
+    actual.bar(names, [r["actual_stress"] for r in rows], color="#c0392b")
+    for i, r in enumerate(rows):
+        actual.text(i, r["actual_stress"] + 0.01, f"{r['actual_stress']:.2f}", ha="center", fontsize=7)
+    actual.set_ylim(0, 1.1)
+    actual.set_title(wrap(T("retro.actual", lang)), loc="left", fontsize=8.5, fontweight="bold")
+    labels = [T(crops_uy.name_label_key(c), lang) for c in crops]
+    height = 0.38
+    positions = list(range(len(crops)))
+    share.barh([p + height / 2 for p in positions], [doc["by_crop"][c]["base_rate_out"] for c in crops], height, color="#bcd5e4", label=T("retro.base", lang))
+    share.barh([p - height / 2 for p in positions], [doc["by_crop"][c]["warned_of_out"] for c in crops], height, color="#2d6a8f", label=T("retro.warned", lang))
+    for p, c in zip(positions, crops):
+        share.text(doc["by_crop"][c]["base_rate_out"] + 0.01, p + height / 2, f"{doc['by_crop'][c]['base_rate_out']:.2f}", va="center", fontsize=7)
+        share.text(doc["by_crop"][c]["warned_of_out"] + 0.01, p - height / 2, f"{doc['by_crop'][c]['warned_of_out']:.2f}", va="center", fontsize=7)
+    share.set_yticks(positions, labels, fontsize=8)
+    share.set_xlim(0, 1)
+    share.set_xlabel(T("retro.share_axis", lang), fontsize=8)
+    share.legend(frameon=False, fontsize=7, loc="upper center", bbox_to_anchor=(0.5, -0.24))
+    for ax in (drops, actual, share):
+        ax.tick_params(axis="x", labelsize=7, rotation=0 if ax is share else 35)
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+    fig.suptitle(T("retro.title", lang), x=0.01, ha="left", fontsize=10.5, fontweight="bold")
+    fig.text(0.01, 0.01, T("retro.note", lang), fontsize=7.2, color=MUTED, style="italic")
+    fig.tight_layout(rect=(0, 0.05, 1, 0.93))
     fig.savefig(path, facecolor="white")
     plt.close(fig)

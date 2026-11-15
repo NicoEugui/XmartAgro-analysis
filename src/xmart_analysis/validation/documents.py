@@ -7,8 +7,10 @@ BUNDLED = {"smap_l3": "smap_l3.csv", "smap_l4": "smap_l4.csv", "modis_ndvi": "mo
 
 
 def build(context, smap_l3=None, smap_l4=None, modis_ndvi=None, imerg_file=None):
-    """The documents of the validators whose files are given; the producer survey and the simulated-sensor experiments always run."""
-    doc = {"survey": survey.run(context), "sensor": sensor_assimilation.run(context),
+    """The documents of the validators whose files are given; the producer survey, the simulated-sensor experiments and the backtest always run."""
+    from ..learning import retrospective  # the backtest runs on the whole panel, whatever the active site
+
+    doc = {"survey": survey.run(context), "sensor": sensor_assimilation.run(context), "retrospective": retrospective.run(),
            "sensor_windows": sensor_assimilation.windows(context), "sensor_recalibration": sensor_assimilation.recalibrate(context)}
     if smap_l3:
         doc["smap"] = smap.run(smap_l3, smap_l4, context)

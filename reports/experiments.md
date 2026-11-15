@@ -4,7 +4,7 @@ Site: `soriano` (-33.3577778, -58.078806). Generated 2026-11-15 by `xmart-analys
 
 ## 1. Data architecture
 
-Only NASA data and the team's own producer survey enter the repository.
+NASA data and the team's own producer survey enter the repository, plus the CONEAT soil map (MGAP) as an optional plug-in: its table of groups and the unit of each field, not the 120 MB map. Everything else that trains the models (fields beyond the two with NASA satellite data, sensors, producers' seasons, outcomes, soil analyses) is simulated and marked `simulated`.
 
 ```
 NASA POWER (daily climate) --> water-balance engine --> scenarios per historical season --> frontend JSON
@@ -25,6 +25,24 @@ validators (not model inputs): SMAP L3/L4, MODIS NDVI, GPM IMERG, producer surve
 | sites/soriano/smap_l4.csv | calibration | smap_l4 | 2015-04-01/2026-11-05 | 33896 | 4cbeb19585a2 |
 | sites/soriano/smap_l3.csv | validation | smap_l3 | 2015-04-01/2026-11-06 | 4152 | 992ae2785284 |
 | sites/soriano/modis_ndvi.csv | validation | modis_ndvi | 2002-02-18/2026-10-16 | 568 | 90fdc8d0dac4 |
+| learning/fields.csv | training_input | simulated_panel | - | 8 | dad1f8775f36 |
+| learning/nodes.csv | training_input | simulated_panel | - | 16 | afb2652685c4 |
+| learning/producers.csv | training_input | simulated_panel | - | 12 | 5828cf5a80af |
+| learning/crop_ranges.csv | training_input | fao56;fao33 | - | 9 | 0e5338a4c2dd |
+| sites/la_estanzuela/power_daily.csv | model_input | nasa_power | 1986-07-01/2026-11-13 | 14746 | 6a9c2d22b87f |
+| sites/la_estanzuela/smap_l4.csv | calibration | smap_l4 | 2015-04-01/2026-11-10 | 33936 | 6a9e564f1e9b |
+| sites/la_estanzuela/smap_l3.csv | validation | smap_l3 | 2015-04-01/2026-11-12 | 4159 | 9f90a809c6a9 |
+| sites/la_estanzuela/modis_ndvi.csv | validation | modis_ndvi | 2015-03-22/2026-10-16 | 267 | 778ec34f1bbb |
+| sites/la_estanzuela/calibration.json | model_input | smap_l4 | - | - | 55e4d2db4722 |
+| sites/sim_salto/power_daily.csv | model_input | nasa_power | 1986-07-01/2026-11-13 | 14746 | 3d6f35b9d072 |
+| sites/sim_paysandu/power_daily.csv | model_input | nasa_power | 1986-07-01/2026-11-13 | 14746 | 06078af13a74 |
+| sites/sim_rio_negro/power_daily.csv | model_input | nasa_power | 1986-07-01/2026-11-13 | 14746 | 370a4d8686e9 |
+| sites/sim_flores/power_daily.csv | model_input | nasa_power | 1986-07-01/2026-11-13 | 14746 | 4332ac14ab92 |
+| sites/sim_durazno/power_daily.csv | model_input | nasa_power | 1986-07-01/2026-11-13 | 14746 | f782c9527b51 |
+| sites/sim_florida/power_daily.csv | model_input | nasa_power | 1986-07-01/2026-11-13 | 14746 | 0e0c356d4ab3 |
+| learning/soil_plans.csv | training_input | simulated_panel | - | 8 | d9bbf04d835c |
+| soils/coneat_groups.csv | soil_reference | mgap_coneat | - | 128 | bb0db8923d35 |
+| learning/soil_units.csv | field_soil | mgap_coneat | - | 8 | 37266e9b7b38 |
 
 Input files of the runs below, identified by checksum (the NASA files are in the repository and listed above):
 
@@ -85,7 +103,38 @@ Crop parameters are all `pending` (no dataset yet).
 
 Risk comes from how many of the 39 historical seasons end in high deficit; the drops are counts, not probabilities.
 
-## 4. What happens if a crop is sown on a given date
+## 4. What the tool would have said before each past season
+
+**Question.** If a producer had had XmartAgro before sowing, what would it have said, and what was the season? Each past season is a case: the tool applies the climate of the other seasons to the water of the sowing day and says how many of 10 ended without water; the season itself is then looked at with its real climate.
+
+![What the tool would have said before each past season](figures/retrospective.en.png)
+
+<details><summary>Values plotted in this figure</summary>
+
+| item | ok (of 10) | tight (of 10) | out (of 10) | actual stress | share |
+| --- | --- | --- | --- | --- | --- |
+| soriano: soybean_1st 2022/23 | 1 | 2 | 7 | 0.896 |  |
+| sim_salto: soybean_1st 2022/23 | 1 | 3 | 6 | 0.771 |  |
+| sim_paysandu: soybean_1st 2022/23 | 1 | 2 | 7 | 0.972 |  |
+| sim_rio_negro: soybean_1st 2022/23 | 1 | 2 | 7 | 0.926 |  |
+| sim_flores: soybean_1st 2022/23 | 1 | 2 | 7 | 0.989 |  |
+| sim_durazno: soybean_1st 2022/23 | 1 | 2 | 7 | 0.993 |  |
+| sim_florida: soybean_1st 2022/23 | 0 | 2 | 8 | 0.965 |  |
+| la_estanzuela: soybean_1st 2022/23 | 2 | 3 | 5 | 0.88 |  |
+| soybean_1st: seasons that ended without water |  |  |  |  | 0.641 |
+| soybean_1st: those that had been warned |  |  |  |  | 1.0 |
+| maize: seasons that ended without water |  |  |  |  | 0.628 |
+| maize: those that had been warned |  |  |  |  | 1.0 |
+| wheat: seasons that ended without water |  |  |  |  | 0.093 |
+| wheat: those that had been warned |  |  |  |  | 0.0 |
+| barley: seasons that ended without water |  |  |  |  | 0.061 |
+| barley: those that had been warned |  |  |  |  | 0.0 |
+
+</details>
+
+**Reading.** soybean_1st sown in 2022/23: the warning would have been high in 6 of 8 fields (between 5 and 8 of 10 seasons without water) and the season ended without water in 8 of them, with a stress between 0.771 and 0.993: worse than 97% to 100% of the other seasons. But the summer crops end without water in about 64% of seasons (the crop parameters are pending, so soybean 'fails' in most years), so a high warning adds little: of 190 soybean cases warned high, 67% ended without water against a base rate of 64%. Wheat and barley rarely end without water (9%, 6%) and the tool had warned 0% of those cases. Over 1248 cases (4 crops, 8 fields, every complete season). Against the real survey: the two seasons most named as unfavourable are 2022/23, 2025/26; they are the two with the highest mean stress for soybean (True) and for maize (True). The fields, sowing dates and outcomes are simulated: this is the consistency of the tool's warning, not a check against a real field.
+
+## 5. What happens if a crop is sown on a given date
 
 **Question.** For each crop and sowing date (the default calendar day and four shifted by 15 and 30 days; each day is applied to every historical season with complete weather), how many of the historical seasons end in low, moderate or high deficit in the critical stage?
 
@@ -213,7 +262,7 @@ Sensitivity to the sensor reading (soybean_1st, default sowing date; the reading
 
 counts are historical seasons applied to the reading, not probabilities; the reading is simulated and crop parameters are pending.
 
-## 5. Producers' unfavourable seasons vs modelled stress
+## 6. Producers' unfavourable seasons vs modelled stress
 
 **Question.** Do the seasons the producers called unfavourable match the model's critical-stage stress?
 
@@ -233,7 +282,7 @@ counts are historical seasons applied to the reading, not probabilities; the rea
 
 **Reading.** The two most stressed seasons are 2022/23, 2025/26 for soybean and 2022/23, 2025/26 for maize; the most named by producers are 2022/23, 2025/26. Agreement: True / True. 8 of 12 respondents answered unambiguously.
 
-## 6. Modelled soil water vs SMAP
+## 7. Modelled soil water vs SMAP
 
 **Question.** Does the model follow independent soil-moisture data in years it was not fitted on?
 
@@ -251,7 +300,7 @@ counts are historical seasons applied to the reading, not probabilities; the rea
 
 **Reading.** Validation period rank correlation / anomaly correlation: model 0.781 / 0.63, smap_l4 0.774 / 0.647, rain_index 0.504 / 0.651 (n=1626 days). L3 senses the surface layer; the model represents the root zone, so the comparison is approximate
 
-## 7. Modelled stress vs MODIS NDVI
+## 8. Modelled stress vs MODIS NDVI
 
 **Question.** Do seasons with a greener pixel in Dec-Mar have lower modelled stress?
 
@@ -290,7 +339,7 @@ counts are historical seasons applied to the reading, not probabilities; the rea
 
 **Reading.** Spearman of NDVI against minus stress: soybean_1st 0.253 (p=0.2356), maize 0.291 (p=0.1645). 3 of the 6 most stressed seasons are among the lowest-NDVI (chance: 1.5). Weak evidence: the pixel mixes crops, stubble and pasture.
 
-## 8. POWER rain vs GPM IMERG rain
+## 9. POWER rain vs GPM IMERG rain
 
 **Question.** How well do the two NASA rain estimates agree at the field?
 
@@ -332,7 +381,7 @@ counts are historical seasons applied to the reading, not probabilities; the rea
 
 **Reading.** Daily r 0.764, monthly r 0.955, Dec-Mar by season r 0.975; annual mean POWER 1159 mm, IMERG 1289 mm (1998-01-01 to 2025-09-30). Driest seasons by IMERG ['2017/18', '2022/23', '2003/04', '2007/08'], by POWER ['2022/23', '2020/21', '2017/18', '2007/08'].
 
-## 9. Model run with POWER rain and with IMERG rain
+## 10. Model run with POWER rain and with IMERG rain
 
 **Question.** Does the result change if the model uses IMERG rain? Only the rain changes; soil parameters stay the POWER-fitted ones.
 
@@ -389,7 +438,7 @@ Share of seasons with high deficit per rotation:
 | survey_11 | 0.444 | 0.383 |
 | survey_12 | 0.5 | 0.454 |
 
-## 10. Water balance with and without a (simulated) soil-moisture sensor
+## 11. Water balance with and without a (simulated) soil-moisture sensor
 
 **Question.** If the field has a soil the model does not know, does feeding the model a sensor series bring it closer to the field? The field and the sensor are both simulated, so the truth is known.
 
@@ -408,7 +457,7 @@ Share of seasons with high deficit per rotation:
 
 **Reading.** Over 2025-11-14 to 2026-11-13 the model without sensor has an error (RMSE) of 0.0153 m3/m3; with daily readings 0.013 (weekly 0.0113, monthly 0.0131). In the first 30 days, while the model still carries a wrong starting state, it falls from 0.0341 to 0.0157. The bias goes from 0.0031 to 0.0101: the sensor's offset (0.01) and the field's different wilting point are a calibration gap, and correcting the water state toward the readings adopts it instead of removing it. The raw readings are 0.0221 m3/m3 from the truth (noise 0.02). Correction gain 0.3. Simulated field and simulated sensor: shows what a sensor could add, not what it does in a real field.
 
-## 11. The sensor experiment over every one-year window
+## 12. The sensor experiment over every one-year window
 
 **Question.** How much does the sensor's gain depend on the year the series starts? The same simulated experiment over every one-year window of the climate record, one start per month.
 
@@ -435,7 +484,7 @@ Share of seasons with high deficit per rotation:
 
 **Reading.** Over 473 windows (starts from 1986-07-01 to 2025-11-01) a daily sensor lowered the whole-year error in 96% of them and the first-30-days error in 100%. The whole-year error fell by a median of 34% (from -26% to 58%): the gain of any single year, like the one in the section above, is one draw from that spread, so the gain depends on when the series starts. Median bias 0.0133 without sensor, 0.0098 with it.
 
-## 12. Fitting the soil to the sensor series
+## 13. Fitting the soil to the sensor series
 
 **Question.** Can the sensor re-calibrate the soil and so attack the bias? The wilting point and capacity are fitted to the first half of the series and tested on the second half, against the simulated field.
 
@@ -465,7 +514,7 @@ Soil parameters:
 | fitted | 0.2179 | 131.5806 |
 | fitted_with_reference | 0.2075 | 133.5277 |
 
-## 13. Decision: POWER rain for the demo, IMERG tested
+## 14. Decision: POWER rain for the demo, IMERG tested
 
 **Question.** Which rain does the model use, and what would change with the other? The demo uses NASA POWER; the same model was run with NASA GPM IMERG rain and compared.
 
@@ -508,7 +557,7 @@ Soil parameters:
 
 **Reading.** Decision: the demo and every result above use POWER rain. Reasons: it covers 1986-07-01 to 2026-11-13 with no gaps, including the 2025/26 season, while IMERG covers 1998-01-01 to 2025-09-30; the soil parameters were fitted with POWER rain; and there is no gauge data to say which source is closer to the truth. IMERG was tested: the two agree on the order of the seasons (rank agreement 0.926 for soybean, 0.965 for maize) but not on the level (annual mean 1159 mm POWER, 1289 mm IMERG), and the mean absolute difference in stress is 0.054 for soybean. High-deficit soybean seasons: 19 with POWER, 18 with IMERG, over the 27 seasons both cover.
 
-## 14. Integrity checks
+## 15. Integrity checks
 
 | check | result |
 | --- | --- |

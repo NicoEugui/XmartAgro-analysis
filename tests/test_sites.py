@@ -26,10 +26,23 @@ def in_site(site, code):
 
 
 class Registry(unittest.TestCase):
-    def test_the_only_site_is_the_soriano_field_and_it_is_complete(self):
-        self.assertEqual(set(tables.sites()), {"soriano"})
-        self.assertEqual(tables.sites()["soriano"]["active"], "1")
+    def test_eight_sites_soriano_is_the_active_one_and_all_are_complete(self):
+        self.assertEqual(set(tables.sites()), {"soriano", "la_estanzuela", "sim_salto", "sim_paysandu", "sim_rio_negro", "sim_flores",
+                                               "sim_durazno", "sim_florida"})
+        self.assertEqual([k for k, v in tables.sites().items() if v["active"] == "1"], ["soriano"])
         self.assertEqual(tables.check_sites(), [])
+
+    def test_only_a_field_site_is_fitted_and_a_climate_site_is_never_active(self):
+        for site, row in tables.sites().items():
+            fitted = tables.calibration_path(site).exists()
+            self.assertEqual(fitted, row["kind"] == "field", site)
+            if fitted:
+                fit = json.loads(tables.calibration_path(site).read_text(encoding="utf-8"))["point"]
+                here = tables.constants_of(site)
+                self.assertAlmostEqual(fit["latitude"], here["latitude"], places=3, msg=site)
+                self.assertAlmostEqual(fit["longitude"], here["longitude"], places=3, msg=site)
+            else:
+                self.assertEqual(row["active"], "0", site)
 
     def test_the_environment_can_name_the_site_and_an_unknown_one_is_a_structured_error(self):
         with mock.patch.dict(os.environ, {"XMART_SITE": "soriano"}):
@@ -46,14 +59,17 @@ class Manifest(unittest.TestCase):
 
     def test_each_dataset_lives_in_the_folder_of_its_group(self):
         for row in tables.manifest():
-            folder = "survey/" if row["group"] == "survey" else f"sites/{row['group'].split(':')[1]}/"
+            folder = {"survey": "survey/", "learning": "learning/", "soils": "soils/"}.get(row["group"]) or f"sites/{row['group'].split(':')[1]}/"
             self.assertTrue(row["path"].startswith(folder), row["path"])
 
     def test_the_only_external_data_is_nasa_and_the_teams_survey(self):
         real = [r for r in tables.manifest() if r["kind"] != tables.SIMULATED]
-        self.assertEqual({r["source_ref"] for r in real}, {"nasa_power", "gpm_imerg", "smap_l4", "smap_l3", "modis_ndvi", "producer_survey"})
-        self.assertEqual({r["kind"] for r in real}, {"climate", "fit", "survey", "soil_moisture", "vegetation"})
-        self.assertEqual({r["source_ref"] for r in tables.manifest() if r["kind"] == tables.SIMULATED}, {"simulated_sensor"})
+        self.assertEqual({r["source_ref"] for r in real}, {"nasa_power", "gpm_imerg", "smap_l4", "smap_l3", "modis_ndvi", "producer_survey", "mgap_coneat"})
+        self.assertEqual({r["kind"] for r in real}, {"climate", "fit", "survey", "soil_moisture", "vegetation", "soil_map"})
+        # the only data that is neither NASA nor the survey is the optional soil-map module (CONEAT, decided 15 Nov 2026)
+        self.assertEqual({r["path"] for r in real if r["source_ref"] == "mgap_coneat"}, {"soils/coneat_groups.csv", "learning/soil_units.csv"})
+        simulated = {ref for r in tables.manifest() if r["kind"] == tables.SIMULATED for ref in r["source_ref"].split(";")}
+        self.assertEqual(simulated, {"simulated_sensor", "simulated_panel", "fao56", "fao33"})  # the panel is simulated; FAO only bounds its crops
 
     def test_the_soriano_climate_is_exactly_the_file_nasa_delivered(self):
         digest = hashlib.sha256((tables.site_dir("soriano") / "power_daily.csv").read_bytes()).hexdigest()

@@ -47,7 +47,7 @@ def evaluate(rotation_id, kw):
     """Counts of the season classes over all modelled crop-years; `kw` holds params, weather and et0."""
     respondent = respondent_of(rotation_id)
     theta = tables.constant("rotation_start_theta")
-    totals, n, listed, stress = {c: 0 for c in deficit.CLASSES}, 0, [], {}
+    totals, n, listed, stress, units = {c: 0 for c in deficit.CLASSES}, 0, [], {}, []
     for entry in entries(respondent):
         entry = dict(entry)
         if entry["status"] == "modelled":
@@ -57,10 +57,12 @@ def evaluate(rotation_id, kw):
             n += doc["scenarios"]
             for row in doc["season_results"]:
                 stress.setdefault(row["season"], []).append(row["stress"])
+                units.append({"crop": entry["engine_crop"], "season": row["season"], "stress": row["stress"]})
             for c in deficit.CLASSES:
                 totals[c] += doc["season_counts"][c]
         listed.append(entry)
     return {"id": rotation_id, "respondent": respondent, "entries": listed, "combinations": n, "season_counts": totals,
             "split_in_10_parts": deficit.split_in_10(totals, n),
-            "season_classes": [{"season": season, "class": deficit.classify(sum(v) / len(v))} for season, v in sorted(stress.items())],
-            "crops_modelled": sum(e["status"] == "modelled" for e in listed)}
+            "season_classes": [{"season": season, "class": deficit.classify(sum(v) / len(v)), "stress": round(sum(v) / len(v), 3)}
+                               for season, v in sorted(stress.items())],
+            "crop_seasons": units, "crops_modelled": sum(e["status"] == "modelled" for e in listed)}

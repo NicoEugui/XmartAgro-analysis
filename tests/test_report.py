@@ -64,6 +64,8 @@ class PlottedValues(unittest.TestCase):
                     "sowing": scenario_runs.run(source.ctx), "sensor": sensor_assimilation.run(source.ctx),
                     "sensor_windows": sensor_assimilation.windows(source.ctx), "sensor_recalibration": sensor_assimilation.recalibrate(source.ctx)}
         cls.docs["rain_decision"] = {"imerg": cls.docs["imerg"], "sensitivity": cls.docs["rain_sensitivity"]}
+        from xmart_analysis.learning import retrospective
+        cls.docs["retrospective"] = retrospective.run()
 
     @classmethod
     def tearDownClass(cls):
@@ -87,7 +89,7 @@ class PlottedValues(unittest.TestCase):
             for name in self.experiments.FIGURES:
                 self.assertIn(f"figures/{name}.en.png", text)
                 self.assertTrue((Path(out) / "figures" / f"{name}.en.png").exists())
-            for heading in ("What happens if a crop is sown", "Data architecture", "Model and calibration", "Integrity checks", "Not validated", "simulated) soil-moisture sensor", "every one-year window", "Fitting the soil to the sensor series"):
+            for heading in ("What happens if a crop is sown", "Data architecture", "Model and calibration", "Integrity checks", "Not validated", "simulated) soil-moisture sensor", "every one-year window", "Fitting the soil to the sensor series", "What the tool would have said before each past season"):
                 self.assertIn(heading, text)
             self.assertIn("consistent", text)
             self.assertIn(tables.manifest()[0]["path"], text)

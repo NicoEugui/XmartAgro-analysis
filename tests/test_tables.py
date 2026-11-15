@@ -15,9 +15,12 @@ class Provenance(unittest.TestCase):
     def test_the_check_command_succeeds_on_the_shipped_tables(self):
         self.assertEqual(provenance.main(["--check"]), 0)
 
-    def test_only_nasa_and_the_teams_own_survey_are_cited(self):
-        self.assertEqual(set(tables.sources()), {"nasa_power", "smap_l4", "smap_l3", "modis_ndvi", "gpm_imerg", "producer_survey", "simulated_sensor"})
-        self.assertEqual({r["publisher"] for r in tables.sources().values()}, {"NASA", "XmartAgro team"})
+    def test_only_nasa_the_survey_and_fao_references_are_cited(self):
+        self.assertEqual(set(tables.sources()), {"nasa_power", "smap_l4", "smap_l3", "modis_ndvi", "gpm_imerg", "producer_survey", "simulated_sensor",
+                                                    "simulated_panel", "fao56", "fao33", "mgap_coneat"})
+        self.assertEqual({r["publisher"] for r in tables.sources().values()}, {"NASA", "XmartAgro team", "FAO", "MGAP"})
+        self.assertEqual({k for k, r in tables.sources().items() if r["publisher"] == "FAO"}, {"fao56", "fao33"})  # published references for crops
+        self.assertEqual({k for k, r in tables.sources().items() if r["publisher"] == "MGAP"}, {"mgap_coneat"})  # the optional soil-map module
 
     def test_crop_parameters_wait_for_a_dataset_and_say_so(self):
         for crop, spec in cu.CROPS.items():

@@ -29,13 +29,14 @@ def name_label_key(crop):
     return f"crops.{crop}.name"
 
 
-def cycle_days(crop):
-    return sum(CROPS[crop]["stages"])
+def cycle_days(crop, spec=None):
+    return sum((spec or CROPS[crop])["stages"])
 
 
-def kc_on_day(crop, sowing, day):
-    """Crop coefficient on a date, or None if the crop does not occupy the soil that day."""
-    c = CROPS[crop]
+def kc_on_day(crop, sowing, day, spec=None):
+    """Crop coefficient on a date, or None if the crop does not occupy the soil that day. `spec` replaces the table's parameters
+    (a producer's own variant of the crop)."""
+    c = spec or CROPS[crop]
     if c.get("perennial"):
         return c["kc"][0] if day.month in (10, 11, 12, 1, 2, 3) else c["kc"][2]
     i = (day - sowing).days
@@ -55,9 +56,9 @@ def kc_on_day(crop, sowing, day):
     return k_mid + (k_final - k_mid) * (i + 1) / late
 
 
-def critical_window_from_sowing(crop, sowing):
+def critical_window_from_sowing(crop, sowing, spec=None):
     """(start, end) of the critical stage for a crop sown on the given date: the mid stage."""
-    c = require_crop(crop)
+    c = spec or require_crop(crop)
     if c.get("perennial"):
         return date(sowing.year, 12, 1), date(sowing.year + 1, 3, 15)
     initial, development, mid, _ = c["stages"]

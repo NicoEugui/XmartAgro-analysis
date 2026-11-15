@@ -1,0 +1,147 @@
+{
+  "model": "calibrated_daily_bucket_l4_v2",
+  "target": "SMAP L4 SPL4SMGP.008 sm_rootzone, daily mean of 8 samples (m3/m3)",
+  "climate": "NASA POWER at the field point (PRECTOTCORR, T2M, T2M_MIN, T2M_MAX); ET0 by Hargreaves",
+  "point": {
+    "latitude": -34.34,
+    "longitude": -57.69
+  },
+  "calibration": {
+    "period": [
+      "2015-04-01",
+      "2020-12-31"
+    ],
+    "days": 2102,
+    "rmse_m3_m3": 0.0164,
+    "bias_m3_m3": 0.0,
+    "correlation": 0.957,
+    "anomaly_correlation": 0.935
+  },
+  "validation": {
+    "period": [
+      "2021-01-01",
+      "2026-06-30"
+    ],
+    "days": 2007,
+    "rmse_m3_m3": 0.0349,
+    "bias_m3_m3": -0.0265,
+    "correlation": 0.874,
+    "anomaly_correlation": 0.837
+  },
+  "constant_baseline_validation": {
+    "description": "always predict the calibration-period mean; correlation is undefined",
+    "rmse_m3_m3": 0.0493
+  },
+  "parameters": {
+    "theta_min": 0.2318,
+    "capacity_mm": 216.4605,
+    "kc": 1.2072,
+    "stress_threshold": 0.496,
+    "drainage_onset_fraction": 0.4032,
+    "daily_drainage": 0.0082
+  },
+  "chosen_seed": 4,
+  "seed_runs": [
+    {
+      "seed": 7,
+      "calibration_rmse_m3_m3": 0.01636,
+      "parameters": {
+        "theta_min": 0.2341,
+        "capacity_mm": 212.6272,
+        "kc": 1.1844,
+        "stress_threshold": 0.4795,
+        "drainage_onset_fraction": 0.4003,
+        "daily_drainage": 0.0086
+      }
+    },
+    {
+      "seed": 1,
+      "calibration_rmse_m3_m3": 0.0183,
+      "parameters": {
+        "theta_min": 0.2499,
+        "capacity_mm": 245.2095,
+        "kc": 1.2999,
+        "stress_threshold": 0.3099,
+        "drainage_onset_fraction": 0.7345,
+        "daily_drainage": 0.3955
+      }
+    },
+    {
+      "seed": 2,
+      "calibration_rmse_m3_m3": 0.01643,
+      "parameters": {
+        "theta_min": 0.2344,
+        "capacity_mm": 211.5658,
+        "kc": 1.1956,
+        "stress_threshold": 0.4861,
+        "drainage_onset_fraction": 0.4054,
+        "daily_drainage": 0.0081
+      }
+    },
+    {
+      "seed": 3,
+      "calibration_rmse_m3_m3": 0.01638,
+      "parameters": {
+        "theta_min": 0.2244,
+        "capacity_mm": 222.5305,
+        "kc": 1.1733,
+        "stress_threshold": 0.5271,
+        "drainage_onset_fraction": 0.4011,
+        "daily_drainage": 0.0085
+      }
+    },
+    {
+      "seed": 4,
+      "calibration_rmse_m3_m3": 0.01638,
+      "parameters": {
+        "theta_min": 0.2318,
+        "capacity_mm": 216.4605,
+        "kc": 1.2072,
+        "stress_threshold": 0.496,
+        "drainage_onset_fraction": 0.4032,
+        "daily_drainage": 0.0082
+      }
+    }
+  ],
+  "selection": "the run closest to the median of the seeds within 1% of the best calibration error",
+  "search_bounds": {
+    "theta_min": [
+      0.1,
+      0.25
+    ],
+    "capacity_mm": [
+      80,
+      250
+    ],
+    "kc": [
+      0.2,
+      1.3
+    ],
+    "stress_threshold": [
+      0.2,
+      0.9
+    ],
+    "drainage_onset_fraction": [
+      0.4,
+      0.98
+    ],
+    "daily_drainage": [
+      0.0,
+      0.5
+    ]
+  },
+  "available_water_range_mm": [
+    0,
+    216.5
+  ],
+  "inputs_sha256": {
+    "power_daily.csv": "6a9c2d22b87f6fbd817472bf135426531a03c84f3a4ad9d8b9973abe8addb1e1",
+    "smap_l4.csv": "6a9e564f1e9ba774bcdaab5ba1a2319d7471dc758e904a4427615befbde4dc6f"
+  },
+  "limitations": [
+    "L4 is a model product at 9 km, not a measurement of the field",
+    "the calibrated Kc represents mixed cover, not a crop",
+    "the parameters may absorb errors in the POWER rainfall",
+    "different parameter sets fit SMAP L4 equally well (see seed_runs): the soil parameters are not identified by it"
+  ]
+}

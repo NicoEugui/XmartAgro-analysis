@@ -1,0 +1,40 @@
+{
+  "task_name": "XmartAgro_INIA_La_Estanzuela_SMAP",
+  "task_type": "point",
+  "params": {
+    "dates": [
+      {
+        "endDate": "11-13-2026",
+        "recurring": false,
+        "startDate": "04-01-2015",
+        "yearRange": [
+          1950,
+          2050
+        ]
+      }
+    ],
+    "layers": [
+      {
+        "layer": "Geophysical_Data_sm_rootzone",
+        "product": "SPL4SMGP.008"
+      },
+      {
+        "layer": "Geophysical_Data_sm_surface",
+        "product": "SPL4SMGP.008"
+      }
+    ],
+    "output": {
+      "format": {
+        "type": "geotiff"
+      }
+    },
+    "coordinates": [
+      {
+        "id": "LaEstanzuela",
+        "category": "INIA",
+        "latitude": -34.34,
+        "longitude": -57.69
+      }
+    ]
+  }
+}
