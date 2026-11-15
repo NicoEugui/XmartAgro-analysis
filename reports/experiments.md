@@ -9,7 +9,7 @@ Only NASA data and the team's own producer survey enter the repository.
 ```
 NASA POWER (daily climate) --> water-balance engine --> scenarios per historical season --> frontend JSON
 NASA SMAP L4 -----------------> calibration (soil parameters, fitted) ----^
-simulated sensor year ---------> state correction (experiment only; the demo reading is still one simulated value)
+simulated sensor year ---------> state correction (the demo starts from it; the series is simulated)
 validators (not model inputs): SMAP L3/L4, MODIS NDVI, GPM IMERG, producer survey
 ```
 

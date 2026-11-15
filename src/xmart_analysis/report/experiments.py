@@ -169,7 +169,7 @@ def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
              "## 1. Data architecture\n\nOnly NASA data and the team's own producer survey enter the repository.\n\n"
              "```\nNASA POWER (daily climate) --> water-balance engine --> scenarios per historical season --> frontend JSON\n"
              "NASA SMAP L4 -----------------> calibration (soil parameters, fitted) ----^\n"
-             "simulated sensor year ---------> state correction (experiment only; the demo reading is still one simulated value)\n"
+             "simulated sensor year ---------> state correction (the demo starts from it; the series is simulated)\n"
              "validators (not model inputs): SMAP L3/L4, MODIS NDVI, GPM IMERG, producer survey\n```\n\n" + _lineage()
              + "\n\nInput files of the runs below, identified by checksum (the NASA files are in the repository and listed above):\n\n"
              + _md(["input", "file", "sha256"], [[k, Path(p).name, _sha(p)] for k, p in files.items()] or [["-", "none given", "-"]]),
