@@ -21,7 +21,6 @@ src/xmart_analysis/
   report/   figures and the experiment log drawn from the analysis documents (optional extra: matplotlib)
   validation/ comparison of the water balance with independent NASA data and the producer survey
   data/     NASA climate, calibration, model tables with their status and sources, label catalog (en/es)
-docs/       narrative for the pitch (method, layers, modularity, use of AI, what is and is not validated)
 tests/      unittest suite (no database needed)
 ```
 

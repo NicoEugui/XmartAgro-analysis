@@ -5,3 +5,6 @@ __pycache__/
 build/
 dist/
 .coverage
+
+# Pitch narrative: team material, kept out of the repository
+docs/narrativa*.md
