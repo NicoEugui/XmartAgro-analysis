@@ -93,7 +93,7 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "2.0",
+      "const": "2.1",
       "description": "Version of this schema.",
       "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
     },
@@ -207,6 +207,33 @@
     "status": {
       "type": "object",
       "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "demo",
+            "live"
+          ],
+          "description": "demo while any input is simulated, live when every input is measured or entered by a person. The panel adds `offline` itself when it cannot read the file, and the error document says `error`; catalog.modes explains the four.",
+          "x-used-in": "Badge at the top of every screen"
+        },
+        "badge": {
+          "$ref": "#/$defs/text",
+          "description": "The text of the badge for this mode, e.g. «Modo demo · datos simulados». Show it at the top of every screen while the mode is demo.",
+          "x-used-in": "Badge at the top of every screen"
+        },
+        "simulated_inputs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "sensor_readings"
+            ],
+            "description": "What is simulated.",
+            "x-used-in": "Badge at the top of every screen"
+          },
+          "description": "The inputs that are simulated, so the badge can say which numbers they feed; empty when the mode is live.",
+          "x-used-in": "Badge at the top of every screen"
+        },
         "exploratory": {
           "type": "boolean",
           "description": "Always true: scenarios from historical climate, not forecasts.",
@@ -272,6 +299,9 @@
         }
       },
       "required": [
+        "mode",
+        "badge",
+        "simulated_inputs",
         "exploratory",
         "validated_for_field",
         "disclaimer",
@@ -387,8 +417,103 @@
             },
             "volumetric_moisture": {
               "type": "number",
-              "description": "The reading itself, volumetric moisture in m3/m3 (0 to 0.6).",
+              "description": "Volumetric moisture in m3/m3 (0 to 0.6) the scenarios start from: the model's own state corrected by the readings of the last year when `series` is given, otherwise the last reading itself.",
               "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil»"
+            },
+            "reading_moisture": {
+              "description": "The last reading itself, m3/m3; null when there is no series and `volumetric_moisture` is the reading.",
+              "x-used-in": "Main screen · header «Tu campo hoy: N mm de agua útil» · small print",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "series": {
+              "description": "How the state above was reached from the readings of the last year (simulated while `is_simulated`).",
+              "x-used-in": "Main screen · moisture chart «sensor vs modelo»",
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "enum": [
+                        "state_correction"
+                      ],
+                      "description": "state_correction: each day the modelled water moves a share `gain` of the way to the reading.",
+                      "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                    },
+                    "gain": {
+                      "type": "number",
+                      "description": "Share of the gap between model and reading corrected each day (0 ignores the sensor, 1 adopts it).",
+                      "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                    },
+                    "days": {
+                      "type": "integer",
+                      "description": "Days with a reading.",
+                      "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                    },
+                    "period": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "A date, YYYY-MM-DD.",
+                        "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                      },
+                      "description": "First and last day of the series.",
+                      "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                    },
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "description": "The day, YYYY-MM-DD.",
+                            "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                          },
+                          "reading": {
+                            "type": "number",
+                            "description": "The reading of that day, m3/m3.",
+                            "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                          },
+                          "modeled": {
+                            "type": "number",
+                            "description": "The model's state that day after correcting toward the reading, m3/m3.",
+                            "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                          }
+                        },
+                        "required": [
+                          "date",
+                          "reading",
+                          "modeled"
+                        ],
+                        "additionalProperties": false,
+                        "description": "One day.",
+                        "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                      },
+                      "description": "Reading and modelled state of every day, oldest first.",
+                      "x-used-in": "Main screen · moisture chart «sensor vs modelo»"
+                    }
+                  },
+                  "required": [
+                    "method",
+                    "gain",
+                    "days",
+                    "period",
+                    "history"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           "required": [
@@ -399,7 +524,9 @@
             "updated_at",
             "mm_status",
             "is_simulated",
-            "volumetric_moisture"
+            "volumetric_moisture",
+            "reading_moisture",
+            "series"
           ],
           "additionalProperties": false,
           "description": "Water in the soil.",
@@ -1226,13 +1353,53 @@
           },
           "description": "Seasons the history can cover, newest first.",
           "x-used-in": "Data screen · Productor «Tu campo» · season selector"
+        },
+        "modes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "enum": [
+                  "demo",
+                  "live",
+                  "error",
+                  "offline"
+                ],
+                "description": "demo, live, error or offline.",
+                "x-used-in": "Badge at the top of every screen"
+              },
+              "badge": {
+                "$ref": "#/$defs/text",
+                "description": "Badge text for the state.",
+                "x-used-in": "Badge at the top of every screen"
+              },
+              "meaning": {
+                "$ref": "#/$defs/text",
+                "description": "When the state applies and what to show.",
+                "x-used-in": "Badge at the top of every screen"
+              }
+            },
+            "required": [
+              "id",
+              "badge",
+              "meaning"
+            ],
+            "additionalProperties": false,
+            "description": "A state the panel can be in.",
+            "x-used-in": "Badge at the top of every screen"
+          },
+          "description": "The four states of the panel with the text of each badge, `offline` included (only the panel can know it).",
+          "x-used-in": "Badge at the top of every screen"
         }
       },
       "required": [
         "crops",
         "history_crops",
         "ratings",
-        "seasons"
+        "seasons",
+        "modes"
       ],
       "additionalProperties": false,
       "description": "The closed lists the forms offer: nothing is typed as free text.",

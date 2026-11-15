@@ -30,6 +30,12 @@ class MemoryReadings:
         return max(mine, key=lambda r: r.received_at) if mine else None
 
 
+    def history(self, field_id, limit):
+        """The last `limit` readings of the field, oldest first."""
+        mine = sorted((r for r in self.store.readings if r.field_id == field_id), key=lambda r: r.received_at)
+        return mine[-limit:]
+
+
 class MemoryInputs:
     def __init__(self, store):
         self.store = store

@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from datetime import datetime
 from pathlib import Path
+from unittest import mock
 
 import schema_check
 from xmart_analysis import cli
@@ -200,14 +201,26 @@ class CommittedFiles(unittest.TestCase):
 
 
 class Command(unittest.TestCase):
-    def test_a_scenario_with_an_impossible_reading_stops_the_export_with_a_structured_error(self):
+    def test_a_scenario_with_an_impossible_reading_leaves_the_error_document_and_fails(self):
         with tempfile.TemporaryDirectory() as folder:
             scenario = json.loads(cli.DEMO.read_text(encoding="utf-8"))
-            scenario["readings"][0]["moisture"] = 2048
+            scenario["readings"] = [{"sensor_id": "node-01", "moisture": 2048, "sensor_type": "capacitive", "received_at": "2026-11-14T10:30:00Z"}]
             path = Path(folder) / "bad.json"
             path.write_text(json.dumps(scenario), encoding="utf-8")
             self.assertEqual(cli.main(["export", str(path), "--out", folder, "--now", NOW]), 1)
-            self.assertFalse((Path(folder) / "frontend.json").exists())
+            doc = json.loads((Path(folder) / "frontend.json").read_text(encoding="utf-8"))
+            self.assertEqual(schema_check.problems(doc, schema.build_error(), schema.build_error()), [])
+            self.assertEqual((doc["status"]["mode"], doc["status"]["error"]["code"], doc["status"]["error"]["field"]),
+                             ("error", "moisture_out_of_range", "volumetric_moisture"))
+            self.assertEqual(doc["generated_at"], NOW)
+            self.assertNotIn("summary", doc)
+
+    def test_an_unexpected_failure_is_reported_as_an_internal_error_without_its_text(self):
+        with tempfile.TemporaryDirectory() as folder, mock.patch.object(cli, "frontend_document", side_effect=KeyError("secret")):
+            self.assertEqual(cli.main(["export", "--out", folder, "--now", NOW]), 1)
+            error = json.loads((Path(folder) / "frontend.json").read_text(encoding="utf-8"))["status"]["error"]
+            self.assertEqual((error["code"], error["field"]), ("internal_error", None))
+            self.assertNotIn("secret", json.dumps(error))
 
     def test_the_generation_time_is_the_one_given(self):
         with tempfile.TemporaryDirectory() as folder:

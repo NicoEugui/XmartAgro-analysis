@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XmartAgro frontend data: error document",
+  "description": "What the frontend file holds instead of the analysis when it could not be built. Same envelope (schema_version, generated_at, status), no results: show status.badge and status.error, and no numbers.",
+  "x-used-in": "The whole document: one file the panel reads, with no API call",
+  "type": "object",
+  "$defs": {
+    "text": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Stable id of the text.",
+          "x-used-in": "Every text"
+        },
+        "en": {
+          "type": "string",
+          "description": "English text.",
+          "x-used-in": "Every text"
+        },
+        "es": {
+          "type": "string",
+          "description": "Spanish text.",
+          "x-used-in": "Every text"
+        }
+      },
+      "required": [
+        "key",
+        "en",
+        "es"
+      ],
+      "additionalProperties": false,
+      "description": "A text in both languages. Show `en` or `es`; `key` is a stable id of the sentence in the label catalog.",
+      "x-used-in": "Every text"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.1",
+      "description": "Version of this schema.",
+      "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the analysis was attempted, ISO 8601.",
+      "x-used-in": "Not drawn on the current screens: context for a header, a footer or the presentation"
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "const": "error",
+          "description": "Always `error`.",
+          "x-used-in": "Badge at the top of every screen"
+        },
+        "badge": {
+          "$ref": "#/$defs/text",
+          "description": "Badge text, «Análisis no disponible».",
+          "x-used-in": "Badge at the top of every screen"
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Stable code of the failure, e.g. climate_gap, invalid_answers, internal_error.",
+              "x-used-in": "Error message of the screen"
+            },
+            "field": {
+              "description": "The field or input that failed; null when it is not tied to one.",
+              "x-used-in": "Error message of the screen",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "message": {
+              "type": "string",
+              "description": "What happened, in English, for a person to read.",
+              "x-used-in": "Error message of the screen"
+            }
+          },
+          "required": [
+            "code",
+            "field",
+            "message"
+          ],
+          "additionalProperties": false,
+          "description": "What failed.",
+          "x-used-in": "Error message of the screen"
+        }
+      },
+      "required": [
+        "mode",
+        "badge",
+        "error"
+      ],
+      "additionalProperties": false,
+      "description": "The analysis failed: the badge and what went wrong.",
+      "x-used-in": "Badge at the top of every screen"
+    }
+  },
+  "required": [
+    "schema_version",
+    "generated_at",
+    "status"
+  ],
+  "additionalProperties": false
+}

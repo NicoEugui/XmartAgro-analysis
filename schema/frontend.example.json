@@ -1,11 +1,11 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "2.1",
   "generated_at": "2026-11-14T10:30:00+00:00",
   "site": {
     "climate": {
       "source": "nasa_power",
       "first_day": "1986-07-01",
-      "last_day": "2026-06-30",
+      "last_day": "2026-11-13",
       "seasons": 39
     },
     "soil_calibration": {
@@ -22,6 +22,15 @@
     }
   },
   "status": {
+    "mode": "demo",
+    "badge": {
+      "key": "front.mode.demo",
+      "en": "Demo mode · simulated data",
+      "es": "Modo demo · datos simulados"
+    },
+    "simulated_inputs": [
+      "sensor_readings"
+    ],
     "exploratory": true,
     "validated_for_field": false,
     "disclaimer": {
@@ -32,9 +41,9 @@
     "simulated_reading": true,
     "values_by_status": {
       "pending": 13,
-      "assumption": 50,
+      "assumption": 61,
       "source": 1,
-      "data": 9,
+      "data": 12,
       "fitted": 6
     },
     "sources": [
@@ -67,6 +76,11 @@
         "id": "gpm_imerg",
         "title": "NASA GPM IMERG Final daily precipitation V07 (GPM_3IMERGDF), 0.1 degree cell at the site",
         "publisher": "NASA"
+      },
+      {
+        "id": "simulated_sensor",
+        "title": "Simulated soil-moisture sensor readings, one year",
+        "publisher": "XmartAgro team"
       }
     ]
   },
@@ -81,14 +95,1851 @@
     "mock": false,
     "generated_at": "2026-11-14T10:30:00+00:00",
     "water": {
-      "mm": 50.6,
+      "mm": 95.3,
       "capacity_mm": 163.5,
       "source": "sensor",
       "reliability": "low",
-      "updated_at": "2026-11-14T10:30:00+00:00",
+      "updated_at": "2026-11-13T12:00:00+00:00",
       "mm_status": "derived_from_assumptions",
       "is_simulated": true,
-      "volumetric_moisture": 0.24
+      "volumetric_moisture": 0.2846812856926453,
+      "reading_moisture": 0.2625,
+      "series": {
+        "method": "state_correction",
+        "gain": 0.3,
+        "days": 365,
+        "period": [
+          "2025-11-14",
+          "2026-11-13"
+        ],
+        "history": [
+          {
+            "date": "2025-11-14",
+            "reading": 0.2428,
+            "modeled": 0.2408
+          },
+          {
+            "date": "2025-11-15",
+            "reading": 0.2294,
+            "modeled": 0.2352
+          },
+          {
+            "date": "2025-11-16",
+            "reading": 0.2622,
+            "modeled": 0.2574
+          },
+          {
+            "date": "2025-11-17",
+            "reading": 0.2293,
+            "modeled": 0.2469
+          },
+          {
+            "date": "2025-11-18",
+            "reading": 0.2412,
+            "modeled": 0.2432
+          },
+          {
+            "date": "2025-11-19",
+            "reading": 0.2401,
+            "modeled": 0.2404
+          },
+          {
+            "date": "2025-11-20",
+            "reading": 0.245,
+            "modeled": 0.2442
+          },
+          {
+            "date": "2025-11-21",
+            "reading": 0.2373,
+            "modeled": 0.2485
+          },
+          {
+            "date": "2025-11-22",
+            "reading": 0.2612,
+            "modeled": 0.2506
+          },
+          {
+            "date": "2025-11-23",
+            "reading": 0.2459,
+            "modeled": 0.2472
+          },
+          {
+            "date": "2025-11-24",
+            "reading": 0.268,
+            "modeled": 0.2514
+          },
+          {
+            "date": "2025-11-25",
+            "reading": 0.2132,
+            "modeled": 0.2373
+          },
+          {
+            "date": "2025-11-26",
+            "reading": 0.2278,
+            "modeled": 0.2325
+          },
+          {
+            "date": "2025-11-27",
+            "reading": 0.2196,
+            "modeled": 0.2268
+          },
+          {
+            "date": "2025-11-28",
+            "reading": 0.2259,
+            "modeled": 0.2251
+          },
+          {
+            "date": "2025-11-29",
+            "reading": 0.2519,
+            "modeled": 0.2355
+          },
+          {
+            "date": "2025-11-30",
+            "reading": 0.2446,
+            "modeled": 0.239
+          },
+          {
+            "date": "2025-12-01",
+            "reading": 0.2559,
+            "modeled": 0.244
+          },
+          {
+            "date": "2025-12-02",
+            "reading": 0.2667,
+            "modeled": 0.2489
+          },
+          {
+            "date": "2025-12-03",
+            "reading": 0.2349,
+            "modeled": 0.2449
+          },
+          {
+            "date": "2025-12-04",
+            "reading": 0.2716,
+            "modeled": 0.2505
+          },
+          {
+            "date": "2025-12-05",
+            "reading": 0.215,
+            "modeled": 0.2371
+          },
+          {
+            "date": "2025-12-06",
+            "reading": 0.2562,
+            "modeled": 0.2407
+          },
+          {
+            "date": "2025-12-07",
+            "reading": 0.2275,
+            "modeled": 0.2348
+          },
+          {
+            "date": "2025-12-08",
+            "reading": 0.204,
+            "modeled": 0.2255
+          },
+          {
+            "date": "2025-12-09",
+            "reading": 0.2483,
+            "modeled": 0.2362
+          },
+          {
+            "date": "2025-12-10",
+            "reading": 0.2418,
+            "modeled": 0.2378
+          },
+          {
+            "date": "2025-12-11",
+            "reading": 0.2156,
+            "modeled": 0.23
+          },
+          {
+            "date": "2025-12-12",
+            "reading": 0.2952,
+            "modeled": 0.2481
+          },
+          {
+            "date": "2025-12-13",
+            "reading": 0.2348,
+            "modeled": 0.2413
+          },
+          {
+            "date": "2025-12-14",
+            "reading": 0.2327,
+            "modeled": 0.2381
+          },
+          {
+            "date": "2025-12-15",
+            "reading": 0.2528,
+            "modeled": 0.2437
+          },
+          {
+            "date": "2025-12-16",
+            "reading": 0.2284,
+            "modeled": 0.2373
+          },
+          {
+            "date": "2025-12-17",
+            "reading": 0.2235,
+            "modeled": 0.2311
+          },
+          {
+            "date": "2025-12-18",
+            "reading": 0.2463,
+            "modeled": 0.2337
+          },
+          {
+            "date": "2025-12-19",
+            "reading": 0.2291,
+            "modeled": 0.2302
+          },
+          {
+            "date": "2025-12-20",
+            "reading": 0.2554,
+            "modeled": 0.2418
+          },
+          {
+            "date": "2025-12-21",
+            "reading": 0.248,
+            "modeled": 0.2421
+          },
+          {
+            "date": "2025-12-22",
+            "reading": 0.2587,
+            "modeled": 0.2452
+          },
+          {
+            "date": "2025-12-23",
+            "reading": 0.2587,
+            "modeled": 0.25
+          },
+          {
+            "date": "2025-12-24",
+            "reading": 0.2585,
+            "modeled": 0.25
+          },
+          {
+            "date": "2025-12-25",
+            "reading": 0.2355,
+            "modeled": 0.2436
+          },
+          {
+            "date": "2025-12-26",
+            "reading": 0.2476,
+            "modeled": 0.2422
+          },
+          {
+            "date": "2025-12-27",
+            "reading": 0.2313,
+            "modeled": 0.2367
+          },
+          {
+            "date": "2025-12-28",
+            "reading": 0.2407,
+            "modeled": 0.2361
+          },
+          {
+            "date": "2025-12-29",
+            "reading": 0.2184,
+            "modeled": 0.2285
+          },
+          {
+            "date": "2025-12-30",
+            "reading": 0.2516,
+            "modeled": 0.2335
+          },
+          {
+            "date": "2025-12-31",
+            "reading": 0.2573,
+            "modeled": 0.2384
+          },
+          {
+            "date": "2026-01-01",
+            "reading": 0.2361,
+            "modeled": 0.236
+          },
+          {
+            "date": "2026-01-02",
+            "reading": 0.2177,
+            "modeled": 0.2296
+          },
+          {
+            "date": "2026-01-03",
+            "reading": 0.2497,
+            "modeled": 0.2346
+          },
+          {
+            "date": "2026-01-04",
+            "reading": 0.2374,
+            "modeled": 0.2339
+          },
+          {
+            "date": "2026-01-05",
+            "reading": 0.21,
+            "modeled": 0.2249
+          },
+          {
+            "date": "2026-01-06",
+            "reading": 0.2274,
+            "modeled": 0.2241
+          },
+          {
+            "date": "2026-01-07",
+            "reading": 0.1965,
+            "modeled": 0.2145
+          },
+          {
+            "date": "2026-01-08",
+            "reading": 0.2032,
+            "modeled": 0.2102
+          },
+          {
+            "date": "2026-01-09",
+            "reading": 0.227,
+            "modeled": 0.2216
+          },
+          {
+            "date": "2026-01-10",
+            "reading": 0.258,
+            "modeled": 0.2362
+          },
+          {
+            "date": "2026-01-11",
+            "reading": 0.2428,
+            "modeled": 0.2363
+          },
+          {
+            "date": "2026-01-12",
+            "reading": 0.2032,
+            "modeled": 0.2241
+          },
+          {
+            "date": "2026-01-13",
+            "reading": 0.3073,
+            "modeled": 0.2477
+          },
+          {
+            "date": "2026-01-14",
+            "reading": 0.2158,
+            "modeled": 0.2355
+          },
+          {
+            "date": "2026-01-15",
+            "reading": 0.2237,
+            "modeled": 0.2311
+          },
+          {
+            "date": "2026-01-16",
+            "reading": 0.2347,
+            "modeled": 0.2306
+          },
+          {
+            "date": "2026-01-17",
+            "reading": 0.2227,
+            "modeled": 0.2264
+          },
+          {
+            "date": "2026-01-18",
+            "reading": 0.2326,
+            "modeled": 0.227
+          },
+          {
+            "date": "2026-01-19",
+            "reading": 0.2214,
+            "modeled": 0.2239
+          },
+          {
+            "date": "2026-01-20",
+            "reading": 0.2036,
+            "modeled": 0.2164
+          },
+          {
+            "date": "2026-01-21",
+            "reading": 0.2292,
+            "modeled": 0.2192
+          },
+          {
+            "date": "2026-01-22",
+            "reading": 0.2065,
+            "modeled": 0.2141
+          },
+          {
+            "date": "2026-01-23",
+            "reading": 0.2304,
+            "modeled": 0.2179
+          },
+          {
+            "date": "2026-01-24",
+            "reading": 0.2031,
+            "modeled": 0.2122
+          },
+          {
+            "date": "2026-01-25",
+            "reading": 0.2258,
+            "modeled": 0.2153
+          },
+          {
+            "date": "2026-01-26",
+            "reading": 0.2534,
+            "modeled": 0.2257
+          },
+          {
+            "date": "2026-01-27",
+            "reading": 0.1988,
+            "modeled": 0.2163
+          },
+          {
+            "date": "2026-01-28",
+            "reading": 0.2262,
+            "modeled": 0.2182
+          },
+          {
+            "date": "2026-01-29",
+            "reading": 0.2523,
+            "modeled": 0.2272
+          },
+          {
+            "date": "2026-01-30",
+            "reading": 0.2138,
+            "modeled": 0.2216
+          },
+          {
+            "date": "2026-01-31",
+            "reading": 0.2381,
+            "modeled": 0.2254
+          },
+          {
+            "date": "2026-02-01",
+            "reading": 0.1961,
+            "modeled": 0.2152
+          },
+          {
+            "date": "2026-02-02",
+            "reading": 0.219,
+            "modeled": 0.2153
+          },
+          {
+            "date": "2026-02-03",
+            "reading": 0.2059,
+            "modeled": 0.2113
+          },
+          {
+            "date": "2026-02-04",
+            "reading": 0.2457,
+            "modeled": 0.2208
+          },
+          {
+            "date": "2026-02-05",
+            "reading": 0.2035,
+            "modeled": 0.2146
+          },
+          {
+            "date": "2026-02-06",
+            "reading": 0.2366,
+            "modeled": 0.2221
+          },
+          {
+            "date": "2026-02-07",
+            "reading": 0.2222,
+            "modeled": 0.2209
+          },
+          {
+            "date": "2026-02-08",
+            "reading": 0.2394,
+            "modeled": 0.2251
+          },
+          {
+            "date": "2026-02-09",
+            "reading": 0.2204,
+            "modeled": 0.2222
+          },
+          {
+            "date": "2026-02-10",
+            "reading": 0.2314,
+            "modeled": 0.2236
+          },
+          {
+            "date": "2026-02-11",
+            "reading": 0.2057,
+            "modeled": 0.2171
+          },
+          {
+            "date": "2026-02-12",
+            "reading": 0.2322,
+            "modeled": 0.2271
+          },
+          {
+            "date": "2026-02-13",
+            "reading": 0.2281,
+            "modeled": 0.2262
+          },
+          {
+            "date": "2026-02-14",
+            "reading": 0.1966,
+            "modeled": 0.2159
+          },
+          {
+            "date": "2026-02-15",
+            "reading": 0.2639,
+            "modeled": 0.2376
+          },
+          {
+            "date": "2026-02-16",
+            "reading": 0.228,
+            "modeled": 0.2331
+          },
+          {
+            "date": "2026-02-17",
+            "reading": 0.2204,
+            "modeled": 0.2277
+          },
+          {
+            "date": "2026-02-18",
+            "reading": 0.2473,
+            "modeled": 0.2321
+          },
+          {
+            "date": "2026-02-19",
+            "reading": 0.2566,
+            "modeled": 0.2457
+          },
+          {
+            "date": "2026-02-20",
+            "reading": 0.2609,
+            "modeled": 0.2483
+          },
+          {
+            "date": "2026-02-21",
+            "reading": 0.225,
+            "modeled": 0.2392
+          },
+          {
+            "date": "2026-02-22",
+            "reading": 0.2398,
+            "modeled": 0.2377
+          },
+          {
+            "date": "2026-02-23",
+            "reading": 0.22,
+            "modeled": 0.2335
+          },
+          {
+            "date": "2026-02-24",
+            "reading": 0.2635,
+            "modeled": 0.2428
+          },
+          {
+            "date": "2026-02-25",
+            "reading": 0.2187,
+            "modeled": 0.2342
+          },
+          {
+            "date": "2026-02-26",
+            "reading": 0.2359,
+            "modeled": 0.2333
+          },
+          {
+            "date": "2026-02-27",
+            "reading": 0.2727,
+            "modeled": 0.2437
+          },
+          {
+            "date": "2026-02-28",
+            "reading": 0.2403,
+            "modeled": 0.2409
+          },
+          {
+            "date": "2026-03-01",
+            "reading": 0.222,
+            "modeled": 0.2334
+          },
+          {
+            "date": "2026-03-02",
+            "reading": 0.2445,
+            "modeled": 0.2352
+          },
+          {
+            "date": "2026-03-03",
+            "reading": 0.2361,
+            "modeled": 0.2347
+          },
+          {
+            "date": "2026-03-04",
+            "reading": 0.239,
+            "modeled": 0.2345
+          },
+          {
+            "date": "2026-03-05",
+            "reading": 0.2312,
+            "modeled": 0.2321
+          },
+          {
+            "date": "2026-03-06",
+            "reading": 0.2203,
+            "modeled": 0.2282
+          },
+          {
+            "date": "2026-03-07",
+            "reading": 0.253,
+            "modeled": 0.2366
+          },
+          {
+            "date": "2026-03-08",
+            "reading": 0.2421,
+            "modeled": 0.2369
+          },
+          {
+            "date": "2026-03-09",
+            "reading": 0.2319,
+            "modeled": 0.234
+          },
+          {
+            "date": "2026-03-10",
+            "reading": 0.2598,
+            "modeled": 0.2405
+          },
+          {
+            "date": "2026-03-11",
+            "reading": 0.2028,
+            "modeled": 0.2277
+          },
+          {
+            "date": "2026-03-12",
+            "reading": 0.229,
+            "modeled": 0.227
+          },
+          {
+            "date": "2026-03-13",
+            "reading": 0.268,
+            "modeled": 0.2382
+          },
+          {
+            "date": "2026-03-14",
+            "reading": 0.2496,
+            "modeled": 0.2402
+          },
+          {
+            "date": "2026-03-15",
+            "reading": 0.2443,
+            "modeled": 0.2398
+          },
+          {
+            "date": "2026-03-16",
+            "reading": 0.2028,
+            "modeled": 0.2271
+          },
+          {
+            "date": "2026-03-17",
+            "reading": 0.2451,
+            "modeled": 0.237
+          },
+          {
+            "date": "2026-03-18",
+            "reading": 0.2315,
+            "modeled": 0.2341
+          },
+          {
+            "date": "2026-03-19",
+            "reading": 0.21,
+            "modeled": 0.2255
+          },
+          {
+            "date": "2026-03-20",
+            "reading": 0.2455,
+            "modeled": 0.2304
+          },
+          {
+            "date": "2026-03-21",
+            "reading": 0.3037,
+            "modeled": 0.2961
+          },
+          {
+            "date": "2026-03-22",
+            "reading": 0.2878,
+            "modeled": 0.2912
+          },
+          {
+            "date": "2026-03-23",
+            "reading": 0.3274,
+            "modeled": 0.313
+          },
+          {
+            "date": "2026-03-24",
+            "reading": 0.3225,
+            "modeled": 0.314
+          },
+          {
+            "date": "2026-03-25",
+            "reading": 0.3074,
+            "modeled": 0.3095
+          },
+          {
+            "date": "2026-03-26",
+            "reading": 0.2711,
+            "modeled": 0.2951
+          },
+          {
+            "date": "2026-03-27",
+            "reading": 0.2955,
+            "modeled": 0.3003
+          },
+          {
+            "date": "2026-03-28",
+            "reading": 0.309,
+            "modeled": 0.3093
+          },
+          {
+            "date": "2026-03-29",
+            "reading": 0.289,
+            "modeled": 0.3012
+          },
+          {
+            "date": "2026-03-30",
+            "reading": 0.2999,
+            "modeled": 0.2982
+          },
+          {
+            "date": "2026-03-31",
+            "reading": 0.3378,
+            "modeled": 0.3078
+          },
+          {
+            "date": "2026-04-01",
+            "reading": 0.3075,
+            "modeled": 0.3055
+          },
+          {
+            "date": "2026-04-02",
+            "reading": 0.3109,
+            "modeled": 0.3055
+          },
+          {
+            "date": "2026-04-03",
+            "reading": 0.2944,
+            "modeled": 0.2995
+          },
+          {
+            "date": "2026-04-04",
+            "reading": 0.3391,
+            "modeled": 0.3191
+          },
+          {
+            "date": "2026-04-05",
+            "reading": 0.3057,
+            "modeled": 0.3134
+          },
+          {
+            "date": "2026-04-06",
+            "reading": 0.3027,
+            "modeled": 0.3123
+          },
+          {
+            "date": "2026-04-07",
+            "reading": 0.344,
+            "modeled": 0.3367
+          },
+          {
+            "date": "2026-04-08",
+            "reading": 0.3286,
+            "modeled": 0.3328
+          },
+          {
+            "date": "2026-04-09",
+            "reading": 0.3197,
+            "modeled": 0.3272
+          },
+          {
+            "date": "2026-04-10",
+            "reading": 0.336,
+            "modeled": 0.3278
+          },
+          {
+            "date": "2026-04-11",
+            "reading": 0.2853,
+            "modeled": 0.313
+          },
+          {
+            "date": "2026-04-12",
+            "reading": 0.3303,
+            "modeled": 0.3161
+          },
+          {
+            "date": "2026-04-13",
+            "reading": 0.3243,
+            "modeled": 0.3164
+          },
+          {
+            "date": "2026-04-14",
+            "reading": 0.3173,
+            "modeled": 0.3181
+          },
+          {
+            "date": "2026-04-15",
+            "reading": 0.3736,
+            "modeled": 0.3418
+          },
+          {
+            "date": "2026-04-16",
+            "reading": 0.3528,
+            "modeled": 0.3487
+          },
+          {
+            "date": "2026-04-17",
+            "reading": 0.3245,
+            "modeled": 0.3391
+          },
+          {
+            "date": "2026-04-18",
+            "reading": 0.3444,
+            "modeled": 0.3388
+          },
+          {
+            "date": "2026-04-19",
+            "reading": 0.3292,
+            "modeled": 0.3338
+          },
+          {
+            "date": "2026-04-20",
+            "reading": 0.3564,
+            "modeled": 0.3385
+          },
+          {
+            "date": "2026-04-21",
+            "reading": 0.3094,
+            "modeled": 0.3289
+          },
+          {
+            "date": "2026-04-22",
+            "reading": 0.3157,
+            "modeled": 0.3233
+          },
+          {
+            "date": "2026-04-23",
+            "reading": 0.3139,
+            "modeled": 0.3186
+          },
+          {
+            "date": "2026-04-24",
+            "reading": 0.3278,
+            "modeled": 0.3194
+          },
+          {
+            "date": "2026-04-25",
+            "reading": 0.3087,
+            "modeled": 0.3145
+          },
+          {
+            "date": "2026-04-26",
+            "reading": 0.3395,
+            "modeled": 0.3218
+          },
+          {
+            "date": "2026-04-27",
+            "reading": 0.302,
+            "modeled": 0.3146
+          },
+          {
+            "date": "2026-04-28",
+            "reading": 0.2805,
+            "modeled": 0.303
+          },
+          {
+            "date": "2026-04-29",
+            "reading": 0.2851,
+            "modeled": 0.296
+          },
+          {
+            "date": "2026-04-30",
+            "reading": 0.3133,
+            "modeled": 0.2995
+          },
+          {
+            "date": "2026-05-01",
+            "reading": 0.322,
+            "modeled": 0.3047
+          },
+          {
+            "date": "2026-05-02",
+            "reading": 0.2908,
+            "modeled": 0.2994
+          },
+          {
+            "date": "2026-05-03",
+            "reading": 0.2914,
+            "modeled": 0.2956
+          },
+          {
+            "date": "2026-05-04",
+            "reading": 0.306,
+            "modeled": 0.2972
+          },
+          {
+            "date": "2026-05-05",
+            "reading": 0.3175,
+            "modeled": 0.3082
+          },
+          {
+            "date": "2026-05-06",
+            "reading": 0.3446,
+            "modeled": 0.3208
+          },
+          {
+            "date": "2026-05-07",
+            "reading": 0.2984,
+            "modeled": 0.3228
+          },
+          {
+            "date": "2026-05-08",
+            "reading": 0.2971,
+            "modeled": 0.3144
+          },
+          {
+            "date": "2026-05-09",
+            "reading": 0.2978,
+            "modeled": 0.3135
+          },
+          {
+            "date": "2026-05-10",
+            "reading": 0.3365,
+            "modeled": 0.3194
+          },
+          {
+            "date": "2026-05-11",
+            "reading": 0.3038,
+            "modeled": 0.3135
+          },
+          {
+            "date": "2026-05-12",
+            "reading": 0.3043,
+            "modeled": 0.3093
+          },
+          {
+            "date": "2026-05-13",
+            "reading": 0.2985,
+            "modeled": 0.305
+          },
+          {
+            "date": "2026-05-14",
+            "reading": 0.3256,
+            "modeled": 0.3101
+          },
+          {
+            "date": "2026-05-15",
+            "reading": 0.3346,
+            "modeled": 0.3162
+          },
+          {
+            "date": "2026-05-16",
+            "reading": 0.3141,
+            "modeled": 0.3144
+          },
+          {
+            "date": "2026-05-17",
+            "reading": 0.2931,
+            "modeled": 0.3077
+          },
+          {
+            "date": "2026-05-18",
+            "reading": 0.3379,
+            "modeled": 0.3156
+          },
+          {
+            "date": "2026-05-19",
+            "reading": 0.3193,
+            "modeled": 0.3155
+          },
+          {
+            "date": "2026-05-20",
+            "reading": 0.3154,
+            "modeled": 0.3144
+          },
+          {
+            "date": "2026-05-21",
+            "reading": 0.2979,
+            "modeled": 0.3084
+          },
+          {
+            "date": "2026-05-22",
+            "reading": 0.3044,
+            "modeled": 0.3062
+          },
+          {
+            "date": "2026-05-23",
+            "reading": 0.2944,
+            "modeled": 0.3017
+          },
+          {
+            "date": "2026-05-24",
+            "reading": 0.2921,
+            "modeled": 0.2978
+          },
+          {
+            "date": "2026-05-25",
+            "reading": 0.3054,
+            "modeled": 0.2991
+          },
+          {
+            "date": "2026-05-26",
+            "reading": 0.281,
+            "modeled": 0.2926
+          },
+          {
+            "date": "2026-05-27",
+            "reading": 0.3173,
+            "modeled": 0.299
+          },
+          {
+            "date": "2026-05-28",
+            "reading": 0.3102,
+            "modeled": 0.3013
+          },
+          {
+            "date": "2026-05-29",
+            "reading": 0.3388,
+            "modeled": 0.3117
+          },
+          {
+            "date": "2026-05-30",
+            "reading": 0.2951,
+            "modeled": 0.3057
+          },
+          {
+            "date": "2026-05-31",
+            "reading": 0.2913,
+            "modeled": 0.3003
+          },
+          {
+            "date": "2026-06-01",
+            "reading": 0.3225,
+            "modeled": 0.3059
+          },
+          {
+            "date": "2026-06-02",
+            "reading": 0.3081,
+            "modeled": 0.3056
+          },
+          {
+            "date": "2026-06-03",
+            "reading": 0.2975,
+            "modeled": 0.3021
+          },
+          {
+            "date": "2026-06-04",
+            "reading": 0.2498,
+            "modeled": 0.2852
+          },
+          {
+            "date": "2026-06-05",
+            "reading": 0.3198,
+            "modeled": 0.2946
+          },
+          {
+            "date": "2026-06-06",
+            "reading": 0.2778,
+            "modeled": 0.2885
+          },
+          {
+            "date": "2026-06-07",
+            "reading": 0.3122,
+            "modeled": 0.2955
+          },
+          {
+            "date": "2026-06-08",
+            "reading": 0.3195,
+            "modeled": 0.3126
+          },
+          {
+            "date": "2026-06-09",
+            "reading": 0.2883,
+            "modeled": 0.3045
+          },
+          {
+            "date": "2026-06-10",
+            "reading": 0.2992,
+            "modeled": 0.3021
+          },
+          {
+            "date": "2026-06-11",
+            "reading": 0.3001,
+            "modeled": 0.3008
+          },
+          {
+            "date": "2026-06-12",
+            "reading": 0.2967,
+            "modeled": 0.2986
+          },
+          {
+            "date": "2026-06-13",
+            "reading": 0.3028,
+            "modeled": 0.2992
+          },
+          {
+            "date": "2026-06-14",
+            "reading": 0.2958,
+            "modeled": 0.2978
+          },
+          {
+            "date": "2026-06-15",
+            "reading": 0.2778,
+            "modeled": 0.291
+          },
+          {
+            "date": "2026-06-16",
+            "reading": 0.3225,
+            "modeled": 0.2995
+          },
+          {
+            "date": "2026-06-17",
+            "reading": 0.3057,
+            "modeled": 0.3005
+          },
+          {
+            "date": "2026-06-18",
+            "reading": 0.3215,
+            "modeled": 0.3124
+          },
+          {
+            "date": "2026-06-19",
+            "reading": 0.2674,
+            "modeled": 0.3012
+          },
+          {
+            "date": "2026-06-20",
+            "reading": 0.3187,
+            "modeled": 0.3056
+          },
+          {
+            "date": "2026-06-21",
+            "reading": 0.3103,
+            "modeled": 0.3063
+          },
+          {
+            "date": "2026-06-22",
+            "reading": 0.2826,
+            "modeled": 0.2985
+          },
+          {
+            "date": "2026-06-23",
+            "reading": 0.3358,
+            "modeled": 0.309
+          },
+          {
+            "date": "2026-06-24",
+            "reading": 0.28,
+            "modeled": 0.2999
+          },
+          {
+            "date": "2026-06-25",
+            "reading": 0.2804,
+            "modeled": 0.2932
+          },
+          {
+            "date": "2026-06-26",
+            "reading": 0.283,
+            "modeled": 0.2893
+          },
+          {
+            "date": "2026-06-27",
+            "reading": 0.3048,
+            "modeled": 0.2931
+          },
+          {
+            "date": "2026-06-28",
+            "reading": 0.3038,
+            "modeled": 0.2956
+          },
+          {
+            "date": "2026-06-29",
+            "reading": 0.3027,
+            "modeled": 0.297
+          },
+          {
+            "date": "2026-06-30",
+            "reading": 0.3298,
+            "modeled": 0.3059
+          },
+          {
+            "date": "2026-07-01",
+            "reading": 0.3133,
+            "modeled": 0.3072
+          },
+          {
+            "date": "2026-07-02",
+            "reading": 0.2553,
+            "modeled": 0.291
+          },
+          {
+            "date": "2026-07-03",
+            "reading": 0.3,
+            "modeled": 0.293
+          },
+          {
+            "date": "2026-07-04",
+            "reading": 0.2694,
+            "modeled": 0.2852
+          },
+          {
+            "date": "2026-07-05",
+            "reading": 0.3014,
+            "modeled": 0.2907
+          },
+          {
+            "date": "2026-07-06",
+            "reading": 0.3126,
+            "modeled": 0.2968
+          },
+          {
+            "date": "2026-07-07",
+            "reading": 0.2766,
+            "modeled": 0.2897
+          },
+          {
+            "date": "2026-07-08",
+            "reading": 0.2869,
+            "modeled": 0.288
+          },
+          {
+            "date": "2026-07-09",
+            "reading": 0.2539,
+            "modeled": 0.2769
+          },
+          {
+            "date": "2026-07-10",
+            "reading": 0.2844,
+            "modeled": 0.2783
+          },
+          {
+            "date": "2026-07-11",
+            "reading": 0.3051,
+            "modeled": 0.2857
+          },
+          {
+            "date": "2026-07-12",
+            "reading": 0.3319,
+            "modeled": 0.2989
+          },
+          {
+            "date": "2026-07-13",
+            "reading": 0.2729,
+            "modeled": 0.2903
+          },
+          {
+            "date": "2026-07-14",
+            "reading": 0.2953,
+            "modeled": 0.2909
+          },
+          {
+            "date": "2026-07-15",
+            "reading": 0.2685,
+            "modeled": 0.2832
+          },
+          {
+            "date": "2026-07-16",
+            "reading": 0.2851,
+            "modeled": 0.2829
+          },
+          {
+            "date": "2026-07-17",
+            "reading": 0.2662,
+            "modeled": 0.277
+          },
+          {
+            "date": "2026-07-18",
+            "reading": 0.29,
+            "modeled": 0.2898
+          },
+          {
+            "date": "2026-07-19",
+            "reading": 0.3293,
+            "modeled": 0.3044
+          },
+          {
+            "date": "2026-07-20",
+            "reading": 0.2589,
+            "modeled": 0.2907
+          },
+          {
+            "date": "2026-07-21",
+            "reading": 0.3052,
+            "modeled": 0.2946
+          },
+          {
+            "date": "2026-07-22",
+            "reading": 0.2848,
+            "modeled": 0.2986
+          },
+          {
+            "date": "2026-07-23",
+            "reading": 0.328,
+            "modeled": 0.3065
+          },
+          {
+            "date": "2026-07-24",
+            "reading": 0.296,
+            "modeled": 0.3025
+          },
+          {
+            "date": "2026-07-25",
+            "reading": 0.3147,
+            "modeled": 0.305
+          },
+          {
+            "date": "2026-07-26",
+            "reading": 0.2866,
+            "modeled": 0.2985
+          },
+          {
+            "date": "2026-07-27",
+            "reading": 0.2715,
+            "modeled": 0.2894
+          },
+          {
+            "date": "2026-07-28",
+            "reading": 0.2874,
+            "modeled": 0.2878
+          },
+          {
+            "date": "2026-07-29",
+            "reading": 0.274,
+            "modeled": 0.2826
+          },
+          {
+            "date": "2026-07-30",
+            "reading": 0.3306,
+            "modeled": 0.2959
+          },
+          {
+            "date": "2026-07-31",
+            "reading": 0.2773,
+            "modeled": 0.2897
+          },
+          {
+            "date": "2026-08-01",
+            "reading": 0.3528,
+            "modeled": 0.3377
+          },
+          {
+            "date": "2026-08-02",
+            "reading": 0.3364,
+            "modeled": 0.3411
+          },
+          {
+            "date": "2026-08-03",
+            "reading": 0.3364,
+            "modeled": 0.3389
+          },
+          {
+            "date": "2026-08-04",
+            "reading": 0.3431,
+            "modeled": 0.3391
+          },
+          {
+            "date": "2026-08-05",
+            "reading": 0.3366,
+            "modeled": 0.3384
+          },
+          {
+            "date": "2026-08-06",
+            "reading": 0.3334,
+            "modeled": 0.3457
+          },
+          {
+            "date": "2026-08-07",
+            "reading": 0.3082,
+            "modeled": 0.3332
+          },
+          {
+            "date": "2026-08-08",
+            "reading": 0.3402,
+            "modeled": 0.3342
+          },
+          {
+            "date": "2026-08-09",
+            "reading": 0.3353,
+            "modeled": 0.3333
+          },
+          {
+            "date": "2026-08-10",
+            "reading": 0.3742,
+            "modeled": 0.338
+          },
+          {
+            "date": "2026-08-11",
+            "reading": 0.3626,
+            "modeled": 0.3414
+          },
+          {
+            "date": "2026-08-12",
+            "reading": 0.3488,
+            "modeled": 0.3426
+          },
+          {
+            "date": "2026-08-13",
+            "reading": 0.3265,
+            "modeled": 0.3375
+          },
+          {
+            "date": "2026-08-14",
+            "reading": 0.3111,
+            "modeled": 0.3282
+          },
+          {
+            "date": "2026-08-15",
+            "reading": 0.3207,
+            "modeled": 0.3248
+          },
+          {
+            "date": "2026-08-16",
+            "reading": 0.3391,
+            "modeled": 0.3301
+          },
+          {
+            "date": "2026-08-17",
+            "reading": 0.36,
+            "modeled": 0.3485
+          },
+          {
+            "date": "2026-08-18",
+            "reading": 0.3217,
+            "modeled": 0.3414
+          },
+          {
+            "date": "2026-08-19",
+            "reading": 0.2974,
+            "modeled": 0.3269
+          },
+          {
+            "date": "2026-08-20",
+            "reading": 0.3333,
+            "modeled": 0.3321
+          },
+          {
+            "date": "2026-08-21",
+            "reading": 0.3399,
+            "modeled": 0.3334
+          },
+          {
+            "date": "2026-08-22",
+            "reading": 0.3295,
+            "modeled": 0.3309
+          },
+          {
+            "date": "2026-08-23",
+            "reading": 0.3599,
+            "modeled": 0.3361
+          },
+          {
+            "date": "2026-08-24",
+            "reading": 0.3352,
+            "modeled": 0.3345
+          },
+          {
+            "date": "2026-08-25",
+            "reading": 0.3102,
+            "modeled": 0.3258
+          },
+          {
+            "date": "2026-08-26",
+            "reading": 0.3444,
+            "modeled": 0.3299
+          },
+          {
+            "date": "2026-08-27",
+            "reading": 0.3203,
+            "modeled": 0.3282
+          },
+          {
+            "date": "2026-08-28",
+            "reading": 0.3515,
+            "modeled": 0.3343
+          },
+          {
+            "date": "2026-08-29",
+            "reading": 0.2842,
+            "modeled": 0.3175
+          },
+          {
+            "date": "2026-08-30",
+            "reading": 0.3323,
+            "modeled": 0.3201
+          },
+          {
+            "date": "2026-08-31",
+            "reading": 0.3304,
+            "modeled": 0.3211
+          },
+          {
+            "date": "2026-09-01",
+            "reading": 0.3165,
+            "modeled": 0.3178
+          },
+          {
+            "date": "2026-09-02",
+            "reading": 0.3268,
+            "modeled": 0.3185
+          },
+          {
+            "date": "2026-09-03",
+            "reading": 0.3256,
+            "modeled": 0.3208
+          },
+          {
+            "date": "2026-09-04",
+            "reading": 0.37,
+            "modeled": 0.3288
+          },
+          {
+            "date": "2026-09-05",
+            "reading": 0.3186,
+            "modeled": 0.3244
+          },
+          {
+            "date": "2026-09-06",
+            "reading": 0.2994,
+            "modeled": 0.3155
+          },
+          {
+            "date": "2026-09-07",
+            "reading": 0.3102,
+            "modeled": 0.3123
+          },
+          {
+            "date": "2026-09-08",
+            "reading": 0.2981,
+            "modeled": 0.3061
+          },
+          {
+            "date": "2026-09-09",
+            "reading": 0.296,
+            "modeled": 0.3019
+          },
+          {
+            "date": "2026-09-10",
+            "reading": 0.2886,
+            "modeled": 0.2959
+          },
+          {
+            "date": "2026-09-11",
+            "reading": 0.2434,
+            "modeled": 0.2786
+          },
+          {
+            "date": "2026-09-12",
+            "reading": 0.2668,
+            "modeled": 0.2742
+          },
+          {
+            "date": "2026-09-13",
+            "reading": 0.299,
+            "modeled": 0.2804
+          },
+          {
+            "date": "2026-09-14",
+            "reading": 0.2926,
+            "modeled": 0.2826
+          },
+          {
+            "date": "2026-09-15",
+            "reading": 0.3027,
+            "modeled": 0.2868
+          },
+          {
+            "date": "2026-09-16",
+            "reading": 0.2792,
+            "modeled": 0.2828
+          },
+          {
+            "date": "2026-09-17",
+            "reading": 0.284,
+            "modeled": 0.281
+          },
+          {
+            "date": "2026-09-18",
+            "reading": 0.2789,
+            "modeled": 0.2785
+          },
+          {
+            "date": "2026-09-19",
+            "reading": 0.259,
+            "modeled": 0.2708
+          },
+          {
+            "date": "2026-09-20",
+            "reading": 0.2812,
+            "modeled": 0.2773
+          },
+          {
+            "date": "2026-09-21",
+            "reading": 0.3107,
+            "modeled": 0.2868
+          },
+          {
+            "date": "2026-09-22",
+            "reading": 0.2589,
+            "modeled": 0.277
+          },
+          {
+            "date": "2026-09-23",
+            "reading": 0.2952,
+            "modeled": 0.2808
+          },
+          {
+            "date": "2026-09-24",
+            "reading": 0.2523,
+            "modeled": 0.2702
+          },
+          {
+            "date": "2026-09-25",
+            "reading": 0.3002,
+            "modeled": 0.2771
+          },
+          {
+            "date": "2026-09-26",
+            "reading": 0.2553,
+            "modeled": 0.2702
+          },
+          {
+            "date": "2026-09-27",
+            "reading": 0.3045,
+            "modeled": 0.2907
+          },
+          {
+            "date": "2026-09-28",
+            "reading": 0.3195,
+            "modeled": 0.3009
+          },
+          {
+            "date": "2026-09-29",
+            "reading": 0.3172,
+            "modeled": 0.3057
+          },
+          {
+            "date": "2026-09-30",
+            "reading": 0.2945,
+            "modeled": 0.3001
+          },
+          {
+            "date": "2026-10-01",
+            "reading": 0.2807,
+            "modeled": 0.296
+          },
+          {
+            "date": "2026-10-02",
+            "reading": 0.287,
+            "modeled": 0.2912
+          },
+          {
+            "date": "2026-10-03",
+            "reading": 0.3067,
+            "modeled": 0.3007
+          },
+          {
+            "date": "2026-10-04",
+            "reading": 0.2504,
+            "modeled": 0.2831
+          },
+          {
+            "date": "2026-10-05",
+            "reading": 0.2945,
+            "modeled": 0.2848
+          },
+          {
+            "date": "2026-10-06",
+            "reading": 0.2843,
+            "modeled": 0.2827
+          },
+          {
+            "date": "2026-10-07",
+            "reading": 0.3378,
+            "modeled": 0.3336
+          },
+          {
+            "date": "2026-10-08",
+            "reading": 0.3779,
+            "modeled": 0.3514
+          },
+          {
+            "date": "2026-10-09",
+            "reading": 0.3416,
+            "modeled": 0.3463
+          },
+          {
+            "date": "2026-10-10",
+            "reading": 0.3721,
+            "modeled": 0.3465
+          },
+          {
+            "date": "2026-10-11",
+            "reading": 0.3288,
+            "modeled": 0.3388
+          },
+          {
+            "date": "2026-10-12",
+            "reading": 0.2798,
+            "modeled": 0.3188
+          },
+          {
+            "date": "2026-10-13",
+            "reading": 0.3605,
+            "modeled": 0.3268
+          },
+          {
+            "date": "2026-10-14",
+            "reading": 0.313,
+            "modeled": 0.3225
+          },
+          {
+            "date": "2026-10-15",
+            "reading": 0.3075,
+            "modeled": 0.3193
+          },
+          {
+            "date": "2026-10-16",
+            "reading": 0.3216,
+            "modeled": 0.3194
+          },
+          {
+            "date": "2026-10-17",
+            "reading": 0.3399,
+            "modeled": 0.3235
+          },
+          {
+            "date": "2026-10-18",
+            "reading": 0.3151,
+            "modeled": 0.3189
+          },
+          {
+            "date": "2026-10-19",
+            "reading": 0.3646,
+            "modeled": 0.3265
+          },
+          {
+            "date": "2026-10-20",
+            "reading": 0.3307,
+            "modeled": 0.3249
+          },
+          {
+            "date": "2026-10-21",
+            "reading": 0.3261,
+            "modeled": 0.3231
+          },
+          {
+            "date": "2026-10-22",
+            "reading": 0.3263,
+            "modeled": 0.3264
+          },
+          {
+            "date": "2026-10-23",
+            "reading": 0.3274,
+            "modeled": 0.3291
+          },
+          {
+            "date": "2026-10-24",
+            "reading": 0.3066,
+            "modeled": 0.3212
+          },
+          {
+            "date": "2026-10-25",
+            "reading": 0.3198,
+            "modeled": 0.3194
+          },
+          {
+            "date": "2026-10-26",
+            "reading": 0.3222,
+            "modeled": 0.3178
+          },
+          {
+            "date": "2026-10-27",
+            "reading": 0.2987,
+            "modeled": 0.3095
+          },
+          {
+            "date": "2026-10-28",
+            "reading": 0.3113,
+            "modeled": 0.3071
+          },
+          {
+            "date": "2026-10-29",
+            "reading": 0.3023,
+            "modeled": 0.3034
+          },
+          {
+            "date": "2026-10-30",
+            "reading": 0.2977,
+            "modeled": 0.3064
+          },
+          {
+            "date": "2026-10-31",
+            "reading": 0.2852,
+            "modeled": 0.2981
+          },
+          {
+            "date": "2026-11-01",
+            "reading": 0.2857,
+            "modeled": 0.292
+          },
+          {
+            "date": "2026-11-02",
+            "reading": 0.2767,
+            "modeled": 0.2861
+          },
+          {
+            "date": "2026-11-03",
+            "reading": 0.3182,
+            "modeled": 0.2948
+          },
+          {
+            "date": "2026-11-04",
+            "reading": 0.31,
+            "modeled": 0.3158
+          },
+          {
+            "date": "2026-11-05",
+            "reading": 0.2984,
+            "modeled": 0.3071
+          },
+          {
+            "date": "2026-11-06",
+            "reading": 0.3292,
+            "modeled": 0.3105
+          },
+          {
+            "date": "2026-11-07",
+            "reading": 0.3095,
+            "modeled": 0.3092
+          },
+          {
+            "date": "2026-11-08",
+            "reading": 0.3123,
+            "modeled": 0.307
+          },
+          {
+            "date": "2026-11-09",
+            "reading": 0.3032,
+            "modeled": 0.3024
+          },
+          {
+            "date": "2026-11-10",
+            "reading": 0.2776,
+            "modeled": 0.2913
+          },
+          {
+            "date": "2026-11-11",
+            "reading": 0.289,
+            "modeled": 0.2927
+          },
+          {
+            "date": "2026-11-12",
+            "reading": 0.323,
+            "modeled": 0.2987
+          },
+          {
+            "date": "2026-11-13",
+            "reading": 0.2625,
+            "modeled": 0.2847
+          }
+        ]
+      }
     },
     "soil": {
       "state": null,
@@ -121,8 +1972,8 @@
         "drops": null,
         "sentence": {
           "key": "card.cycle_ended",
-          "en": "Day 157 of a 150-day cycle: the cycle of this sowing has already ended; there is no deficit scenario to show.",
-          "es": "Día 157 de un ciclo de 150 días: el ciclo de esta siembra ya terminó; no hay escenario de déficit para mostrar."
+          "en": "Day 156 of a 150-day cycle: the cycle of this sowing has already ended; there is no deficit scenario to show.",
+          "es": "Día 156 de un ciclo de 150 días: el ciclo de esta siembra ya terminó; no hay escenario de déficit para mostrar."
         },
         "soil_effect": null,
         "soil_reason": null,
@@ -134,8 +1985,8 @@
         "kind": "crop",
         "detail": {
           "key": "card.cycle_ended",
-          "en": "Day 157 of a 150-day cycle: the cycle of this sowing has already ended; there is no deficit scenario to show.",
-          "es": "Día 157 de un ciclo de 150 días: el ciclo de esta siembra ya terminó; no hay escenario de déficit para mostrar."
+          "en": "Day 156 of a 150-day cycle: the cycle of this sowing has already ended; there is no deficit scenario to show.",
+          "es": "Día 156 de un ciclo de 150 días: el ciclo de esta siembra ya terminó; no hay escenario de déficit para mostrar."
         },
         "sowing": "06-10",
         "critical_window": null,
@@ -1952,6 +3803,60 @@
       "2017/18",
       "2016/17",
       "2015/16"
+    ],
+    "modes": [
+      {
+        "id": "demo",
+        "badge": {
+          "key": "front.mode.demo",
+          "en": "Demo mode · simulated data",
+          "es": "Modo demo · datos simulados"
+        },
+        "meaning": {
+          "key": "front.mode.meaning.demo",
+          "en": "At least one input is simulated (today: the soil-moisture sensor). Show the badge at the top of every screen, never next to a single number, and never mix these numbers with measured ones.",
+          "es": "Al menos un dato de entrada es simulado (hoy: el sensor de humedad). Mostrar la etiqueta arriba de todas las pantallas, no junto a un solo número, y nunca mezclar estos números con medidos."
+        }
+      },
+      {
+        "id": "live",
+        "badge": {
+          "key": "front.mode.live",
+          "en": "Live data",
+          "es": "Datos reales"
+        },
+        "meaning": {
+          "key": "front.mode.meaning.live",
+          "en": "Every input is measured or entered by a person. The badge may be hidden or shown as a quiet «datos reales».",
+          "es": "Todos los datos de entrada son medidos o cargados por una persona. La etiqueta puede ocultarse o mostrarse discreta como «datos reales»."
+        }
+      },
+      {
+        "id": "error",
+        "badge": {
+          "key": "front.mode.error",
+          "en": "Analysis not available",
+          "es": "Análisis no disponible"
+        },
+        "meaning": {
+          "key": "front.mode.meaning.error",
+          "en": "The analysis could not be built. Show the message and the field that failed, and no numbers (the file is the error document, see status.error).",
+          "es": "No se pudo armar el análisis. Mostrar el mensaje y el campo que falló, sin números (el archivo es el documento de error, ver status.error)."
+        }
+      },
+      {
+        "id": "offline",
+        "badge": {
+          "key": "front.mode.offline",
+          "en": "No connection",
+          "es": "Sin conexión"
+        },
+        "meaning": {
+          "key": "front.mode.meaning.offline",
+          "en": "The panel could not read the file. The panel decides this itself, so no document exists for it: show the badge, keep the last data on screen marked as old and offer to retry.",
+          "es": "El panel no pudo leer el archivo. Lo decide el propio panel, por eso no hay documento: mostrar la etiqueta, dejar los últimos datos marcados como viejos y ofrecer reintentar."
+        }
+      }
     ]
   }
 }

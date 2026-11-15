@@ -6,6 +6,7 @@ from .domain import Job, Reading
 
 class ReadingsRepository(Protocol):
     def latest(self, field_id: str) -> Reading | None: ...
+    def history(self, field_id: str, limit: int) -> list[Reading]: ...
 
 
 class InputsRepository(Protocol):

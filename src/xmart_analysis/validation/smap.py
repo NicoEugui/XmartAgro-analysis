@@ -1,8 +1,8 @@
 """Does the water balance follow NASA SMAP soil moisture it was not calibrated on?
 
 SMAP L4 root-zone moisture is the calibration target (a model product, 9 km); SMAP L3 retrievals are an independent
-satellite observation of the surface layer. Both are read from the CSV files the user downloaded from NASA, so no
-data is shipped with the package. Baseline: an antecedent precipitation index built from the same rain.
+satellite observation of the surface layer. Both are read from the NASA CSV exports bundled in
+sites/<site>/smap_l4.csv and smap_l3.csv (or from files given by path). Baseline: an antecedent precipitation index built from the same rain.
 """
 
 import csv

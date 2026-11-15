@@ -1,3 +1,4 @@
+from xmart_analysis.engine import tables
 from xmart_analysis.engine.errors import EngineError
 
 from .domain import Outcome
@@ -20,7 +21,7 @@ class RunAnalysis:
             raise EngineError("no_reading", "sensor", f"Field '{field_id}' has no sensor reading yet", field_id=field_id)
         now = self.clock()
         answers, notes = to_answers(self.inputs.get(field_id), reading, self.settings.comparison)
-        sensor_info = to_sensor_info(reading, now)
+        sensor_info = to_sensor_info(reading, now, self.readings.history(field_id, tables.constant("sensor_days")))
         key = digest({"answers": answers, "sensor": sensor_info, "engine": self.analyzer.version})
         return answers, sensor_info, notes, now, key
 

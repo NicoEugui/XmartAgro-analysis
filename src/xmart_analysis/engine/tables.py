@@ -26,6 +26,7 @@ NEEDS_SOURCE = ("source", "fitted", "data")
 GROUPS = ("sowing", "cycle", "kc", "p")
 SITE_CONSTANTS = ("latitude", "longitude", "season_first_year", "season_last_year")
 SITE_ENV = "XMART_SITE"
+SIMULATED = "simulated"  # manifest kind of a dataset made by the model, never counted as data
 
 
 @lru_cache(maxsize=None)
@@ -179,7 +180,8 @@ def describe(relative_path):
         days = [date.fromisoformat(d) for d in data]
     else:
         data = list(csv.DictReader(text.splitlines()))
-        days = [date.fromisoformat(r["date"]) for r in data] if data and "date" in data[0] else []
+        column = next((c for c in ("date", "Date") if data and c in data[0]), None)  # AppEEARS exports say Date and may add a time
+        days = [date.fromisoformat(r[column][:10]) for r in data] if column else []
     info["rows"] = str(len(data))
     info["period"] = f"{days[0]}/{days[-1]}" if days else ""
     return info
@@ -195,8 +197,9 @@ def provenance():
     with open(site_file("constants.csv"), newline="", encoding="utf-8") as stream:
         rows += [{"table": f"site:{active_site()}", "item": r["name"], "status": r["status"], "source_ref": r["source_ref"],
                   "note": r["note"]} for r in csv.DictReader(stream)]
-    rows += [{"table": "datasets", "item": r["path"], "status": "data", "source_ref": r["source_ref"],
-              "note": f"{r['group']}, {r['role']}"} for r in manifest() if r["kind"] != "fit"]
+    rows += [{"table": "datasets", "item": r["path"], "status": "assumption" if r["kind"] == SIMULATED else "data",
+              "source_ref": r["source_ref"], "note": f"{r['group']}, {r['role']}" + (", simulated" if r["kind"] == SIMULATED else "")}
+             for r in manifest() if r["kind"] != "fit"]
     rows += [{"table": "survey_crop_map", "item": f"{r['survey_crop']}|{r['previous_crop']}", "status": "assumption",
               "source_ref": "", "note": r["note"]} for r in read("survey_crop_map")]
     fit = calibration()

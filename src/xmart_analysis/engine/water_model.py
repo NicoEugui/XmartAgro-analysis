@@ -86,6 +86,37 @@ def precompute_et0(weather):
     return {day: reference_et(day, w) for day, w in weather.items()}
 
 
+def water_from_theta(theta, theta_min, capacity):
+    """Available water (mm) the bucket holds at a volumetric moisture, between empty and full."""
+    return min(capacity, max(0.0, (theta - theta_min) * ROOT_DEPTH_MM))
+
+
+def nudge(water, observed_water, gain):
+    """Move the modelled water part of the way to an observed value: gain 0 ignores it, gain 1 adopts it."""
+    return water + gain * (observed_water - water)
+
+
+def daily_step(params, water, rain, et0_day, kc, stress_at=None):
+    """One day of the bucket: rain in, drainage and overflow out, then evapotranspiration reduced by water stress.
+
+    stress_at is the fraction of capacity below which the crop suffers; without it the calibrated threshold is used.
+    Returns the closing water and the day's flows (mm): loss, demand and actual evapotranspiration.
+    """
+    _theta_min, capacity, _kc, stress_calibrated, drainage_onset, drain = params
+    water += rain
+    before_loss = water
+    onset_mm = drainage_onset * capacity
+    if water > onset_mm:
+        water -= drain * (water - onset_mm)
+    if water > capacity:
+        water = capacity
+    threshold = (stress_calibrated if stress_at is None else stress_at) * capacity
+    stress = 1.0 if water >= threshold else water / threshold
+    demand = et0_day * kc
+    actual = min(water, demand * stress)
+    return water - actual, {"loss_mm": before_loss - water, "demand_mm": demand, "actual_mm": actual}
+
+
 def simulate_water_balance(params, weather, et0, start, end, initial_water_mm, kc_fn, stress_fn=None):
     """Daily balance with a crop coefficient per date; returns detailed daily rows.
 
@@ -94,55 +125,33 @@ def simulate_water_balance(params, weather, et0, start, end, initial_water_mm, k
     without it the threshold calibrated against L4 is used. Each row has the closing water, demand,
     actual evapotranspiration, unmet demand, drainage/overflow loss and rain (all in mm).
     """
-    theta_min, capacity, _kc, stress_at_cal, drainage_onset, drain = params
-    water = min(capacity, max(0.0, initial_water_mm))
+    water = min(params[1], max(0.0, initial_water_mm))
     rows = []
     day = start
     while day <= end:
-        k = kc_fn(day)
-        water += weather[day]["PRECTOTCORR"]
-        drainage_onset_mm = drainage_onset * capacity
-        before_loss = water
-        if water > drainage_onset_mm:
-            water -= drain * (water - drainage_onset_mm)
-        if water > capacity:
-            water = capacity
-        loss = before_loss - water
-        stress_at = stress_at_cal if stress_fn is None else stress_fn(day)
-        threshold = stress_at * capacity
-        stress = 1.0 if water >= threshold else water / threshold
-        demand = et0[day] * k
-        actual = min(water, demand * stress)
-        water -= actual
-        rows.append({"day": day, "water_mm": water, "demand_mm": demand,
-                     "actual_mm": actual, "unmet_mm": demand - actual, "loss_mm": loss,
-                     "rain_mm": weather[day]["PRECTOTCORR"]})
+        rain = weather[day]["PRECTOTCORR"]
+        water, flows = daily_step(params, water, rain, et0[day], kc_fn(day), None if stress_fn is None else stress_fn(day))
+        rows.append({"day": day, "water_mm": water, "demand_mm": flows["demand_mm"], "actual_mm": flows["actual_mm"],
+                     "unmet_mm": flows["demand_mm"] - flows["actual_mm"], "loss_mm": flows["loss_mm"], "rain_mm": rain})
         day += timedelta(days=1)
     return rows
 
 
-def simulate_moisture(params, weather, et0, start, end, initial_theta, kc_by_day=None):
+def simulate_moisture(params, weather, et0, start, end, initial_theta, kc_by_day=None, observations=None, gain=0.0):
     """Simulate day by day; returns {date: volumetric moisture m3/m3}.
 
     kc_by_day allows a crop coefficient per date; without it the calibrated kc (mixed cover of the
-    L4 pixel) is used.
+    L4 pixel) is used. observations ({date: moisture reading}) corrects the modelled water at the end of each day that
+    has one, by `gain` (see nudge); without them the run is open-loop.
     """
-    theta_min, capacity, kc, stress_at, drainage_onset, drain = params
-    water = min(capacity, max(0.0, (initial_theta - theta_min) * ROOT_DEPTH_MM))
+    theta_min, capacity, kc = params[0], params[1], params[2]
+    water = water_from_theta(initial_theta, theta_min, capacity)
     out = {}
     day = start
     while day <= end:
-        k = kc if kc_by_day is None else kc_by_day(day)
-        water += weather[day]["PRECTOTCORR"]
-        # Drainage only acts on water above the drainage onset (a fraction of the capacity).
-        drainage_onset_mm = drainage_onset * capacity
-        if water > drainage_onset_mm:
-            water -= drain * (water - drainage_onset_mm)
-        if water > capacity:
-            water = capacity
-        threshold = stress_at * capacity
-        stress = 1.0 if water >= threshold else water / threshold
-        water -= min(water, et0[day] * k * stress)
+        water, _ = daily_step(params, water, weather[day]["PRECTOTCORR"], et0[day], kc if kc_by_day is None else kc_by_day(day))
+        if observations and day in observations:
+            water = nudge(water, water_from_theta(observations[day], theta_min, capacity), gain)
         out[day] = theta_min + water / ROOT_DEPTH_MM
         day += timedelta(days=1)
     return out

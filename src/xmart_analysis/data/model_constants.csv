@@ -35,3 +35,13 @@ yield_kg_ha_max,15000,assumption,,sanity range accepted for a typed value
 rotation_start_theta,0.28,assumption,,same starting moisture for every season of a rotation card: only the climate differs
 water_risk_low_max_out,3,assumption,,an option is low water risk when at most this many of its ten drops are high deficit (provisional)
 water_risk_medium_max_out,6,assumption,,"medium water risk up to this many high-deficit drops, high above it (provisional)"
+sensor_days,365,assumption,,length of the simulated sensor series: one year ending on the last day of the climate record
+sensor_seed,20261114,assumption,,seed of the simulated sensor noise: the same seed gives the same series
+sensor_noise_sd,0.02,assumption,,"standard deviation of the simulated sensor noise, m3/m3 (a typical capacitive probe)"
+sensor_bias,0.01,assumption,,"constant offset of the simulated sensor, m3/m3 (an uncalibrated probe)"
+sensor_truth_capacity_factor,0.75,assumption,,the simulated field holds this share of the capacity the model was calibrated with: a soil the model does not know
+sensor_truth_theta_min_shift,0.02,assumption,,"the simulated field's wilting point differs from the model's by this, m3/m3"
+sensor_truth_start_theta,0.2,assumption,,"moisture of the simulated field on 1 January, m3/m3; the model starts from simulated_theta"
+sensor_gain,0.3,assumption,,"share of the gap between modelled water and a reading that is corrected each day (0 ignores the sensor, 1 adopts it)"
+sensor_cadences,1;7;30,assumption,,days between the readings the model receives in the sensor experiment
+sensor_start_window_days,30,assumption,,days from the start of the series over which the error is also reported: a sensor corrects a wrong starting state first

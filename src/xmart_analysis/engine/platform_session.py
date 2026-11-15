@@ -217,14 +217,14 @@ def build_session(answers, sensor_info=None, context=None):
     errors = validate_answers(answers)
     if errors:
         raise EngineError("invalid_answers", "answers", f"{len(errors)} answer(s) are invalid", errors=errors)
-    info = sensor_info or ss.source_from_answers(answers.get("sensor")).read()
+    context = context or _context.build_context()
+    info = ss.apply_history(sensor_info or ss.source_from_answers(answers.get("sensor")).read(), context)
     theta = info["volumetric_moisture"]
     if info.get("timestamp"):  # a real reading dictates its own date
         stamp = datetime.fromisoformat(info["timestamp"])
         reading_md = (stamp.month, stamp.day)
     else:
         reading_md = parse_month_day(answers["reading_date"], "reading_date")
-    context = context or _context.build_context()
     kw = {"params": context["params"], "weather": context["weather"], "et0": context["et0"]}
     scenarios = ws.build_scenarios(theta, start=reading_md, source_info=info, **kw)
     scenarios["initial_state"]["sensor"]["reading_day"] = _md(reading_md)  # the day the reading is for, also when no timestamp

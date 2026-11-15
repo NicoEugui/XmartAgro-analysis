@@ -374,5 +374,37 @@
  "front.missing.soil_diagnosis": {
   "en": "diagnosis of the field's soil",
   "es": "diagnóstico del suelo del lote"
+ },
+ "front.mode.demo": {
+  "en": "Demo mode · simulated data",
+  "es": "Modo demo · datos simulados"
+ },
+ "front.mode.live": {
+  "en": "Live data",
+  "es": "Datos reales"
+ },
+ "front.mode.error": {
+  "en": "Analysis not available",
+  "es": "Análisis no disponible"
+ },
+ "front.mode.offline": {
+  "en": "No connection",
+  "es": "Sin conexión"
+ },
+ "front.mode.meaning.demo": {
+  "en": "At least one input is simulated (today: the soil-moisture sensor). Show the badge at the top of every screen, never next to a single number, and never mix these numbers with measured ones.",
+  "es": "Al menos un dato de entrada es simulado (hoy: el sensor de humedad). Mostrar la etiqueta arriba de todas las pantallas, no junto a un solo número, y nunca mezclar estos números con medidos."
+ },
+ "front.mode.meaning.live": {
+  "en": "Every input is measured or entered by a person. The badge may be hidden or shown as a quiet «datos reales».",
+  "es": "Todos los datos de entrada son medidos o cargados por una persona. La etiqueta puede ocultarse o mostrarse discreta como «datos reales»."
+ },
+ "front.mode.meaning.error": {
+  "en": "The analysis could not be built. Show the message and the field that failed, and no numbers (the file is the error document, see status.error).",
+  "es": "No se pudo armar el análisis. Mostrar el mensaje y el campo que falló, sin números (el archivo es el documento de error, ver status.error)."
+ },
+ "front.mode.meaning.offline": {
+  "en": "The panel could not read the file. The panel decides this itself, so no document exists for it: show the badge, keep the last data on screen marked as old and offer to retry.",
+  "es": "El panel no pudo leer el archivo. Lo decide el propio panel, por eso no hay documento: mostrar la etiqueta, dejar los últimos datos marcados como viejos y ofrecer reintentar."
  }
 }

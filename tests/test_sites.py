@@ -14,7 +14,7 @@ from xmart_analysis.engine import tables
 from xmart_analysis.engine.errors import EngineError
 
 SRC = str(Path(__file__).resolve().parents[1] / "src")
-SORIANO_POWER_SHA256 = "9c85022f18c4905b7d88d1ad3146dd7239e7771b002942c2373781de3c421464"  # the file NASA delivered
+SORIANO_POWER_SHA256 = "a855d2829db9392e5467ad1db59e652c72815809fc13b17908d9e9aea16556fb"  # the NASA download of 14 Nov 2026 (its last day had no values and was trimmed)
 
 
 def in_site(site, code):
@@ -50,8 +50,10 @@ class Manifest(unittest.TestCase):
             self.assertTrue(row["path"].startswith(folder), row["path"])
 
     def test_the_only_external_data_is_nasa_and_the_teams_survey(self):
-        self.assertEqual({r["source_ref"] for r in tables.manifest()}, {"nasa_power", "gpm_imerg", "smap_l4", "producer_survey"})
-        self.assertEqual({r["kind"] for r in tables.manifest()}, {"climate", "fit", "survey"})
+        real = [r for r in tables.manifest() if r["kind"] != tables.SIMULATED]
+        self.assertEqual({r["source_ref"] for r in real}, {"nasa_power", "gpm_imerg", "smap_l4", "smap_l3", "modis_ndvi", "producer_survey"})
+        self.assertEqual({r["kind"] for r in real}, {"climate", "fit", "survey", "soil_moisture", "vegetation"})
+        self.assertEqual({r["source_ref"] for r in tables.manifest() if r["kind"] == tables.SIMULATED}, {"simulated_sensor"})
 
     def test_the_soriano_climate_is_exactly_the_file_nasa_delivered(self):
         digest = hashlib.sha256((tables.site_dir("soriano") / "power_daily.csv").read_bytes()).hexdigest()
@@ -81,7 +83,7 @@ from xmart_analysis.engine import tables, water_model as wm
 w = wm.load_power()
 print(json.dumps({"lat": tables.constant("latitude"), "days": len(w), "seasons": len(tables.season_years()),
                   "current": tables.calibration_is_current()}))"""))
-        self.assertEqual((out["lat"], out["days"], out["seasons"], out["current"]), (-33.3577778, 14610, 39, True))
+        self.assertEqual((out["lat"], out["days"], out["seasons"], out["current"]), (-33.3577778, 14746, 39, True))
 
     def test_the_whole_analysis_runs_on_it(self):
         with tempfile.TemporaryDirectory() as folder:

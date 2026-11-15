@@ -42,7 +42,7 @@ class OfflineRun(unittest.TestCase):
     def test_a_bad_scenario_reports_a_structured_error_and_fails(self):
         with tempfile.TemporaryDirectory() as out:
             scenario = json.loads((cli.DEMO).read_text(encoding="utf-8"))
-            scenario["readings"][0]["moisture"] = 2048
+            scenario["readings"] = [{"sensor_id": "node-01", "moisture": 2048, "sensor_type": "capacitive", "received_at": "2026-11-14T10:30:00Z"}]
             path = Path(out) / "bad.json"
             path.write_text(json.dumps(scenario), encoding="utf-8")
             self.assertEqual(cli.main(["run", str(path), "--out", out, "--no-figures"]), 1)

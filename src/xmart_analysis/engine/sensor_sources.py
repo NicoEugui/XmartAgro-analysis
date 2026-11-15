@@ -5,10 +5,11 @@ A stored reading is `{"sensor_id", "timestamp", "volumetric_moisture", "unit": "
 Even then it is unvalidated: depth, calibration, quality and representativeness are still pending.
 """
 
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from . import sensor_input as si
-from . import tables
+from . import sensor_series, tables
+from . import water_model as wm
 from .errors import EngineError
 
 MAX_AGE = timedelta(hours=tables.constant("stale_reading_hours"))
@@ -54,6 +55,27 @@ def parse_reading(payload, now, max_age=MAX_AGE):
         warnings.append("depth_unknown")
     return {"source": "backend_api_sensor", "is_simulated": False, "volumetric_moisture": theta,
             "timestamp": stamp.isoformat(), "depth_cm": depth, "sensor_id": payload.get("sensor_id"), "warnings": warnings}
+
+
+def apply_history(info, context):
+    """The state the scenarios start from when the readings of the last days are known: the model's water corrected by the series.
+
+    `info` is a reading description that may carry `history` ([{date, moisture}], oldest first). Without it, or when the climate
+    does not cover the series, the reading is used as it is (the second case adds the warning `series_beyond_climate`).
+    With it, `volumetric_moisture` becomes the corrected state on the last day, `raw_moisture` keeps the last reading and
+    `series` records how the state was reached, day by day."""
+    history = info.get("history")
+    if not history:
+        return info
+    readings = {date.fromisoformat(h["date"]): h["moisture"] for h in history}
+    first, last = min(readings), max(readings)
+    if not wm.has_all_days(context["weather"], first, last):
+        return {**info, "warnings": [*info["warnings"], "series_beyond_climate"]}
+    gain = tables.constant("sensor_gain")
+    modeled = sensor_series.assimilate(context, readings, gain)
+    return {**info, "raw_moisture": readings[last], "volumetric_moisture": modeled[last],
+            "series": {"method": "state_correction", "gain": gain, "days": len(readings), "period": [first.isoformat(), last.isoformat()],
+                       "history": [{"date": d.isoformat(), "reading": readings[d], "modeled": round(modeled[d], 4)} for d in sorted(readings)]}}
 
 
 def source_from_answers(sensor_answers):

@@ -1,7 +1,7 @@
 """Is the NASA POWER rain the model runs on consistent with NASA GPM IMERG, an independent satellite estimate? (exploratory)
 
 IMERG Final daily (GPM_3IMERGDF V07, 0.1 degree) as a Giovanni area-averaged time series CSV for the cell of the field, a NASA export
-the user downloads (not shipped). POWER rain is MERRA-2 reanalysis; IMERG merges satellite microwave and infrared estimates with
+bundled in sites/<site>/imerg_daily.csv. POWER rain is MERRA-2 reanalysis; IMERG merges satellite microwave and infrared estimates with
 gauge data, so agreement between them is a real check, and so is their disagreement. A 0.1 degree cell is a mean over about 10 km,
 so daily agreement is limited.
 """

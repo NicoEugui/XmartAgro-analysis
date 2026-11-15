@@ -14,8 +14,6 @@ from xmart_analysis.engine import tables
 from . import scenario_runs
 from . import validation as figures
 
-EXTERNAL = {"smap_l3": "SMAP L3 export", "smap_l4": "SMAP L4 export", "modis_ndvi": "MODIS NDVI export"}
-
 
 def _md(headers, rows):
     lines = ["| " + " | ".join(headers) + " |", "|" + "|".join(" --- " for _ in headers) + "|"]
@@ -57,7 +55,16 @@ def sowing_table(doc):
             [[c, scenario_runs.day_label(r["sowing"]), r["counts"]["ok"], r["counts"]["tight"], r["counts"]["out"]] for c, e in doc["crops"].items() for r in e["dates"]])
 
 
+def sensor_table(doc):
+    window = f"RMSE first {doc['start_window_days']} days m3/m3"
+    rows = [["no sensor", doc["open_loop"]["rmse"], doc["open_loop"]["first_days_rmse"]]]
+    rows += [["daily sensor" if r["every_days"] == 1 else f"sensor every {r['every_days']} days", r["rmse"], r["first_days_rmse"]]
+             for r in doc["with_sensor"]]
+    return ["run", "RMSE whole year m3/m3", window], rows
+
+
 FIGURES = {
+    "sensor": (figures.plot_sensor, sensor_table),
     "sowing": (figures.plot_sowing, sowing_table),
     "survey": (figures.plot_survey, survey_table),
     "ndvi": (figures.plot_ndvi, ndvi_table),
@@ -122,7 +129,7 @@ def _options(frontend):
 
 
 def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
-    """Write `experiments.md` and `figures/` into `out`; `files` maps the external inputs (smap_l3, smap_l4, modis_ndvi, imerg) to paths."""
+    """Write `experiments.md` and `figures/` into `out`; `files` maps the input files (smap_l3, smap_l4, modis_ndvi, imerg) to paths."""
     files = files or {}
     problems = tables.validate()
     params, metrics, seeds = _model(calibration)
@@ -132,8 +139,9 @@ def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
              "## 1. Data architecture\n\nOnly NASA data and the team's own producer survey enter the repository.\n\n"
              "```\nNASA POWER (daily climate) --> water-balance engine --> scenarios per historical season --> frontend JSON\n"
              "NASA SMAP L4 -----------------> calibration (soil parameters, fitted) ----^\n"
+             "simulated sensor year ---------> state correction (experiment only; the demo reading is still one simulated value)\n"
              "validators (not model inputs): SMAP L3/L4, MODIS NDVI, GPM IMERG, producer survey\n```\n\n" + _lineage()
-             + "\n\nExternal files used by the runs below (not stored in the repository, identified by checksum):\n\n"
+             + "\n\nInput files of the runs below, identified by checksum (the NASA files are in the repository and listed above):\n\n"
              + _md(["input", "file", "sha256"], [[k, Path(p).name, _sha(p)] for k, p in files.items()] or [["-", "none given", "-"]]),
              "## 2. Model and calibration\n\nDaily soil-water bucket (Hargreaves evapotranspiration from latitude and temperature range, crop coefficient by stage), "
              f"calibrated by differential evolution against SMAP L4 root-zone moisture.\n\n{params}\n\n{metrics}\n\n"
@@ -177,6 +185,16 @@ def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
          lambda d: " ".join(f"{c}: {v['seasons']} seasons, rank agreement {v['spearman_between_sources']}, mean absolute stress difference "
                             f"{v['mean_abs_difference']}, high-deficit seasons {v['high_deficit_seasons']['power']} (POWER) vs {v['high_deficit_seasons']['imerg']} (IMERG)."
                             for c, v in d["crops"].items())),
+        ("sensor", "Water balance with and without a (simulated) soil-moisture sensor",
+         "If the field has a soil the model does not know, does feeding the model a sensor series bring it closer to the field? "
+         "The field and the sensor are both simulated, so the truth is known.",
+         lambda d: (lambda daily: f"Over {d['period'][0]} to {d['period'][1]} the model without sensor has an error (RMSE) of {d['open_loop']['rmse']} m3/m3; with daily readings "
+                    f"{daily['rmse']} (weekly {d['with_sensor'][1]['rmse']}, monthly {d['with_sensor'][2]['rmse']}). In the first "
+                    f"{d['start_window_days']} days, while the model still carries a wrong starting state, it falls from {d['open_loop']['first_days_rmse']} to "
+                    f"{daily['first_days_rmse']}. The bias goes from {d['open_loop']['bias']} to {daily['bias']}: the sensor's offset "
+                    f"({d['sensor']['bias']}) and the field's different wilting point are a calibration gap, and correcting the water state toward the readings adopts it instead of removing it. "
+                    f"The raw readings are {d['sensor']['errors']['rmse']} m3/m3 from the truth (noise {d['sensor']['noise_sd']}). "
+                    f"Correction gain {d['gain']}. {d['note'].capitalize()}.")(d["with_sensor"][0])),
     )
     for key, title, question, reading in sections:
         if key not in validation_doc:
@@ -194,7 +212,8 @@ def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
                                              ["values plotted are the values in the tables above", "enforced by tests (`tests/test_report.py`)"],
                                              ["files used are at the site's point", "enforced when loading (`file_not_at_site`)"]])
                  + "\n\n## Not validated\n\n- Crop parameters (`pending`) and therefore per-crop and per-rotation risk.\n"
-                   "- Soil state and effect (no diagnosis exists); the sensor reading in the demo is simulated.\n"
+                   "- Soil state and effect (no diagnosis exists); every sensor reading, including the year in section "
+                   "\"Water balance with and without a (simulated) soil-moisture sensor\", is simulated: no real sensor data exists yet.\n"
                    "- Which rain source is closer to the truth (no gauge data).\n")
     path = Path(out) / "experiments.md"
     path.write_text("\n\n".join(parts) + "\n", encoding="utf-8")

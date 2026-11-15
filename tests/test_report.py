@@ -10,7 +10,8 @@ import test_offline
 from xmart_analysis import cli
 from xmart_analysis.engine import tables
 from xmart_analysis.report import scenario_runs
-from xmart_analysis.validation import imerg, rain_sensitivity, survey
+from xmart_analysis.engine import sensor_series
+from xmart_analysis.validation import imerg, rain_sensitivity, sensor_assimilation, survey
 
 
 NDVI = {"seasons": [{"season": f"20{i:02d}/{i + 1:02d}", "ndvi_dec_mar": 0.5 + i / 100, "soybean_1st_stress": i / 10,
@@ -24,9 +25,11 @@ SMAP = {"depth_note": "note", "periods": {"validation": {"days": 10, "scores": {
 
 
 def numbers(figure):
-    """Every value a figure plots: scatter points and bar sizes."""
+    """Every value a figure plots: scatter points, line values and bar sizes."""
     found = set()
     for ax in figure.axes:
+        for line in ax.lines:
+            found.update(float(v) for v in line.get_ydata() if isinstance(v, (int, float)))
         for collection in ax.collections:
             found.update(float(v) for v in collection.get_offsets().flatten())
         for patch in ax.patches:
@@ -57,7 +60,7 @@ class PlottedValues(unittest.TestCase):
         source.setUpClass()
         cls.docs = {"survey": survey.run(source.ctx), "imerg": imerg.run(source.path, source.ctx),
                     "rain_sensitivity": rain_sensitivity.run(source.path, source.ctx), "ndvi": NDVI, "smap": SMAP,
-                    "sowing": scenario_runs.run(source.ctx)}
+                    "sowing": scenario_runs.run(source.ctx), "sensor": sensor_assimilation.run(source.ctx)}
 
     @classmethod
     def tearDownClass(cls):
@@ -81,7 +84,7 @@ class PlottedValues(unittest.TestCase):
             for name in self.experiments.FIGURES:
                 self.assertIn(f"figures/{name}.en.png", text)
                 self.assertTrue((Path(out) / "figures" / f"{name}.en.png").exists())
-            for heading in ("What happens if a crop is sown", "Data architecture", "Model and calibration", "Integrity checks", "Not validated"):
+            for heading in ("What happens if a crop is sown", "Data architecture", "Model and calibration", "Integrity checks", "Not validated", "simulated) soil-moisture sensor"):
                 self.assertIn(heading, text)
             self.assertIn("consistent", text)
             self.assertIn(tables.manifest()[0]["path"], text)
@@ -95,6 +98,13 @@ class PlottedValues(unittest.TestCase):
                 self.assertEqual(sum(run["counts"].values()), run["seasons"])
         self.assertEqual(len(doc["detail"]["seasons"]), doc["crops"][scenario_runs.DETAIL_CROP]["dates"][2]["seasons"])
         self.assertEqual([r["volumetric_moisture"] for r in doc["reading_sensitivity"]["readings"]], list(scenario_runs.READINGS))
+
+    def test_the_sensor_figure_plots_the_readings_of_the_dataset(self):
+        draw, _ = self.experiments.FIGURES["sensor"]
+        drawn = plotted(draw, self.docs["sensor"])
+        readings = sensor_series.load()
+        self.assertEqual(len(readings), 365)
+        self.assertTrue({round(v, 4) for v in readings.values()} <= {round(v, 4) for v in drawn})
 
     def test_a_missing_validator_leaves_its_section_out(self):
         calibration = json.loads(tables.calibration_path().read_text(encoding="utf-8"))

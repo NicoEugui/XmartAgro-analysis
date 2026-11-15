@@ -14,7 +14,8 @@ from ..engine import platform_session as ps
 from ..engine import water_scenarios as ws
 from ..engine.i18n import label
 
-SCHEMA_VERSION = "2.0"
+SCHEMA_VERSION = "2.1"
+MODES = ("demo", "live", "error", "offline")  # the states the panel can be in; the last one is decided by the panel itself
 
 
 def _field():
@@ -35,8 +36,11 @@ def _site():
 
 def _status(session):
     counts = Counter(r["status"] for r in tables.provenance())
-    return {"exploratory": True, "validated_for_field": False, "disclaimer": label("screen.footer"),
-            "simulated_reading": session["outputs"]["main_screen"]["soil_water"]["is_simulated"],
+    simulated = session["outputs"]["main_screen"]["soil_water"]["is_simulated"]
+    return {"mode": "demo" if simulated else "live", "badge": label("front.mode.demo" if simulated else "front.mode.live"),
+            "simulated_inputs": ["sensor_readings"] if simulated else [],
+            "exploratory": True, "validated_for_field": False, "disclaimer": label("screen.footer"),
+            "simulated_reading": simulated,
             "values_by_status": dict(counts),
             "sources": [{"id": k, "title": v["title"], "publisher": v["publisher"]} for k, v in tables.sources().items()]}
 
@@ -56,7 +60,8 @@ def _water(session, generated_at):
     initial = state["water_levels"]["scenario_initial_water"]
     return {"mm": initial["value"], "capacity_mm": state["capacity_mm"], "source": "sensor", "reliability": "low",
             "updated_at": sensor.get("reading_date") or generated_at.isoformat(), "mm_status": initial["status"],
-            "is_simulated": sensor["is_simulated"], "volumetric_moisture": sensor["volumetric_moisture"]}
+            "is_simulated": sensor["is_simulated"], "volumetric_moisture": sensor["volumetric_moisture"],
+            "reading_moisture": sensor["raw_moisture"], "series": sensor["series"]}
 
 
 def _detail(card):
@@ -122,7 +127,8 @@ def catalog():
     return {"crops": [{"id": c, "name": label(ps.crop_label_key(c))} for c in ps.CROP_CHOICES],
             "history_crops": [{"id": c, "name": label(ps.crop_label_key(c))} for c in ps.HISTORY_CROP_CHOICES],
             "ratings": [{"value": v, "label": label(f"screen.sheet.rating.{v}")} for v in (1, 2, 3, 4, 5)],
-            "seasons": ps.SEASON_CHOICES}
+            "seasons": ps.SEASON_CHOICES,
+            "modes": [{"id": m, "badge": label(f"front.mode.{m}"), "meaning": label(f"front.mode.meaning.{m}")} for m in MODES]}
 
 
 def api_parts(session, generated_at):
@@ -134,6 +140,17 @@ def build(session, generated_at):
     return {"schema_version": SCHEMA_VERSION, "generated_at": generated_at.isoformat(), "site": _site(), "status": _status(session),
             "summary": summary(session, generated_at), "inputs": inputs(session), "scenarios": scenarios(session),
             "catalog": catalog()}
+
+
+def build_error(error, generated_at):
+    """The document the file holds when the analysis could not be built: the same envelope, the error instead of the results.
+
+    `error` is an EngineError's `to_dict()`; any other failure is reported as `internal_error` without leaking its text."""
+    known = {"code", "field", "message"} <= set(error)
+    return {"schema_version": SCHEMA_VERSION, "generated_at": generated_at.isoformat(),
+            "status": {"mode": "error", "badge": label("front.mode.error"),
+                       "error": {"code": error["code"] if known else "internal_error", "field": error.get("field") if known else None,
+                                 "message": error["message"] if known else "Unexpected failure while building the analysis"}}}
 
 
 def dumps(document):

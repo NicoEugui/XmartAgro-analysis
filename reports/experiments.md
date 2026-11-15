@@ -1,6 +1,6 @@
 # XmartAgro experiment log
 
-Site: `soriano` (-33.3577778, -58.078806). Generated 2026-11-14 by `xmart-analysis report`. Exploratory: nothing here validates a crop or rotation outcome.
+Site: `soriano` (-33.3577778, -58.078806). Generated 2026-11-15 by `xmart-analysis report`. Exploratory: nothing here validates a crop or rotation outcome.
 
 ## 1. Data architecture
 
@@ -9,25 +9,30 @@ Only NASA data and the team's own producer survey enter the repository.
 ```
 NASA POWER (daily climate) --> water-balance engine --> scenarios per historical season --> frontend JSON
 NASA SMAP L4 -----------------> calibration (soil parameters, fitted) ----^
+simulated sensor year ---------> state correction (experiment only; the demo reading is still one simulated value)
 validators (not model inputs): SMAP L3/L4, MODIS NDVI, GPM IMERG, producer survey
 ```
 
 | file | role | source | period | rows | sha256 |
 | --- | --- | --- | --- | --- | --- |
-| sites/soriano/power_daily.csv | model_input | nasa_power | 1986-07-01/2026-06-30 | 14610 | 9c85022f18c4 |
+| sites/soriano/power_daily.csv | model_input | nasa_power | 1986-07-01/2026-11-13 | 14746 | a855d2829db9 |
 | sites/soriano/imerg_daily.csv | validation | gpm_imerg | 1998-01-01/2025-09-30 | 10135 | 39c0e29c703f |
 | sites/soriano/calibration.json | model_input | smap_l4 | - | - | 2ada5404aa83 |
 | survey/producer_survey.csv | reference | producer_survey | - | 12 | e2671fe05883 |
 | survey/survey_rotations.csv | options | producer_survey | - | 60 | 27f8c33dc5e9 |
 | survey/survey_unfavorable_seasons.csv | validation | producer_survey | - | 9 | 88ef21704853 |
+| sites/soriano/sensor_simulated.csv | experiment_input | simulated_sensor | 2025-11-14/2026-11-13 | 365 | 5466da10609b |
+| sites/soriano/smap_l4.csv | calibration | smap_l4 | 2015-04-01/2026-11-05 | 33896 | 4cbeb19585a2 |
+| sites/soriano/smap_l3.csv | validation | smap_l3 | 2015-04-01/2026-11-06 | 4152 | 992ae2785284 |
+| sites/soriano/modis_ndvi.csv | validation | modis_ndvi | 2002-02-18/2026-10-16 | 568 | 90fdc8d0dac4 |
 
-External files used by the runs below (not stored in the repository, identified by checksum):
+Input files of the runs below, identified by checksum (the NASA files are in the repository and listed above):
 
 | input | file | sha256 |
 | --- | --- | --- |
-| smap_l3 | xmartagro-punto2-smap-SPL3SMP-E-006-results.csv | 992ae2785284 |
-| smap_l4 | xmartagro-punto2-smap-l4-SPL4SMGP-008-results.csv | 4cbeb19585a2 |
-| modis_ndvi | xmartagro-punto2-modis-ndvi-MOD13Q1-061-results.csv | 90fdc8d0dac4 |
+| smap_l3 | smap_l3.csv | 992ae2785284 |
+| smap_l4 | smap_l4.csv | 4cbeb19585a2 |
+| modis_ndvi | modis_ndvi.csv | 90fdc8d0dac4 |
 | imerg | imerg_daily.csv | 39c0e29c703f |
 
 ## 2. Model and calibration
@@ -105,14 +110,14 @@ Risk comes from how many of the 39 historical seasons end in high deficit; the d
 | maize | 1 Oct | 4 | 8 | 26 |
 | maize | 16 Oct | 4 | 8 | 26 |
 | maize | 31 Oct | 7 | 5 | 26 |
-| wheat | 16 May | 32 | 5 | 1 |
-| wheat | 31 May | 29 | 7 | 2 |
+| wheat | 16 May | 33 | 5 | 1 |
+| wheat | 31 May | 30 | 7 | 2 |
 | wheat | 15 Jun | 22 | 12 | 4 |
 | wheat | 30 Jun | 18 | 13 | 7 |
 | wheat | 15 Jul | 16 | 11 | 11 |
-| barley | 13 May | 34 | 4 | 0 |
-| barley | 28 May | 32 | 5 | 1 |
-| barley | 12 Jun | 29 | 6 | 3 |
+| barley | 13 May | 35 | 4 | 0 |
+| barley | 28 May | 33 | 5 | 1 |
+| barley | 12 Jun | 30 | 6 | 3 |
 | barley | 27 Jun | 25 | 8 | 5 |
 | barley | 12 Jul | 20 | 11 | 7 |
 
@@ -141,14 +146,14 @@ Median stress and water at sowing per run (every run carries the fixed-cycle war
 | maize | 1 Oct | 1988-10-01 to 2025-10-01 | +0 | 0.429 | 110.5 | cycle_length_fixed, sowing_far_from_reading |
 | maize | 16 Oct | 1988-10-16 to 2025-10-16 | +15 | 0.437 | 103.2 | cycle_length_fixed, sowing_far_from_reading |
 | maize | 31 Oct | 1988-10-31 to 2025-10-31 | +30 | 0.419 | 96.8 | cycle_length_fixed, sowing_far_from_reading |
-| wheat | 16 May | 1988-05-16 to 2025-05-16 | -30 | 0.0 | 124.5 | cycle_length_fixed, sowing_far_from_reading |
-| wheat | 31 May | 1988-05-31 to 2025-05-31 | -15 | 0.01 | 137.1 | cycle_length_fixed, sowing_far_from_reading |
+| wheat | 16 May | 1988-05-16 to 2026-05-16 | -30 | 0.0 | 123.7 | cycle_length_fixed, sowing_far_from_reading |
+| wheat | 31 May | 1988-05-31 to 2026-05-31 | -15 | 0.013 | 136.3 | cycle_length_fixed, sowing_far_from_reading |
 | wheat | 15 Jun | 1988-06-15 to 2025-06-15 | +0 | 0.066 | 133.8 | cycle_length_fixed, sowing_far_from_reading |
 | wheat | 30 Jun | 1988-06-30 to 2025-06-30 | +15 | 0.104 | 136.8 | cycle_length_fixed, sowing_far_from_reading |
 | wheat | 15 Jul | 1988-07-15 to 2025-07-15 | +30 | 0.126 | 141.4 | cycle_length_fixed, sowing_far_from_reading |
-| barley | 13 May | 1988-05-13 to 2025-05-13 | -30 | 0.0 | 126.7 | cycle_length_fixed, sowing_far_from_reading |
-| barley | 28 May | 1988-05-28 to 2025-05-28 | -15 | 0.0 | 139.2 | cycle_length_fixed, sowing_far_from_reading |
-| barley | 12 Jun | 1988-06-12 to 2025-06-12 | +0 | 0.015 | 135.6 | cycle_length_fixed, sowing_far_from_reading |
+| barley | 13 May | 1988-05-13 to 2026-05-13 | -30 | 0.0 | 123.4 | cycle_length_fixed, sowing_far_from_reading |
+| barley | 28 May | 1988-05-28 to 2026-05-28 | -15 | 0.0 | 138.3 | cycle_length_fixed, sowing_far_from_reading |
+| barley | 12 Jun | 1988-06-12 to 2026-06-12 | +0 | 0.008 | 134.8 | cycle_length_fixed, sowing_far_from_reading |
 | barley | 27 Jun | 1988-06-27 to 2025-06-27 | +15 | 0.07 | 135.8 | cycle_length_fixed, sowing_far_from_reading |
 | barley | 12 Jul | 1988-07-12 to 2025-07-12 | +30 | 0.092 | 138.0 | cycle_length_fixed, sowing_far_from_reading |
 
@@ -384,7 +389,26 @@ Share of seasons with high deficit per rotation:
 | survey_11 | 0.444 | 0.383 |
 | survey_12 | 0.5 | 0.454 |
 
-## 10. Integrity checks
+## 10. Water balance with and without a (simulated) soil-moisture sensor
+
+**Question.** If the field has a soil the model does not know, does feeding the model a sensor series bring it closer to the field? The field and the sensor are both simulated, so the truth is known.
+
+![Water balance with and without a (simulated) soil-moisture sensor](figures/sensor.en.png)
+
+<details><summary>Values plotted in this figure</summary>
+
+| run | RMSE whole year m3/m3 | RMSE first 30 days m3/m3 |
+| --- | --- | --- |
+| no sensor | 0.0153 | 0.0341 |
+| daily sensor | 0.0131 | 0.0181 |
+| sensor every 7 days | 0.0139 | 0.0251 |
+| sensor every 30 days | 0.0146 | 0.0285 |
+
+</details>
+
+**Reading.** Over 2025-11-14 to 2026-11-13 the model without sensor has an error (RMSE) of 0.0153 m3/m3; with daily readings 0.0131 (weekly 0.0139, monthly 0.0146). In the first 30 days, while the model still carries a wrong starting state, it falls from 0.0341 to 0.0181. The bias goes from 0.0031 to 0.0105: the sensor's offset (0.01) and the field's different wilting point are a calibration gap, and correcting the water state toward the readings adopts it instead of removing it. The raw readings are 0.0222 m3/m3 from the truth (noise 0.02). Correction gain 0.3. Simulated field and simulated sensor: shows what a sensor could add, not what it does in a real field.
+
+## 11. Integrity checks
 
 | check | result |
 | --- | --- |
@@ -395,6 +419,6 @@ Share of seasons with high deficit per rotation:
 ## Not validated
 
 - Crop parameters (`pending`) and therefore per-crop and per-rotation risk.
-- Soil state and effect (no diagnosis exists); the sensor reading in the demo is simulated.
+- Soil state and effect (no diagnosis exists); every sensor reading, including the year in section "Water balance with and without a (simulated) soil-moisture sensor", is simulated: no real sensor data exists yet.
 - Which rain source is closer to the truth (no gauge data).
 

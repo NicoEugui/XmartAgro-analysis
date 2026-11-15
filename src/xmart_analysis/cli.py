@@ -10,7 +10,7 @@ from pathlib import Path
 from . import validation
 from .frontend import payload, schema
 from .engine import context as engine_context
-from .engine import tables
+from .engine import sensor_series, tables
 from .engine.errors import EngineError
 from .engine.i18n import LANGUAGES
 from .worker.adapters.engine import EngineAnalyzer
@@ -20,6 +20,12 @@ from .worker.application import RunAnalysis
 from .worker.config import Settings
 
 DEMO = tables.DATA_DIR / "demo_scenario.json"
+NASA_FILES = {  # flag: (file bundled in the site folder, what it adds)
+    "--smap-l3": ("smap_l3.csv", "NASA SMAP L3 CSV (SPL3SMP-E.006), adds the SMAP comparison; goes with --smap-l4"),
+    "--smap-l4": ("smap_l4.csv", "NASA SMAP L4 CSV (SPL4SMGP.008), adds the SMAP comparison; goes with --smap-l3"),
+    "--modis-ndvi": ("modis_ndvi.csv", "NASA MODIS MOD13Q1 CSV for the site, adds the vegetation check"),
+    "--imerg": ("imerg_daily.csv", "NASA GPM IMERG Giovanni CSV for the site's cell, adds the rain check"),
+}
 NO_PLOTS = "Figures need matplotlib: pip install 'xmartagro-analysis[plots]'"
 
 
@@ -67,7 +73,7 @@ def validate(args):
 def validation_document(args):
     """Run the validators whose input files were given (the producer survey always runs)."""
     context = engine_context.build_context()
-    doc = {"survey": validation.survey.run(context)}
+    doc = {"survey": validation.survey.run(context), "sensor": validation.sensor_assimilation.run(context)}
     if args.smap_l3:
         doc["smap"] = validation.smap.run(args.smap_l3, args.smap_l4, context)
     if args.modis_ndvi:
@@ -124,30 +130,40 @@ def _validate(args):
     return 0
 
 
+def _clock(now):
+    """The clock of a run: the fixed instant given (ISO 8601) or the real time."""
+    return (lambda: datetime.fromisoformat(now)) if now else (lambda: datetime.now(timezone.utc))
+
+
 def frontend_document(scenario, now=None):
     """The frontend payload for a scenario file (the bundled demo by default)."""
     field_id, store = load_scenario(scenario or DEMO)
     analyzer = EngineAnalyzer()
-    clock = (lambda: datetime.fromisoformat(now)) if now else (lambda: datetime.now(timezone.utc))
-    use_case = RunAnalysis(MemoryReadings(store), MemoryInputs(store), FileResults("."), analyzer, Settings(), clock)
+    use_case = RunAnalysis(MemoryReadings(store), MemoryInputs(store), FileResults("."), analyzer, Settings(), _clock(now))
     answers, sensor_info, _, moment, _ = use_case.prepare(field_id)
     return payload.build(analyzer.analyze(answers, sensor_info), moment)
 
 
 def export(args):
-    """Write the static JSON for the frontend and the schema that documents it."""
-    try:
-        document = frontend_document(args.scenario, args.now)
-    except EngineError as exc:
-        print(json.dumps(exc.to_dict(), ensure_ascii=False, indent=2), file=sys.stderr)
-        return 1
+    """Write the static JSON for the frontend and the schemas that document it.
+
+    The file the panel reads is always valid: when the analysis fails it holds the error document (status.mode `error`), and the
+    command still exits with 1 and prints the error."""
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "frontend.json").write_text(payload.dumps(document), encoding="utf-8")
-    (out / "frontend.schema.json").write_text(schema.dumps(), encoding="utf-8")
-    (out / "frontend.fields.md").write_text(schema.markdown(), encoding="utf-8")
-    print("written:", ", ".join(str(out / name) for name in ("frontend.json", "frontend.schema.json", "frontend.fields.md")))
-    return 0
+    code = 0
+    try:
+        document = frontend_document(args.scenario, args.now)
+    except Exception as exc:  # noqa: BLE001 - whatever fails, the file must say so instead of staying stale
+        error = exc.to_dict() if isinstance(exc, EngineError) else {"type": type(exc).__name__}
+        print(json.dumps(error, ensure_ascii=False, indent=2), file=sys.stderr)
+        document, code = payload.build_error(error, _clock(args.now)()), 1
+    names = {"frontend.json": payload.dumps(document), "frontend.schema.json": schema.dumps(),
+             "frontend.error.schema.json": schema.dumps_error(), "frontend.fields.md": schema.markdown()}
+    for name, text in names.items():
+        (out / name).write_text(text, encoding="utf-8")
+    print("written:", ", ".join(str(out / name) for name in names))
+    return code
 
 
 def report(args):
@@ -162,6 +178,13 @@ def report(args):
     calibration = json.loads(tables.calibration_path().read_text(encoding="utf-8"))
     files = {k: v for k, v in (("smap_l3", args.smap_l3), ("smap_l4", args.smap_l4), ("modis_ndvi", args.modis_ndvi), ("imerg", args.imerg)) if v}
     print("written:", import_report("experiments").build(doc, calibration, frontend, args.out, files, args.lang))
+    return 0
+
+
+def simulate_sensor(args):
+    """Write the simulated year of sensor readings (the bundled one by default); the manifest checks it against its checksum."""
+    sensor_series.write(args.out, sensor_series.readings(engine_context.build_context()))
+    print("written:", args.out, tables.describe(Path(args.out).resolve()))
     return 0
 
 
@@ -196,18 +219,18 @@ def main(argv=None):
     rep.add_argument("--lang", choices=LANGUAGES, default="en", help="language of the figures")
     rep.set_defaults(fn=report)
     for p in (sub.choices["validate"], rep):
-        p.add_argument("--imerg", nargs="?", const=str(tables.site_file("imerg_daily.csv")),
-                       help="NASA GPM IMERG Giovanni CSV for the site's cell (the bundled file if no path), adds the rain check")
-        p.add_argument("--modis-ndvi", help="NASA MODIS MOD13Q1 CSV for the site, adds the vegetation check")
-        p.add_argument("--smap-l3", help="NASA SMAP L3 CSV (SPL3SMP-E.006), adds the SMAP comparison")
-        p.add_argument("--smap-l4", help="NASA SMAP L4 CSV (SPL4SMGP.008), adds the SMAP comparison")
+        for flag, (name, text) in NASA_FILES.items():
+            p.add_argument(flag, nargs="?", const=str(tables.site_file(name)), help=f"{text} (the bundled file if no path)")
     exp = sub.add_parser("export", help="write the static JSON for the frontend and its schema")
     exp.add_argument("scenario", nargs="?", help="scenario JSON (default: the bundled demo)")
     exp.add_argument("--out", default="out", help="directory for frontend.json and frontend.schema.json")
     exp.add_argument("--now", help="fix the generation time (ISO 8601) so the output is reproducible")
     exp.set_defaults(fn=export)
+    sim = sub.add_parser("simulate-sensor", help="write the simulated year of soil-moisture sensor readings")
+    sim.add_argument("--out", default=str(sensor_series.default_path()), help="where to write the readings CSV")
+    sim.set_defaults(fn=simulate_sensor)
     cal = sub.add_parser("calibrate", help="refit the soil parameters to NASA SMAP L4 (needs scipy)")
-    cal.add_argument("--smap-l4", required=True, help="NASA SMAP L4 CSV (SPL4SMGP.008) for the demo point")
+    cal.add_argument("--smap-l4", default=str(tables.site_file(NASA_FILES["--smap-l4"][0])), help="NASA SMAP L4 CSV (SPL4SMGP.008) for the site's point (the bundled file by default)")
     cal.add_argument("--out", default="calibration.json", help="where to write the result; copy it to data/ to adopt it")
     cal.set_defaults(fn=calibrate)
     args = parser.parse_args(argv)

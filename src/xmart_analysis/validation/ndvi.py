@@ -1,6 +1,6 @@
 """Does vegetation activity seen by MODIS fall in the seasons the model finds most stressed? (exploratory)
 
-MODIS MOD13Q1 NDVI, 250 m pixel at the site (a NASA export the user downloads; not shipped). The pixel mixes crops, stubble and
+MODIS MOD13Q1 NDVI, 250 m pixel at the site (a NASA export, bundled in sites/<site>/modis_ndvi.csv). The pixel mixes crops, stubble and
 pasture and what was in the field each year is unknown, so NDVI describes the pixel, not a rotation; low NDVI is not bare soil.
 Only composites of good quality are used. Per season: mean NDVI from December to March against the modelled critical-stage stress.
 """

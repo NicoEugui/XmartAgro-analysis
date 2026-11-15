@@ -19,6 +19,9 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `site.soil_calibration.fitted_at.longitude` | number | Longitude, degrees. | Not drawn on the current screens: context for a header, a footer or the presentation |
 | `site.note` | text | Warning that the model describes this point only. | Footer of the main screen |
 | `status` | object | How far the results can be trusted. Always show the disclaimer. | Footer of the main screen and the presentation |
+| `status.mode` | one of `demo`, `live` | demo while any input is simulated, live when every input is measured or entered by a person. The panel adds `offline` itself when it cannot read the file, and the error document says `error`; catalog.modes explains the four. | Badge at the top of every screen |
+| `status.badge` | text | The text of the badge for this mode, e.g. «Modo demo · datos simulados». Show it at the top of every screen while the mode is demo. | Badge at the top of every screen |
+| `status.simulated_inputs` | array | The inputs that are simulated, so the badge can say which numbers they feed; empty when the mode is live. | Badge at the top of every screen |
 | `status.exploratory` | boolean | Always true: scenarios from historical climate, not forecasts. | Footer of the main screen |
 | `status.validated_for_field` | boolean | Always false: nothing here is validated for a particular field. | Footer of the main screen |
 | `status.disclaimer` | text | Sentence to show with the results. | Footer of the main screen |
@@ -46,7 +49,17 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `summary.water.updated_at` | string | When the reading was taken, ISO 8601. | Main screen · header «Tu campo hoy: N mm de agua útil» |
 | `summary.water.mm_status` | string | derived_from_assumptions: the millimetres come from assumed soil parameters. | Main screen · header «Tu campo hoy: N mm de agua útil» |
 | `summary.water.is_simulated` | boolean | True when the reading is simulated. | Main screen · header «Tu campo hoy: N mm de agua útil» |
-| `summary.water.volumetric_moisture` | number | The reading itself, volumetric moisture in m3/m3 (0 to 0.6). | Main screen · header «Tu campo hoy: N mm de agua útil» |
+| `summary.water.volumetric_moisture` | number | Volumetric moisture in m3/m3 (0 to 0.6) the scenarios start from: the model's own state corrected by the readings of the last year when `series` is given, otherwise the last reading itself. | Main screen · header «Tu campo hoy: N mm de agua útil» |
+| `summary.water.reading_moisture` | number or null | The last reading itself, m3/m3; null when there is no series and `volumetric_moisture` is the reading. | Main screen · header «Tu campo hoy: N mm de agua útil» · small print |
+| `summary.water.series` | object or null | How the state above was reached from the readings of the last year (simulated while `is_simulated`). | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.series.method` | one of `state_correction` | state_correction: each day the modelled water moves a share `gain` of the way to the reading. | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.series.gain` | number | Share of the gap between model and reading corrected each day (0 ignores the sensor, 1 adopts it). | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.series.days` | integer | Days with a reading. | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.series.period` | array | First and last day of the series. | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.series.history` | array | Reading and modelled state of every day, oldest first. | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.series.history[].date` | string | The day, YYYY-MM-DD. | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.series.history[].reading` | number | The reading of that day, m3/m3. | Main screen · moisture chart «sensor vs modelo» |
+| `summary.water.series.history[].modeled` | number | The model's state that day after correcting toward the reading, m3/m3. | Main screen · moisture chart «sensor vs modelo» |
 | `summary.soil` | object | Soil health. The model has no soil diagnosis yet, so the state is null. | Main screen · card «Tu suelo» |
 | `summary.soil.state` | one of `good`, `fair`, `poor` or null | good, fair or poor; null while there is no diagnosis. | Main screen · card «Tu suelo» |
 | `summary.soil.trend` | one of `improving`, `stable`, `declining` or null | improving, stable or declining; null while there is no diagnosis. | Main screen · card «Tu suelo» |
@@ -120,3 +133,23 @@ Generated from `frontend.schema.json` (do not edit by hand). Text fields are `{k
 | `catalog.ratings[].value` | integer | 1 to 5. | Data screen · Productor «Tu campo» · rating buttons |
 | `catalog.ratings[].label` | text | Button text, e.g. «Muy mal». | Data screen · Productor «Tu campo» · rating buttons |
 | `catalog.seasons` | array | Seasons the history can cover, newest first. | Data screen · Productor «Tu campo» · season selector |
+| `catalog.modes` | array | The four states of the panel with the text of each badge, `offline` included (only the panel can know it). | Badge at the top of every screen |
+| `catalog.modes[].id` | one of `demo`, `live`, `error`, `offline` | demo, live, error or offline. | Badge at the top of every screen |
+| `catalog.modes[].badge` | text | Badge text for the state. | Badge at the top of every screen |
+| `catalog.modes[].meaning` | text | When the state applies and what to show. | Badge at the top of every screen |
+
+## The error document
+
+When the analysis cannot be built the file holds this instead (`frontend.error.schema.json`): show `status.badge` and `status.error`, and no numbers.
+
+| Field | Type | Meaning | Used in |
+| --- | --- | --- | --- |
+| `schema_version` | string | Version of this schema. | Not drawn on the current screens: context for a header, a footer or the presentation |
+| `generated_at` | string | When the analysis was attempted, ISO 8601. | Not drawn on the current screens: context for a header, a footer or the presentation |
+| `status` | object | The analysis failed: the badge and what went wrong. | Badge at the top of every screen |
+| `status.mode` | string | Always `error`. | Badge at the top of every screen |
+| `status.badge` | text | Badge text, «Análisis no disponible». | Badge at the top of every screen |
+| `status.error` | object | What failed. | Error message of the screen |
+| `status.error.code` | string | Stable code of the failure, e.g. climate_gap, invalid_answers, internal_error. | Error message of the screen |
+| `status.error.field` | string or null | The field or input that failed; null when it is not tied to one. | Error message of the screen |
+| `status.error.message` | string | What happened, in English, for a person to read. | Error message of the screen |

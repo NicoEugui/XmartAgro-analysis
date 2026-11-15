@@ -278,5 +278,53 @@
  "sowing.note": {
   "en": "Each bar counts historical seasons applied to a simulated reading; not probabilities, not a forecast. Crop parameters are pending.",
   "es": "Cada barra cuenta zafras historicas aplicadas a una lectura simulada; no son probabilidades ni pronostico. Parametros de cultivo pendientes."
+ },
+ "sensor.title": {
+  "en": "Soil moisture of a simulated field: model without and with a simulated sensor",
+  "es": "Humedad de un campo simulado: modelo sin y con un sensor simulado"
+ },
+ "sensor.axis.moisture": {
+  "en": "Soil moisture (m3/m3)",
+  "es": "Humedad del suelo (m3/m3)"
+ },
+ "sensor.axis.rmse": {
+  "en": "Error against the simulated field, RMSE (m3/m3)",
+  "es": "Error contra el campo simulado, RMSE (m3/m3)"
+ },
+ "sensor.series.truth": {
+  "en": "simulated field (truth)",
+  "es": "campo simulado (verdad)"
+ },
+ "sensor.series.readings": {
+  "en": "sensor readings",
+  "es": "lecturas del sensor"
+ },
+ "sensor.series.open_loop": {
+  "en": "model without sensor",
+  "es": "modelo sin sensor"
+ },
+ "sensor.series.with_sensor": {
+  "en": "model with daily sensor",
+  "es": "modelo con sensor diario"
+ },
+ "sensor.run.open_loop": {
+  "en": "no sensor",
+  "es": "sin sensor"
+ },
+ "sensor.run.every": {
+  "en": "sensor every {days} d",
+  "es": "sensor cada {days} d"
+ },
+ "sensor.bar.year": {
+  "en": "whole year",
+  "es": "todo el año"
+ },
+ "sensor.bar.start": {
+  "en": "first {days} days",
+  "es": "primeros {days} dias"
+ },
+ "sensor.note": {
+  "en": "Simulated field and simulated sensor: shows what a sensor could add, not what it does in a real field.",
+  "es": "Campo y sensor simulados: muestra lo que un sensor podria aportar, no lo que hace en un campo real."
  }
 }

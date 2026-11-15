@@ -93,7 +93,14 @@ SITE = obj("Where the model runs and what it is built on. Results describe this 
             "latitude": n("Latitude, degrees.", CONTEXT), "longitude": n("Longitude, degrees.", CONTEXT)}))}),
     "note": text("Warning that the model describes this point only.", "Footer of the main screen")})
 
+BADGE = "Badge at the top of every screen"
 STATUS = obj("How far the results can be trusted. Always show the disclaimer.", "Footer of the main screen and the presentation", {
+    "mode": s("demo while any input is simulated, live when every input is measured or entered by a person. The panel adds `offline` itself when it "
+              "cannot read the file, and the error document says `error`; catalog.modes explains the four.", BADGE, enum=["demo", "live"]),
+    "badge": text("The text of the badge for this mode, e.g. «Modo demo · datos simulados». Show it at the top of every screen while the mode is demo.",
+                  BADGE),
+    "simulated_inputs": arr(s("What is simulated.", BADGE, enum=["sensor_readings"]),
+                            "The inputs that are simulated, so the badge can say which numbers they feed; empty when the mode is live.", BADGE),
     "exploratory": b("Always true: scenarios from historical climate, not forecasts.", "Footer of the main screen"),
     "validated_for_field": b("Always false: nothing here is validated for a particular field.", "Footer of the main screen"),
     "disclaimer": text("Sentence to show with the results.", "Footer of the main screen"),
@@ -124,7 +131,23 @@ SUMMARY = obj("Everything the main screen needs, in the shape of the API's summa
         "updated_at": s("When the reading was taken, ISO 8601.", HEADER),
         "mm_status": s("derived_from_assumptions: the millimetres come from assumed soil parameters.", HEADER),
         "is_simulated": b("True when the reading is simulated.", HEADER),
-        "volumetric_moisture": n("The reading itself, volumetric moisture in m3/m3 (0 to 0.6).", HEADER)}),
+        "volumetric_moisture": n("Volumetric moisture in m3/m3 (0 to 0.6) the scenarios start from: the model's own state corrected by the readings "
+                                 "of the last year when `series` is given, otherwise the last reading itself.", HEADER),
+        "reading_moisture": nullable(n("The last reading itself, m3/m3; null when there is no series and `volumetric_moisture` is the reading.",
+                                       HEADER + " · small print")),
+        "series": nullable(obj("How the state above was reached from the readings of the last year (simulated while `is_simulated`).",
+                               "Main screen · moisture chart «sensor vs modelo»", {
+            "method": s("state_correction: each day the modelled water moves a share `gain` of the way to the reading.", "Main screen · moisture chart «sensor vs modelo»",
+                        enum=["state_correction"]),
+            "gain": n("Share of the gap between model and reading corrected each day (0 ignores the sensor, 1 adopts it).", "Main screen · moisture chart «sensor vs modelo»"),
+            "days": i("Days with a reading.", "Main screen · moisture chart «sensor vs modelo»"),
+            "period": arr(s("A date, YYYY-MM-DD.", "Main screen · moisture chart «sensor vs modelo»"), "First and last day of the series.",
+                          "Main screen · moisture chart «sensor vs modelo»"),
+            "history": arr(obj("One day.", "Main screen · moisture chart «sensor vs modelo»", {
+                "date": s("The day, YYYY-MM-DD.", "Main screen · moisture chart «sensor vs modelo»"),
+                "reading": n("The reading of that day, m3/m3.", "Main screen · moisture chart «sensor vs modelo»"),
+                "modeled": n("The model's state that day after correcting toward the reading, m3/m3.", "Main screen · moisture chart «sensor vs modelo»")}),
+                           "Reading and modelled state of every day, oldest first.", "Main screen · moisture chart «sensor vs modelo»")}))}),
     "soil": obj("Soil health. The model has no soil diagnosis yet, so the state is null.", SOIL_CARD, {
         "state": nullable(s("good, fair or poor; null while there is no diagnosis.", SOIL_CARD, enum=["good", "fair", "poor"])),
         "trend": nullable(s("improving, stable or declining; null while there is no diagnosis.", SOIL_CARD,
@@ -216,7 +239,18 @@ CATALOG = obj("The closed lists the forms offer: nothing is typed as free text."
         "value": i("1 to 5.", PRODUCER + " · rating buttons"), "label": text("Button text, e.g. «Muy mal».", PRODUCER + " · rating buttons")}),
         "The rating scale.", PRODUCER + " · rating buttons"),
     "seasons": arr(s("Season, e.g. 2025/26.", PRODUCER + " · season selector"), "Seasons the history can cover, newest first.",
-                   PRODUCER + " · season selector")})
+                   PRODUCER + " · season selector"),
+    "modes": arr(obj("A state the panel can be in.", BADGE, {
+        "id": s("demo, live, error or offline.", BADGE, enum=["demo", "live", "error", "offline"]),
+        "badge": text("Badge text for the state.", BADGE), "meaning": text("When the state applies and what to show.", BADGE)}),
+        "The four states of the panel with the text of each badge, `offline` included (only the panel can know it).", BADGE)})
+
+ERROR_STATUS = obj("The analysis failed: the badge and what went wrong.", BADGE, {
+    "mode": s("Always `error`.", BADGE, const="error"), "badge": text("Badge text, «Análisis no disponible».", BADGE),
+    "error": obj("What failed.", "Error message of the screen", {
+        "code": s("Stable code of the failure, e.g. climate_gap, invalid_answers, internal_error.", "Error message of the screen"),
+        "field": nullable(s("The field or input that failed; null when it is not tied to one.", "Error message of the screen")),
+        "message": s("What happened, in English, for a person to read.", "Error message of the screen")})})
 
 
 def build():
@@ -230,6 +264,22 @@ def build():
                            "site": SITE, "status": STATUS, "summary": SUMMARY, "inputs": INPUTS, "scenarios": SCENARIOS, "catalog": CATALOG},
             "required": ["schema_version", "generated_at", "site", "status", "summary", "inputs", "scenarios", "catalog"],
             "additionalProperties": False}
+
+
+def build_error():
+    """The schema of the document the file holds when the analysis could not be built."""
+    return {"$schema": "https://json-schema.org/draft/2020-12/schema", "title": "XmartAgro frontend data: error document",
+            "description": "What the frontend file holds instead of the analysis when it could not be built. Same envelope (schema_version, "
+                           "generated_at, status), no results: show status.badge and status.error, and no numbers.",
+            "x-used-in": "The whole document: one file the panel reads, with no API call", "type": "object", "$defs": {"text": DEFS["text"]},
+            "properties": {"schema_version": s("Version of this schema.", CONTEXT, const=SCHEMA_VERSION),
+                           "generated_at": s("When the analysis was attempted, ISO 8601.", CONTEXT, format="date-time"),
+                           "status": ERROR_STATUS},
+            "required": ["schema_version", "generated_at", "status"], "additionalProperties": False}
+
+
+def dumps_error():
+    return json.dumps(build_error(), ensure_ascii=False, indent=2) + "\n"
 
 
 def dumps():
@@ -292,4 +342,8 @@ def markdown():
              "`[]` marks the items of a list and `{name}` the free keys of a map. The shape follows the panel's API contract "
              "(`summary`, `inputs`, `scenarios`).", "", "| Field | Type | Meaning | Used in |", "| --- | --- | --- | --- |"]
     lines += [f"| `{p}` | {k} | {m.replace('|', '/')} | {u.replace('|', '/')} |" for p, k, m, u in fields()]
+    lines += ["", "## The error document", "",
+              "When the analysis cannot be built the file holds this instead (`frontend.error.schema.json`): show `status.badge` and "
+              "`status.error`, and no numbers.", "", "| Field | Type | Meaning | Used in |", "| --- | --- | --- | --- |"]
+    lines += [f"| `{p}` | {k} | {m.replace('|', '/')} | {u.replace('|', '/')} |" for p, k, m, u in fields(root=build_error())]
     return "\n".join(lines) + "\n"

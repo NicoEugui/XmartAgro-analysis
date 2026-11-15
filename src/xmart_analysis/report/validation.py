@@ -1,5 +1,7 @@
 """Figures of the validation documents (`xmart_analysis.validation`)."""
 
+import datetime
+
 import matplotlib
 
 matplotlib.use("Agg")
@@ -158,5 +160,37 @@ def plot_sowing(doc, path, lang="en"):
     fig.suptitle(T("sowing.title", lang), x=0.01, ha="left", fontsize=11, fontweight="bold")
     fig.text(0.01, 0.01, T("sowing.note", lang), fontsize=7.2, color=MUTED, style="italic")
     fig.tight_layout(rect=(0, 0.05, 1, 0.94))
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
+def plot_sensor(doc, path, lang="en"):
+    fig, (ax, bars) = plt.subplots(1, 2, figsize=(11, 4.4), dpi=130, gridspec_kw={"width_ratios": [1.7, 1]})
+    days = [datetime.date.fromisoformat(r["date"]) for r in doc["series"]]
+    column = lambda name: [r[name] for r in doc["series"]]  # noqa: E731
+    ax.scatter(days, column("sensor"), s=3, color="#c9ced2", zorder=1, label=T("sensor.series.readings", lang))
+    for name, color, width in (("truth", "#2f2f2f", 1.4), ("open_loop", "#e0903f", 1.2), ("with_sensor", "#2d6a8f", 1.4)):
+        ax.plot(days, column(name), color=color, linewidth=width, zorder=2, label=T(f"sensor.series.{name}", lang))
+    ax.set_ylabel(T("sensor.axis.moisture", lang), fontsize=8.5)
+    ax.tick_params(labelsize=8)
+    ax.legend(frameon=False, fontsize=7.5, ncol=2, loc="upper center", bbox_to_anchor=(0.5, 1.0))
+    runs = [("open_loop", doc["open_loop"], T("sensor.run.open_loop", lang))] + [
+        (f"every_{r['every_days']}", r, T("sensor.run.every", lang, days=r["every_days"])) for r in doc["with_sensor"]]
+    x = range(len(runs))
+    for shift, key, color, name in ((-0.2, "rmse", "#2d6a8f", T("sensor.bar.year", lang)),
+                                    (0.2, "first_days_rmse", "#bcd5e4", T("sensor.bar.start", lang, days=doc["start_window_days"]))):
+        heights = [entry[key] for _, entry, _ in runs]
+        bars.bar([i + shift for i in x], heights, width=0.38, color=color, label=name)
+        for i, value in zip(x, heights):
+            bars.text(i + shift, value, f"{value:.3f}", ha="center", va="bottom", fontsize=7)
+    bars.set_xticks(list(x), [label for _, _, label in runs], fontsize=7.5, rotation=20)
+    bars.set_ylabel(T("sensor.axis.rmse", lang), fontsize=8.5)
+    bars.legend(frameon=False, fontsize=7.5)
+    for axis in (ax, bars):
+        for side in ("top", "right"):
+            axis.spines[side].set_visible(False)
+    fig.suptitle(f"{T('sensor.title', lang)} · {doc['period'][0]} / {doc['period'][1]}", x=0.01, ha="left", fontsize=11, fontweight="bold")
+    fig.text(0.01, 0.01, T("sensor.note", lang), fontsize=7.2, color=MUTED, style="italic")
+    fig.tight_layout(rect=(0, 0.04, 1, 0.94))
     fig.savefig(path, facecolor="white")
     plt.close(fig)

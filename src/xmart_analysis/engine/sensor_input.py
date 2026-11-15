@@ -65,6 +65,8 @@ def soil_water_block(theta=SIMULATED_THETA, source_info=None):
     block["reading_validation"] = {"depth_cm": info.get("depth_cm"), "calibration": "pending",
                                    "quality_checks": "pending", "spatial_representativeness": "pending"}
     block["source_warnings"] = list(info.get("warnings", []))
+    block["raw_moisture"] = info.get("raw_moisture")  # the last reading, when the state shown is the model's corrected by a series
+    block["series"] = info.get("series")
     block["requirements_before_real_sensors"] = {
         "note": label("soil_water.requirements.note"),
         "items": [label("soil_water.requirements.depth"), label("soil_water.requirements.calibration"),
@@ -81,6 +83,5 @@ def soil_water_block(theta=SIMULATED_THETA, source_info=None):
 
 def to_available_water_mm(theta, params):
     """Convert volumetric moisture to mm using ASSUMED bucket soil parameters (theta_min, capacity)."""
-    theta_min, capacity = params[0], params[1]
-    return min(capacity, max(0.0, (theta - theta_min) * wm.ROOT_DEPTH_MM))
+    return wm.water_from_theta(theta, params[0], params[1])
 

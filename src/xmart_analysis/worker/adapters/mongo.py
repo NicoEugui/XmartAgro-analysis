@@ -18,11 +18,18 @@ class MongoReadings:
     def __init__(self, db):
         self.collection = db["readings"]
 
+    @staticmethod
+    def _reading(doc):
+        return Reading(doc["field_id"], doc["sensor_id"], doc["moisture"], doc["sensor_type"], doc["received_at"])
+
     def latest(self, field_id):
         doc = self.collection.find_one({"field_id": field_id}, sort=[("received_at", -1)])
-        if not doc:
-            return None
-        return Reading(doc["field_id"], doc["sensor_id"], doc["moisture"], doc["sensor_type"], doc["received_at"])
+        return self._reading(doc) if doc else None
+
+    def history(self, field_id, limit):
+        """The last `limit` readings of the field, oldest first."""
+        docs = self.collection.find({"field_id": field_id}, sort=[("received_at", -1)], limit=limit)
+        return [self._reading(d) for d in reversed(list(docs))]
 
 
 class MongoInputs:
