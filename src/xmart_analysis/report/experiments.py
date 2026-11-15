@@ -63,7 +63,32 @@ def sensor_table(doc):
     return ["run", "RMSE whole year m3/m3", window], rows
 
 
+def sensor_windows_table(doc):
+    window = doc["start_window_days"]
+    return (["series starts in", "no sensor, whole year", "daily sensor, whole year", f"no sensor, first {window} days", f"daily sensor, first {window} days"],
+            [[f"month {r['month']}", r["open_loop"], r["with_sensor"], r["open_loop_first"], r["with_sensor_first"]] for r in doc["by_start_month"]])
+
+
+def sensor_recalibration_table(doc):
+    soils = {"original": "original soil", "fitted": "soil fitted to the sensor", "fitted_with_reference": "soil fitted, offset known"}
+    modes = {"open_loop": "model alone", "corrected": "with state correction"}
+    return (["soil", "mode", "RMSE m3/m3", "bias m3/m3", "spread m3/m3"],
+            [[soil, mode, *(doc["test"][f"{key}_{run}"][m] for m in ("rmse", "bias", "spread"))] for key, soil in soils.items() for run, mode in modes.items()])
+
+
+def rain_decision_table(doc):
+    imerg, sens = doc["imerg"], doc["sensitivity"]
+    rows = [[f"mean rain, month {r['month']} (mm)", r["power"], r["imerg"]] for r in imerg["monthly_mean_mm"]]
+    rows += [[f"{crop}: seasons {name}", entry["class_counts"]["power"][name], entry["class_counts"]["imerg"][name]]
+             for crop, entry in sens["crops"].items() for name in ("ok", "tight", "out")]
+    rows += [[f"{rid}: share of high-deficit seasons", share["power"], share["imerg"]] for rid, share in sens["rotations_high_deficit_share"].items()]
+    return ["item", "POWER rain", "IMERG rain"], rows
+
+
 FIGURES = {
+    "rain_decision": (figures.plot_rain_decision, rain_decision_table),
+    "sensor_windows": (figures.plot_sensor_windows, sensor_windows_table),
+    "sensor_recalibration": (figures.plot_sensor_recalibration, sensor_recalibration_table),
     "sensor": (figures.plot_sensor, sensor_table),
     "sowing": (figures.plot_sowing, sowing_table),
     "survey": (figures.plot_survey, survey_table),
@@ -81,6 +106,11 @@ def _figure(name, doc, out, lang, caption):
     draw(doc, path, lang)
     headers, rows = table(doc)
     return f"![{caption}](figures/{path.name})\n\n" + _details("Values plotted in this figure", headers, rows)
+
+
+def _power():
+    """The manifest row of the site's climate."""
+    return next(r for r in tables.manifest() if r["path"].endswith("power_daily.csv"))
 
 
 def _sha(path):
@@ -195,6 +225,30 @@ def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
                     f"({d['sensor']['bias']}) and the field's different wilting point are a calibration gap, and correcting the water state toward the readings adopts it instead of removing it. "
                     f"The raw readings are {d['sensor']['errors']['rmse']} m3/m3 from the truth (noise {d['sensor']['noise_sd']}). "
                     f"Correction gain {d['gain']}. {d['note'].capitalize()}.")(d["with_sensor"][0])),
+        ("sensor_windows", "The sensor experiment over every one-year window",
+         "How much does the sensor's gain depend on the year the series starts? The same simulated experiment over every one-year window of the climate record, one start per month.",
+         lambda d: f"Over {d['windows']} windows (starts from {d['first_start']} to {d['last_start']}) a daily sensor lowered the whole-year error in {d['share_helped']['whole_year']:.0%} of them "
+                   f"and the first-30-days error in {d['share_helped']['first_days']:.0%}. The whole-year error fell by a median of {d['whole_year_reduction']['median']:.0%} "
+                   f"(from {d['whole_year_reduction']['min']:.0%} to {d['whole_year_reduction']['max']:.0%}): the gain of any single year, like the one in the section above, is one draw from that spread, "
+                   f"so the gain depends on when the series starts. Median bias {d['bias']['open_loop']} without sensor, {d['bias']['with_sensor']} with it."),
+        ("sensor_recalibration", "Fitting the soil to the sensor series",
+         "Can the sensor re-calibrate the soil and so attack the bias? The wilting point and capacity are fitted to the first half of the series and tested on the second half, against the simulated field.",
+         lambda d: (lambda t, soil: f"Fitted on the first {d['fit_days']} days: wilting point {soil['fitted']['theta_min']} (the simulated field has {soil['simulated_field']['theta_min']}, the model was calibrated with "
+                    f"{soil['original']['theta_min']}) and capacity {soil['fitted']['capacity_mm']} mm (field {soil['simulated_field']['capacity_mm']}, original {soil['original']['capacity_mm']}). "
+                    f"On the next {d['test_days']} days the model alone has an error of {t['original_open_loop']['rmse']} with the original soil and {t['fitted_open_loop']['rmse']} with the fitted one: "
+                    f"the spread falls from {t['original_open_loop']['spread']} to {t['fitted_open_loop']['spread']} (the shape of the curve is followed far better) but the bias rises from "
+                    f"{t['original_open_loop']['bias']} to {t['fitted_open_loop']['bias']}, because the wilting point absorbs the sensor's offset ({d['sensor_bias']}). With one reference measurement that "
+                    f"removes the offset the error would be {t['fitted_with_reference_open_loop']['rmse']} (bias {t['fitted_with_reference_open_loop']['bias']}). Correcting the state on top gives "
+                    f"{t['original_corrected']['rmse']}, {t['fitted_corrected']['rmse']} and {t['fitted_with_reference_corrected']['rmse']}: it hides the soil. "
+                    f"{d['note'].capitalize()}.")(d["test"], d["soil"])),
+        ("rain_decision", "Decision: POWER rain for the demo, IMERG tested",
+         "Which rain does the model use, and what would change with the other? The demo uses NASA POWER; the same model was run with NASA GPM IMERG rain and compared.",
+         lambda d: (lambda i, s: f"Decision: the demo and every result above use POWER rain. Reasons: it covers {_power()['period'].replace('/', ' to ')} with no gaps, including the 2025/26 season, "
+                    f"while IMERG covers {i['period'][0]} to {i['period'][1]}; the soil parameters were fitted with POWER rain; and there is no gauge data to say which source is closer to the truth. "
+                    f"IMERG was tested: the two agree on the order of the seasons (rank agreement {s['crops']['soybean_1st']['spearman_between_sources']} for soybean, {s['crops']['maize']['spearman_between_sources']} for maize) "
+                    f"but not on the level (annual mean {i['rain']['mean_annual_mm']['power']} mm POWER, {i['rain']['mean_annual_mm']['imerg']} mm IMERG), and the mean absolute difference in stress is "
+                    f"{s['crops']['soybean_1st']['mean_abs_difference']} for soybean. High-deficit soybean seasons: {s['crops']['soybean_1st']['high_deficit_seasons']['power']} with POWER, "
+                    f"{s['crops']['soybean_1st']['high_deficit_seasons']['imerg']} with IMERG, over the {s['crops']['soybean_1st']['seasons']} seasons both cover.")(d["imerg"], d["sensitivity"])),
     )
     for key, title, question, reading in sections:
         if key not in validation_doc:
@@ -203,6 +257,9 @@ def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
         parts.append(f"## {n}. {title}\n\n**Question.** {question}\n\n{_figure(key, doc, out, lang, title)}\n\n**Reading.** {reading(doc)}")
         if key == "sowing":
             parts[-1] += "\n\n" + _sowing_extras(doc)
+        if key == "sensor_recalibration":
+            soils = [[k, v["theta_min"], v["capacity_mm"]] for k, v in doc["soil"].items()]
+            parts[-1] += "\n\nSoil parameters:\n\n" + _md(["soil", "wilting point m3/m3", "capacity mm"], soils)
         if key == "rain_sensitivity":
             shares = [[r, s["power"], s["imerg"]] for r, s in doc["rotations_high_deficit_share"].items()]
             parts[-1] += "\n\nShare of seasons with high deficit per rotation:\n\n" + _md(["rotation", "POWER rain", "IMERG rain"], shares)

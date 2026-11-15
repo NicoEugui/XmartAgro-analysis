@@ -73,7 +73,9 @@ def validate(args):
 def validation_document(args):
     """Run the validators whose input files were given (the producer survey always runs)."""
     context = engine_context.build_context()
-    doc = {"survey": validation.survey.run(context), "sensor": validation.sensor_assimilation.run(context)}
+    doc = {"survey": validation.survey.run(context), "sensor": validation.sensor_assimilation.run(context),
+           "sensor_windows": validation.sensor_assimilation.windows(context),
+           "sensor_recalibration": validation.sensor_assimilation.recalibrate(context)}
     if args.smap_l3:
         doc["smap"] = validation.smap.run(args.smap_l3, args.smap_l4, context)
     if args.modis_ndvi:
@@ -81,6 +83,7 @@ def validation_document(args):
     if args.imerg:
         doc["imerg"] = validation.imerg.run(args.imerg, context)
         doc["rain_sensitivity"] = validation.rain_sensitivity.run(args.imerg, context)
+        doc["rain_decision"] = {"imerg": doc["imerg"], "sensitivity": doc["rain_sensitivity"]}
     return doc
 
 

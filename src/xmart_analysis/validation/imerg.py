@@ -51,6 +51,8 @@ def run(path, context=None):
         monthly[(d.year, d.month)][0] += a
         monthly[(d.year, d.month)][1] += b
     month_i, month_p = zip(*monthly.values())
+    cycle = [{"month": m, "imerg": round(sum(v[0] for k, v in monthly.items() if k[1] == m) / sum(k[1] == m for k in monthly), 1),
+              "power": round(sum(v[1] for k, v in monthly.items() if k[1] == m) / sum(k[1] == m for k in monthly), 1)} for m in range(1, 13)]
     by_day_p = {d: weather[d]["PRECTOTCORR"] for d in days}
     seasons = []
     for year in ws.SEASON_YEARS:
@@ -66,5 +68,5 @@ def run(path, context=None):
                      "mean_annual_mm": {"imerg": round(sum(rain_i) / years), "power": round(sum(rain_p) / years)},
                      "wet_day_share": {"imerg": round(sum(v >= WET_DAY_MM for v in rain_i) / len(days), 3),
                                        "power": round(sum(v >= WET_DAY_MM for v in rain_p) / len(days), 3)}},
-            "seasons_dec_mar": seasons, "driest_seasons": {"imerg": driest("imerg_mm"), "power": driest("power_mm")},
+            "monthly_mean_mm": cycle, "seasons_dec_mar": seasons, "driest_seasons": {"imerg": driest("imerg_mm"), "power": driest("power_mm")},
             "note": "IMERG is a 0.1 degree satellite estimate: daily agreement is limited, totals are what the water balance needs"}

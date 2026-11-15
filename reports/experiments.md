@@ -21,7 +21,7 @@ validators (not model inputs): SMAP L3/L4, MODIS NDVI, GPM IMERG, producer surve
 | survey/producer_survey.csv | reference | producer_survey | - | 12 | e2671fe05883 |
 | survey/survey_rotations.csv | options | producer_survey | - | 60 | 27f8c33dc5e9 |
 | survey/survey_unfavorable_seasons.csv | validation | producer_survey | - | 9 | 88ef21704853 |
-| sites/soriano/sensor_simulated.csv | experiment_input | simulated_sensor | 2025-11-14/2026-11-13 | 365 | 5466da10609b |
+| sites/soriano/sensor_simulated.csv | experiment_input | simulated_sensor | 2025-11-14/2026-11-13 | 365 | 27a9ce5f5799 |
 | sites/soriano/smap_l4.csv | calibration | smap_l4 | 2015-04-01/2026-11-05 | 33896 | 4cbeb19585a2 |
 | sites/soriano/smap_l3.csv | validation | smap_l3 | 2015-04-01/2026-11-06 | 4152 | 992ae2785284 |
 | sites/soriano/modis_ndvi.csv | validation | modis_ndvi | 2002-02-18/2026-10-16 | 568 | 90fdc8d0dac4 |
@@ -400,15 +400,115 @@ Share of seasons with high deficit per rotation:
 | run | RMSE whole year m3/m3 | RMSE first 30 days m3/m3 |
 | --- | --- | --- |
 | no sensor | 0.0153 | 0.0341 |
-| daily sensor | 0.0131 | 0.0181 |
-| sensor every 7 days | 0.0139 | 0.0251 |
-| sensor every 30 days | 0.0146 | 0.0285 |
+| daily sensor | 0.013 | 0.0157 |
+| sensor every 7 days | 0.0113 | 0.0251 |
+| sensor every 30 days | 0.0131 | 0.0267 |
 
 </details>
 
-**Reading.** Over 2025-11-14 to 2026-11-13 the model without sensor has an error (RMSE) of 0.0153 m3/m3; with daily readings 0.0131 (weekly 0.0139, monthly 0.0146). In the first 30 days, while the model still carries a wrong starting state, it falls from 0.0341 to 0.0181. The bias goes from 0.0031 to 0.0105: the sensor's offset (0.01) and the field's different wilting point are a calibration gap, and correcting the water state toward the readings adopts it instead of removing it. The raw readings are 0.0222 m3/m3 from the truth (noise 0.02). Correction gain 0.3. Simulated field and simulated sensor: shows what a sensor could add, not what it does in a real field.
+**Reading.** Over 2025-11-14 to 2026-11-13 the model without sensor has an error (RMSE) of 0.0153 m3/m3; with daily readings 0.013 (weekly 0.0113, monthly 0.0131). In the first 30 days, while the model still carries a wrong starting state, it falls from 0.0341 to 0.0157. The bias goes from 0.0031 to 0.0101: the sensor's offset (0.01) and the field's different wilting point are a calibration gap, and correcting the water state toward the readings adopts it instead of removing it. The raw readings are 0.0221 m3/m3 from the truth (noise 0.02). Correction gain 0.3. Simulated field and simulated sensor: shows what a sensor could add, not what it does in a real field.
 
-## 11. Integrity checks
+## 11. The sensor experiment over every one-year window
+
+**Question.** How much does the sensor's gain depend on the year the series starts? The same simulated experiment over every one-year window of the climate record, one start per month.
+
+![The sensor experiment over every one-year window](figures/sensor_windows.en.png)
+
+<details><summary>Values plotted in this figure</summary>
+
+| series starts in | no sensor, whole year | daily sensor, whole year | no sensor, first 30 days | daily sensor, first 30 days |
+| --- | --- | --- | --- | --- |
+| month 1 | 0.0173 | 0.0132 | 0.0325 | 0.0172 |
+| month 2 | 0.0174 | 0.0127 | 0.0349 | 0.0168 |
+| month 3 | 0.0189 | 0.0129 | 0.039 | 0.0182 |
+| month 4 | 0.0199 | 0.013 | 0.0464 | 0.0182 |
+| month 5 | 0.0222 | 0.0128 | 0.0527 | 0.0182 |
+| month 6 | 0.0237 | 0.013 | 0.057 | 0.0179 |
+| month 7 | 0.0232 | 0.013 | 0.0573 | 0.0181 |
+| month 8 | 0.0208 | 0.0129 | 0.0526 | 0.0182 |
+| month 9 | 0.0195 | 0.0129 | 0.0474 | 0.0176 |
+| month 10 | 0.0187 | 0.0132 | 0.0421 | 0.0176 |
+| month 11 | 0.0181 | 0.0128 | 0.0381 | 0.0175 |
+| month 12 | 0.0175 | 0.0129 | 0.0334 | 0.0174 |
+
+</details>
+
+**Reading.** Over 473 windows (starts from 1986-07-01 to 2025-11-01) a daily sensor lowered the whole-year error in 96% of them and the first-30-days error in 100%. The whole-year error fell by a median of 34% (from -26% to 58%): the gain of any single year, like the one in the section above, is one draw from that spread, so the gain depends on when the series starts. Median bias 0.0133 without sensor, 0.0098 with it.
+
+## 12. Fitting the soil to the sensor series
+
+**Question.** Can the sensor re-calibrate the soil and so attack the bias? The wilting point and capacity are fitted to the first half of the series and tested on the second half, against the simulated field.
+
+![Fitting the soil to the sensor series](figures/sensor_recalibration.en.png)
+
+<details><summary>Values plotted in this figure</summary>
+
+| soil | mode | RMSE m3/m3 | bias m3/m3 | spread m3/m3 |
+| --- | --- | --- | --- | --- |
+| original soil | model alone | 0.0133 | 0.0096 | 0.0091 |
+| original soil | with state correction | 0.0129 | 0.0106 | 0.0074 |
+| soil fitted to the sensor | model alone | 0.0155 | 0.0154 | 0.0017 |
+| soil fitted to the sensor | with state correction | 0.0128 | 0.0105 | 0.0073 |
+| soil fitted, offset known | model alone | 0.0067 | 0.0064 | 0.0021 |
+| soil fitted, offset known | with state correction | 0.0073 | 0.0007 | 0.0073 |
+
+</details>
+
+**Reading.** Fitted on the first 183 days: wilting point 0.2179 (the simulated field has 0.2094, the model was calibrated with 0.1894) and capacity 131.5806 mm (field 122.6078, original 163.4771). On the next 182 days the model alone has an error of 0.0133 with the original soil and 0.0155 with the fitted one: the spread falls from 0.0091 to 0.0017 (the shape of the curve is followed far better) but the bias rises from 0.0096 to 0.0154, because the wilting point absorbs the sensor's offset (0.01). With one reference measurement that removes the offset the error would be 0.0067 (bias 0.0064). Correcting the state on top gives 0.0129, 0.0128 and 0.0073: it hides the soil. The wilting point absorbs the sensor's offset: a series alone cannot tell the soil from the sensor, that needs a reference measurement.
+
+Soil parameters:
+
+| soil | wilting point m3/m3 | capacity mm |
+| --- | --- | --- |
+| simulated_field | 0.2094 | 122.6078 |
+| original | 0.1894 | 163.4771 |
+| fitted | 0.2179 | 131.5806 |
+| fitted_with_reference | 0.2075 | 133.5277 |
+
+## 13. Decision: POWER rain for the demo, IMERG tested
+
+**Question.** Which rain does the model use, and what would change with the other? The demo uses NASA POWER; the same model was run with NASA GPM IMERG rain and compared.
+
+![Decision: POWER rain for the demo, IMERG tested](figures/rain_decision.en.png)
+
+<details><summary>Values plotted in this figure</summary>
+
+| item | POWER rain | IMERG rain |
+| --- | --- | --- |
+| mean rain, month 1 (mm) | 116.8 | 129.6 |
+| mean rain, month 2 (mm) | 128.2 | 147.2 |
+| mean rain, month 3 (mm) | 138.6 | 149.9 |
+| mean rain, month 4 (mm) | 108.9 | 115.7 |
+| mean rain, month 5 (mm) | 87.1 | 97.2 |
+| mean rain, month 6 (mm) | 53.4 | 63.8 |
+| mean rain, month 7 (mm) | 61.2 | 72.7 |
+| mean rain, month 8 (mm) | 66.9 | 80.4 |
+| mean rain, month 9 (mm) | 80.5 | 93.9 |
+| mean rain, month 10 (mm) | 111.0 | 120.7 |
+| mean rain, month 11 (mm) | 95.2 | 105.9 |
+| mean rain, month 12 (mm) | 111.9 | 112.3 |
+| soybean_1st: seasons ok | 4 | 4 |
+| soybean_1st: seasons tight | 4 | 5 |
+| soybean_1st: seasons out | 19 | 18 |
+| maize: seasons ok | 3 | 3 |
+| maize: seasons tight | 6 | 6 |
+| maize: seasons out | 18 | 18 |
+| survey_01: share of high-deficit seasons | 0.407 | 0.349 |
+| survey_02: share of high-deficit seasons | 0.407 | 0.349 |
+| survey_03: share of high-deficit seasons | 0.361 | 0.306 |
+| survey_04: share of high-deficit seasons | 0.361 | 0.278 |
+| survey_07: share of high-deficit seasons | 0.377 | 0.327 |
+| survey_08: share of high-deficit seasons | 0.444 | 0.393 |
+| survey_09: share of high-deficit seasons | 0.449 | 0.403 |
+| survey_10: share of high-deficit seasons | 0.528 | 0.472 |
+| survey_11: share of high-deficit seasons | 0.444 | 0.383 |
+| survey_12: share of high-deficit seasons | 0.5 | 0.454 |
+
+</details>
+
+**Reading.** Decision: the demo and every result above use POWER rain. Reasons: it covers 1986-07-01 to 2026-11-13 with no gaps, including the 2025/26 season, while IMERG covers 1998-01-01 to 2025-09-30; the soil parameters were fitted with POWER rain; and there is no gauge data to say which source is closer to the truth. IMERG was tested: the two agree on the order of the seasons (rank agreement 0.926 for soybean, 0.965 for maize) but not on the level (annual mean 1159 mm POWER, 1289 mm IMERG), and the mean absolute difference in stress is 0.054 for soybean. High-deficit soybean seasons: 19 with POWER, 18 with IMERG, over the 27 seasons both cover.
+
+## 14. Integrity checks
 
 | check | result |
 | --- | --- |

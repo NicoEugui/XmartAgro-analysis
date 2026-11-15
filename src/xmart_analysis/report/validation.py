@@ -194,3 +194,98 @@ def plot_sensor(doc, path, lang="en"):
     fig.tight_layout(rect=(0, 0.04, 1, 0.94))
     fig.savefig(path, facecolor="white")
     plt.close(fig)
+
+
+def _grouped(ax, categories, series, labels=True, value_format="{:.3f}", size=7):
+    """Bars side by side: `series` is {label: (values, color)}, one value per category."""
+    width = 0.8 / len(series)
+    for k, (name, (values, color)) in enumerate(series.items()):
+        xs = [i + (k - (len(series) - 1) / 2) * width for i in range(len(categories))]
+        ax.bar(xs, values, width * 0.95, color=color, label=name)
+        if labels:
+            for x, value in zip(xs, values):
+                ax.text(x, value, value_format.format(value), ha="center", va="bottom" if value >= 0 else "top", fontsize=size)
+    ax.set_xticks(range(len(categories)), categories, fontsize=7.5)
+    ax.tick_params(axis="y", labelsize=8)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+
+
+def plot_rain_decision(doc, path, lang="en"):
+    imerg, sens = doc["imerg"], doc["sensitivity"]
+    fig, axes = plt.subplots(2, 2, figsize=(11, 8), dpi=130)
+    (monthly, stress), (classes, rotations) = axes
+    power_c, imerg_c = "#e0903f", "#2d6a8f"
+    cycle = imerg["monthly_mean_mm"]
+    _grouped(monthly, [str(r["month"]) for r in cycle], {T("validation.imerg.source_power", lang): ([r["power"] for r in cycle], power_c),
+                                                          T("validation.imerg.source_imerg", lang): ([r["imerg"] for r in cycle], imerg_c)}, labels=False)
+    monthly.set_title(T("rain_decision.monthly", lang), loc="left", fontsize=9.5, fontweight="bold")
+    monthly.set_xlabel(T("rain_decision.month", lang), fontsize=8)
+    monthly.legend(frameon=False, fontsize=8)
+    rows = sens["crops"][sens["first_crop"]]["stress"]
+    for i, r in enumerate(rows):
+        stress.plot([i, i], [r["power"], r["imerg"]], color="#c9ced2", linewidth=1, zorder=1)
+    stress.scatter(range(len(rows)), [r["power"] for r in rows], color=power_c, s=22, zorder=3)
+    stress.scatter(range(len(rows)), [r["imerg"] for r in rows], color=imerg_c, s=22, zorder=3)
+    stress.set_xticks(range(0, len(rows), 3), [rows[i]["season"] for i in range(0, len(rows), 3)], fontsize=7, rotation=45)
+    stress.set_ylabel(T("rain_decision.stress_axis", lang), fontsize=8)
+    stress.set_title(T("rain_decision.stress", lang), loc="left", fontsize=9.5, fontweight="bold")
+    crops = list(sens["crops"])
+    labels = [f"{T(f'validation.crop.{c}', lang).replace(' (', chr(10) + '(')}\n{name}" for c in crops for name in ("POWER", "IMERG")]
+    counts = [sens["crops"][c]["class_counts"][source] for c in crops for source in ("power", "imerg")]
+    bottom = [0] * len(counts)
+    for name, color in (("ok", "#9bc3a8"), ("tight", "#e0b45c"), ("out", "#b5533c")):
+        values = [c[name] for c in counts]
+        classes.bar(range(len(counts)), values, bottom=bottom, color=color, label=T(f"sowing.drop.{name}", lang))
+        bottom = [b + v for b, v in zip(bottom, values)]
+    classes.set_xticks(range(len(counts)), labels, fontsize=7.5)
+    classes.set_title(T("rain_decision.classes", lang), loc="left", fontsize=9.5, fontweight="bold")
+    classes.legend(frameon=False, fontsize=7.5, loc="upper center", bbox_to_anchor=(0.5, -0.2), ncol=3)
+    shares = sens["rotations_high_deficit_share"]
+    _grouped(rotations, [r.replace("survey_", "") for r in shares], {"POWER": ([v["power"] for v in shares.values()], power_c),
+                                                                      "IMERG": ([v["imerg"] for v in shares.values()], imerg_c)}, value_format="{:.2f}", size=6.5)
+    rotations.set_title(T("rain_decision.rotations", lang), loc="left", fontsize=9.5, fontweight="bold")
+    rotations.legend(frameon=False, fontsize=8)
+    for ax in (monthly, stress, classes):
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+    fig.suptitle(T("rain_decision.title", lang), x=0.01, ha="left", fontsize=11, fontweight="bold")
+    fig.text(0.01, 0.01, T("rain_decision.note", lang), fontsize=7.5, color=MUTED, style="italic")
+    fig.tight_layout(rect=(0, 0.03, 1, 0.96), h_pad=3)
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
+def plot_sensor_windows(doc, path, lang="en"):
+    fig, (whole, first) = plt.subplots(1, 2, figsize=(11, 4.2), dpi=130)
+    months = [str(r["month"]) for r in doc["by_start_month"]]
+    for ax, blind, sensor, title in ((whole, "open_loop", "with_sensor", T("sensor_windows.whole", lang)),
+                                     (first, "open_loop_first", "with_sensor_first", T("sensor_windows.first", lang, days=doc["start_window_days"]))):
+        _grouped(ax, months, {T("sensor_windows.no_sensor", lang): ([r[blind] for r in doc["by_start_month"]], "#e0903f"),
+                              T("sensor_windows.daily", lang): ([r[sensor] for r in doc["by_start_month"]], "#2d6a8f")}, labels=False)
+        ax.set_title(title, loc="left", fontsize=9.5, fontweight="bold")
+        ax.set_xlabel(T("sensor_windows.start_month", lang), fontsize=8)
+    whole.legend(frameon=False, fontsize=8)
+    helped = doc["share_helped"]
+    fig.suptitle(f"{T('sensor_windows.title', lang)} · n={doc['windows']} · {helped['whole_year']:.0%} / {helped['first_days']:.0%}", x=0.01, ha="left", fontsize=10.5, fontweight="bold")
+    fig.text(0.01, 0.01, T("sensor_windows.note", lang), fontsize=7.2, color=MUTED, style="italic")
+    fig.tight_layout(rect=(0, 0.04, 1, 0.93))
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
+def plot_sensor_recalibration(doc, path, lang="en"):
+    fig, axes = plt.subplots(1, 3, figsize=(12, 4.2), dpi=130)
+    soils = ("original", "fitted", "fitted_with_reference")
+    for ax, metric in zip(axes, ("rmse", "bias", "spread")):
+        _grouped(ax, [T(f"sensor_recal.{s}", lang).replace(", ", ",\n").replace(" to ", " to\n") for s in soils],
+                 {T(f"sensor_recal.{mode}", lang): ([doc["test"][f"{s}_{mode}"][metric] for s in soils], color)
+                  for mode, color in (("open_loop", "#e0903f"), ("corrected", "#2d6a8f"))}, value_format="{:.4f}", size=6.5)
+        ax.set_title(T(f"sensor_recal.{metric}", lang), loc="left", fontsize=9.5, fontweight="bold")
+        ax.tick_params(axis="x", labelsize=6.5)
+    axes[0].legend(frameon=False, fontsize=7.5)
+    fig.suptitle(T("sensor_recal.title", lang), x=0.01, ha="left", fontsize=10.5, fontweight="bold")
+    fig.text(0.01, 0.01, T("sensor_recal.note", lang), fontsize=7.2, color=MUTED, style="italic")
+    fig.tight_layout(rect=(0, 0.04, 1, 0.93))
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)

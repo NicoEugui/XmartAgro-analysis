@@ -22,6 +22,12 @@ def _kw(ctx):
     return {k: ctx[k] for k in ("params", "weather", "et0")}
 
 
+def _class_counts(stress):
+    """How many seasons fall in each deficit class (the panel's vocabulary: ok, tight, out)."""
+    classes = [deficit.DROP_NAMES[deficit.classify(v)] for v in stress]
+    return {name: classes.count(name) for name in deficit.DROP_NAMES.values()}
+
+
 def run(path, context=None):
     context = context or engine_context.build_context()
     rain = imerg.load(path)
@@ -33,6 +39,7 @@ def run(path, context=None):
         seasons = sorted(set(stress["power"]) & set(stress["imerg"]))
         p, i = [stress["power"][s] for s in seasons], [stress["imerg"][s] for s in seasons]
         crops[crop] = {"seasons": len(seasons), "spearman_between_sources": round(spearman(p, i), 3),
+                       "class_counts": {source: _class_counts(values) for source, values in (("power", p), ("imerg", i))},
                        "mean_abs_difference": round(sum(abs(a - b) for a, b in zip(p, i)) / len(p), 3),
                        "high_deficit_seasons": {"power": sum(v >= high for v in p), "imerg": sum(v >= high for v in i)},
                        "stress": [{"season": s, "power": stress["power"][s], "imerg": stress["imerg"][s]} for s in seasons]}

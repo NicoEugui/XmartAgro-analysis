@@ -326,5 +326,105 @@
  "sensor.note": {
   "en": "Simulated field and simulated sensor: shows what a sensor could add, not what it does in a real field.",
   "es": "Campo y sensor simulados: muestra lo que un sensor podria aportar, no lo que hace en un campo real."
+ },
+ "rain_decision.title": {
+  "en": "POWER rain and IMERG rain: what changes in the model (POWER is used in the demo)",
+  "es": "Lluvia de POWER y de IMERG: qué cambia en el modelo (el demo usa POWER)"
+ },
+ "rain_decision.monthly": {
+  "en": "Mean rain by month (mm)",
+  "es": "Lluvia media por mes (mm)"
+ },
+ "rain_decision.stress": {
+  "en": "Soybean 1st: critical-stage stress per season",
+  "es": "Soja de primera: estrés en etapa crítica por zafra"
+ },
+ "rain_decision.classes": {
+  "en": "Seasons by outcome class",
+  "es": "Zafras por clase de resultado"
+ },
+ "rain_decision.rotations": {
+  "en": "Share of high-deficit seasons per rotation",
+  "es": "Proporción de zafras con déficit alto por rotación"
+ },
+ "rain_decision.month": {
+  "en": "month",
+  "es": "mes"
+ },
+ "rain_decision.stress_axis": {
+  "en": "stress (0 none, 1 total)",
+  "es": "estrés (0 nada, 1 total)"
+ },
+ "rain_decision.note": {
+  "en": "Same model, same soil parameters (fitted with POWER rain); only the daily rain changes. A sensitivity, not a recalibration; it does not say which source is right.",
+  "es": "Mismo modelo y mismo suelo (ajustado con lluvia POWER); solo cambia la lluvia diaria. Es una sensibilidad, no una recalibración; no dice cuál fuente es la correcta."
+ },
+ "sensor_windows.title": {
+  "en": "Sensor experiment over every one-year window of the climate record, by month the series starts",
+  "es": "Experimento del sensor en cada ventana de un año del registro, según el mes en que arranca la serie"
+ },
+ "sensor_windows.whole": {
+  "en": "Whole year: median error (RMSE, m3/m3)",
+  "es": "Año completo: error mediano (RMSE, m3/m3)"
+ },
+ "sensor_windows.first": {
+  "en": "First {days} days: median error (RMSE, m3/m3)",
+  "es": "Primeros {days} dias: error mediano (RMSE, m3/m3)"
+ },
+ "sensor_windows.start_month": {
+  "en": "month the series starts",
+  "es": "mes en que arranca la serie"
+ },
+ "sensor_windows.no_sensor": {
+  "en": "no sensor",
+  "es": "sin sensor"
+ },
+ "sensor_windows.daily": {
+  "en": "daily sensor",
+  "es": "sensor diario"
+ },
+ "sensor_windows.note": {
+  "en": "Simulated field and sensor; one window per start month of the climate record; medians over the windows of that month.",
+  "es": "Campo y sensor simulados; una ventana por mes de arranque del registro; medianas de las ventanas de ese mes."
+ },
+ "sensor_recal.title": {
+  "en": "Fitting the soil to the sensor series: test on the second half, against the simulated field",
+  "es": "Ajustar el suelo a la serie del sensor: prueba en la segunda mitad, contra el campo simulado"
+ },
+ "sensor_recal.rmse": {
+  "en": "Error (RMSE)",
+  "es": "Error (RMSE)"
+ },
+ "sensor_recal.bias": {
+  "en": "Bias (offset)",
+  "es": "Sesgo (desvío)"
+ },
+ "sensor_recal.spread": {
+  "en": "Spread (error without the offset)",
+  "es": "Dispersión (error sin el desvío)"
+ },
+ "sensor_recal.original": {
+  "en": "original soil",
+  "es": "suelo original"
+ },
+ "sensor_recal.fitted": {
+  "en": "fitted to the sensor",
+  "es": "ajustado al sensor"
+ },
+ "sensor_recal.fitted_with_reference": {
+  "en": "fitted, offset known",
+  "es": "ajustado, desvío conocido"
+ },
+ "sensor_recal.open_loop": {
+  "en": "model alone",
+  "es": "modelo solo"
+ },
+ "sensor_recal.corrected": {
+  "en": "with state correction",
+  "es": "con corrección de estado"
+ },
+ "sensor_recal.note": {
+  "en": "Simulated field and sensor. «offset known» assumes one perfect reference measurement (e.g. a soil sample dried and weighed) that removes the sensor's offset.",
+  "es": "Campo y sensor simulados. «desvío conocido» supone una medición de referencia perfecta (p. ej. una muestra de suelo secada y pesada) que quita el desvío del sensor."
  }
 }

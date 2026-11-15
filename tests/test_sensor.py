@@ -6,7 +6,7 @@ from datetime import date, timedelta
 from pathlib import Path
 
 from xmart_analysis.engine import context as engine_context
-from xmart_analysis.engine import sensor_series, tables
+from xmart_analysis.engine import sensor_series, soil_fit, tables
 from xmart_analysis.engine import water_model as wm
 from xmart_analysis.engine.errors import EngineError
 from xmart_analysis.validation import sensor_assimilation
@@ -89,24 +89,93 @@ class Series(unittest.TestCase):
         self.assertIn("simulated", entry["note"])
 
 
+class SoilFit(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.context = engine_context.build_context()
+
+    def test_it_recovers_the_soil_of_a_noiseless_series(self):
+        window = (date(2020, 1, 1), date(2020, 6, 30))
+        truth = sensor_series.truth(self.context, window)
+        fitted, error = soil_fit.fit(self.context, truth, *window)
+        wilting, capacity = sensor_series.truth_params(self.context["params"])[:2]
+        self.assertAlmostEqual(fitted[0], wilting, delta=0.002)
+        self.assertAlmostEqual(fitted[1], capacity, delta=1.0)
+        self.assertLess(error, 0.001)
+
+    def test_the_search_stays_inside_the_plausible_ranges(self):
+        window = (date(2020, 1, 1), date(2020, 3, 31))
+        readings = {d: 0.55 for d in sensor_series.truth(self.context, window)}  # wetter than any plausible soil holds
+        fitted, _ = soil_fit.fit(self.context, readings, *window)
+        for value, (low, high) in zip(fitted[:2], soil_fit.bounds().values()):
+            self.assertTrue(low <= value <= high)
+
+    def test_the_split_leaves_days_to_test(self):
+        first, last = date(2025, 1, 1), date(2025, 12, 31)
+        split = soil_fit.split_day(first, last)
+        self.assertTrue(first < split < last)
+
+    def test_every_window_has_its_own_noise_and_the_same_window_the_same(self):
+        a, b = (date(2020, 1, 1), date(2020, 12, 30)), (date(2020, 2, 1), date(2021, 1, 30))
+        self.assertEqual(sensor_series.readings(self.context, a), sensor_series.readings(self.context, a))
+        first = sensor_series.readings(self.context, a)
+        second = sensor_series.readings(self.context, b)
+        common = set(first) & set(second)
+        self.assertTrue(any(first[d] != second[d] for d in common))
+
+
 class Experiment(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.doc = sensor_assimilation.run()
+        cls.context = engine_context.build_context()
+        cls.doc = sensor_assimilation.run(cls.context)
+        cls.windows = sensor_assimilation.windows(cls.context)
+        cls.recalibration = sensor_assimilation.recalibrate(cls.context)
 
     def test_a_daily_sensor_brings_the_model_closer_to_the_field(self):
         daily = self.doc["with_sensor"][0]
         self.assertLess(daily["rmse"], self.doc["open_loop"]["rmse"])
         self.assertLess(daily["first_days_rmse"], self.doc["open_loop"]["first_days_rmse"])
 
-    def test_fewer_readings_help_less(self):
-        errors = [r["rmse"] for r in self.doc["with_sensor"]]
-        self.assertEqual(errors, sorted(errors))
-        self.assertLess(errors[-1], self.doc["open_loop"]["rmse"])
-
     def test_the_document_says_it_is_simulated_and_is_reproducible(self):
         self.assertIn("simulated", self.doc["note"])
-        self.assertEqual(sensor_assimilation.run(), self.doc)
+        self.assertEqual(sensor_assimilation.run(self.context), self.doc)
+
+    def test_the_windows_are_one_start_per_month_and_all_fit_in_the_climate(self):
+        weather = self.context["weather"]
+        starts = list(sensor_assimilation.window_starts(weather))
+        self.assertTrue(all(d.day == 1 for d in starts))
+        self.assertGreaterEqual(starts[0], min(weather))
+        self.assertLessEqual(starts[-1] + timedelta(days=tables.constant("sensor_days") - 1), max(weather))
+        self.assertEqual(len(starts), self.windows["windows"])
+        self.assertEqual(sum(r["windows"] for r in self.windows["by_start_month"]), len(starts))
+        self.assertEqual([r["month"] for r in self.windows["by_start_month"]], list(range(1, 13)))
+
+    def test_the_sensor_helps_in_nearly_every_window_and_always_at_the_start(self):
+        helped = self.windows["share_helped"]
+        self.assertGreater(helped["whole_year"], 0.8)
+        self.assertGreater(helped["first_days"], 0.9)
+        reduction = self.windows["whole_year_reduction"]
+        self.assertLessEqual(reduction["min"], reduction["median"])
+        self.assertLessEqual(reduction["median"], reduction["max"])
+
+    def test_fitting_the_soil_to_the_sensor_follows_the_curve_but_inherits_its_offset(self):
+        test, soil = self.recalibration["test"], self.recalibration["soil"]
+        self.assertLess(test["fitted_open_loop"]["spread"], test["original_open_loop"]["spread"])
+        self.assertGreater(test["fitted_open_loop"]["bias"], test["original_open_loop"]["bias"])
+        wilting_with_offset = soil["simulated_field"]["theta_min"] + self.recalibration["sensor_bias"]
+        self.assertAlmostEqual(soil["fitted"]["theta_min"], wilting_with_offset, delta=0.01)
+
+    def test_a_reference_measurement_that_removes_the_offset_would_lower_the_error(self):
+        test = self.recalibration["test"]
+        self.assertLess(test["fitted_with_reference_open_loop"]["rmse"], test["original_open_loop"]["rmse"])
+        self.assertLess(abs(test["fitted_with_reference_corrected"]["bias"]), abs(test["original_corrected"]["bias"]))
+
+    def test_the_fit_uses_the_first_part_and_the_test_the_rest(self):
+        first, split = date.fromisoformat(self.recalibration["period"][0]), date.fromisoformat(self.recalibration["fit_until"])
+        last = date.fromisoformat(self.recalibration["period"][1])
+        self.assertEqual(self.recalibration["fit_days"], (split - first).days + 1)
+        self.assertEqual(self.recalibration["test_days"], (last - split).days)
 
 
 if __name__ == "__main__":

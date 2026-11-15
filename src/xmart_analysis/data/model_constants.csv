@@ -45,3 +45,6 @@ sensor_truth_start_theta,0.2,assumption,,"moisture of the simulated field on 1 J
 sensor_gain,0.3,assumption,,"share of the gap between modelled water and a reading that is corrected each day (0 ignores the sensor, 1 adopts it)"
 sensor_cadences,1;7;30,assumption,,days between the readings the model receives in the sensor experiment
 sensor_start_window_days,30,assumption,,days from the start of the series over which the error is also reported: a sensor corrects a wrong starting state first
+sensor_train_share,0.5,assumption,,share of the sensor series used to fit the soil; the rest is kept to test it
+fit_grid_points,15,assumption,,points per parameter of the grid search that fits the soil to a sensor series
+fit_rounds,4,assumption,,rounds of the grid search; each one narrows the search around the best point

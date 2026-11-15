@@ -36,18 +36,27 @@ def truth_params(params):
             capacity * tables.constant("sensor_truth_capacity_factor"), *rest]
 
 
-def truth(context):
-    """{date: moisture} of the simulated field over the sensor period."""
-    start, end = span(context["weather"])
+def truth(context, window=None):
+    """{date: moisture} of the simulated field over `window` ((first, last) days; the last year of the climate by default)."""
+    start, end = window or span(context["weather"])
     return wm.simulate_moisture(truth_params(context["params"]), context["weather"], context["et0"], start, end,
                                 tables.constant("sensor_truth_start_theta"))
 
 
-def readings(context):
-    """{date: moisture} the simulated sensor reports: the truth plus a constant offset and Gaussian noise, within the possible range."""
-    noise = random.Random(tables.constant("sensor_seed"))
+def observe(field, first_day):
+    """{date: moisture} the simulated sensor reports for a field ({date: moisture}): the truth plus a constant offset and Gaussian
+    noise, within the possible range.
+
+    The noise is seeded by the seed and the first day, so every window has its own noise and the same window always gets the same."""
+    noise = random.Random(f"{tables.constant('sensor_seed')}:{first_day}")
     bias, sd = tables.constant("sensor_bias"), tables.constant("sensor_noise_sd")
-    return {day: round(min(MAX_THETA, max(0.0, theta + bias + noise.gauss(0, sd))), 4) for day, theta in sorted(truth(context).items())}
+    return {day: round(min(MAX_THETA, max(0.0, theta + bias + noise.gauss(0, sd))), 4) for day, theta in sorted(field.items())}
+
+
+def readings(context, window=None):
+    """{date: moisture} the simulated sensor reports over `window` (the last year of the climate by default)."""
+    window = window or span(context["weather"])
+    return observe(truth(context, window), window[0])
 
 
 def assimilate(context, readings, gain=None):

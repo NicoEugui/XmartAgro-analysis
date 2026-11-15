@@ -60,7 +60,9 @@ class PlottedValues(unittest.TestCase):
         source.setUpClass()
         cls.docs = {"survey": survey.run(source.ctx), "imerg": imerg.run(source.path, source.ctx),
                     "rain_sensitivity": rain_sensitivity.run(source.path, source.ctx), "ndvi": NDVI, "smap": SMAP,
-                    "sowing": scenario_runs.run(source.ctx), "sensor": sensor_assimilation.run(source.ctx)}
+                    "sowing": scenario_runs.run(source.ctx), "sensor": sensor_assimilation.run(source.ctx),
+                    "sensor_windows": sensor_assimilation.windows(source.ctx), "sensor_recalibration": sensor_assimilation.recalibrate(source.ctx)}
+        cls.docs["rain_decision"] = {"imerg": cls.docs["imerg"], "sensitivity": cls.docs["rain_sensitivity"]}
 
     @classmethod
     def tearDownClass(cls):
@@ -84,7 +86,7 @@ class PlottedValues(unittest.TestCase):
             for name in self.experiments.FIGURES:
                 self.assertIn(f"figures/{name}.en.png", text)
                 self.assertTrue((Path(out) / "figures" / f"{name}.en.png").exists())
-            for heading in ("What happens if a crop is sown", "Data architecture", "Model and calibration", "Integrity checks", "Not validated", "simulated) soil-moisture sensor"):
+            for heading in ("What happens if a crop is sown", "Data architecture", "Model and calibration", "Integrity checks", "Not validated", "simulated) soil-moisture sensor", "every one-year window", "Fitting the soil to the sensor series"):
                 self.assertIn(heading, text)
             self.assertIn("consistent", text)
             self.assertIn(tables.manifest()[0]["path"], text)
@@ -105,6 +107,19 @@ class PlottedValues(unittest.TestCase):
         readings = sensor_series.load()
         self.assertEqual(len(readings), 365)
         self.assertTrue({round(v, 4) for v in readings.values()} <= {round(v, 4) for v in drawn})
+
+    def test_the_rain_comparison_counts_every_season_once_and_covers_the_year(self):
+        for crop, entry in self.docs["rain_sensitivity"]["crops"].items():
+            for source in ("power", "imerg"):
+                self.assertEqual(sum(entry["class_counts"][source].values()), entry["seasons"], (crop, source))
+        self.assertEqual([r["month"] for r in self.docs["imerg"]["monthly_mean_mm"]], list(range(1, 13)))
+
+    def test_the_report_states_the_rain_decision(self):
+        calibration = json.loads(tables.calibration_path().read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as out:
+            text = self.experiments.build(self.docs, calibration, cli.frontend_document(None), out).read_text(encoding="utf-8")
+        self.assertIn("the demo and every result above use POWER rain", text)
+        self.assertIn("figures/rain_decision.en.png", text)
 
     def test_a_missing_validator_leaves_its_section_out(self):
         calibration = json.loads(tables.calibration_path().read_text(encoding="utf-8"))

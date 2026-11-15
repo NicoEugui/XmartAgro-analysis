@@ -136,10 +136,48 @@ The model runs on NASA POWER rain. IMERG is a second NASA rain estimate for the 
    Per crop it gives `spearman_between_sources` (1 means the same season order), `mean_abs_difference` of stress, high-deficit seasons per source and the
    stress of every season; per rotation, the share of high-deficit seasons with each source; and the seasons the producers named.
 
-Reference run (14 November 2025 to 13 November 2026): the error (RMSE) of the model is 0.0153 m3/m3 without a sensor and 0.0131 with daily readings (0.0139 weekly, 0.0146 monthly);
-in the first 30 days 0.0341 without and 0.0181 with daily readings. The bias goes from 0.0031 to 0.0105: the sensor's offset (0.01) is a calibration gap, and
-correcting the water state toward the readings adopts it instead of removing it. The size of the gain depends on the year: on 1 July 2025 to 30 June 2026 the error fell from 0.0218 to 0.0131.
-Simulated, not a field result.
+Reference run for the Soriano field (2026-11-14):
+
+| | POWER vs IMERG |
+| --- | --- |
+| Season order, soybean 1st / maize (rho) | 0.93 / 0.97 |
+| Mean absolute stress difference, soybean / maize | 0.054 / 0.039 |
+| High-deficit seasons, soybean (POWER / IMERG) | 19 / 18 |
+| Rotations, high-deficit share | 5 to 8 points lower with IMERG |
+| 2022/23 (named by 4 producers) | most stressed under both: 0.888 / 0.775 |
+
+Read it as: the ranking of bad seasons does not depend on the rain source, the level does (IMERG rains more: 1289 vs 1159 mm per year). It does not say which source is
+right, the soil parameters were not refitted with IMERG, and IMERG ends on 2025-09-30, so 2025/26 is not covered.
+
+**Decision: the demo and every result use POWER rain.** It covers the whole record without gaps (to 13 November 2026, 2025/26 included), the soil parameters were fitted with it, and there is no
+gauge data to say IMERG is closer to the truth. IMERG was tested and the comparison is kept: the experiment log has a section with the monthly rain, the stress of every season, the seasons by
+outcome class and the rotations under each source (`reports/figures/rain_decision.en.png`, drawn by `plot_rain_decision`, with its values in a table). The rain source is not a setting: using IMERG would also mean
+refitting the soil with it and giving up the years it does not cover.
+
+## Simulated sensor
+
+No real soil-moisture sensor exists yet, so the repository carries one simulated year (`sites/soriano/sensor_simulated.csv`, 365 daily readings, the last year of the climate record: 14 November 2025 to
+13 November 2026, columns `date,volumetric_moisture,sensor_id`). It is listed in `datasets.csv` with kind `simulated` and counted as an `assumption`, never as data.
+
+How it is made (`engine/sensor_series.py`): the same bucket is run with a soil the model does not know (another capacity and wilting point), which is the
+simulated field; the sensor reports that field plus a constant offset and Gaussian noise (seeded by the seed and the first day of the window). Every parameter (seed, noise, offset, how different the soil is) is
+an `assumption` in `model_constants.csv`. The model only receives the readings, never the simulated field, so comparing the two measures what a sensor adds.
+
+```bash
+xmart-analysis simulate-sensor        # rewrites the bundled series; the same seed gives the same file, so the manifest checksum still matches
+```
+
+The correction is a hook of the water balance: `simulate_moisture(..., observations={date: reading}, gain=g)` moves the modelled water a share `g` of the way to
+each reading (0 ignores it, 1 adopts it); without observations nothing changes. A real ESP32 export with the columns `date` and `volumetric_moisture` is read by the
+same `sensor_series.load`, so replacing the simulated file with real data changes the data, not the code.
+
+Three simulated experiments, all in the experiment log (`validation/sensor_assimilation.py`):
+
+- **One year** (14 November 2025 to 13 November 2026): the error (RMSE) of the model is 0.0153 m3/m3 without a sensor and 0.0130 with daily readings (0.0113 weekly, 0.0131 monthly); in the first 30 days 0.0341 and 0.0157. The bias goes from 0.0031 to 0.0101: the sensor's offset (0.01) is a calibration gap, and correcting the water state adopts it instead of removing it.
+- **Every one-year window of the climate record** (473 windows, one start per month): a daily sensor lowers the whole-year error in 96% of them (first 30 days: 100%), by a median of 34% (from -26% to +58%). The gain of a single year (14% or 40% in two we looked at) is one draw from that spread: it depends on when the series starts.
+- **Fitting the soil to the sensor** (`engine/soil_fit.py`, wilting point and capacity, first half of the series, tested on the second): the fitted soil follows the shape of the curve much better (spread of the error 0.0091 to 0.0017) but inherits the sensor's offset (bias 0.0096 to 0.0154), so the total error does not improve (0.0133 to 0.0155). The series alone cannot tell the soil from the sensor: with one perfect reference measurement that removes the offset (a soil sample dried and weighed) the error would fall to 0.0067. That is the case for calibrating the sensor, and it is not done with real data.
+
+All simulated, not a field result.
 The series always ends on the last day of the climate record (`sensor_days` days back from it): to bring it up to today, refresh NASA POWER
 (`python -m xmart_analysis.datasets import-power ...`), then `xmart-analysis simulate-sensor` and `python -m xmart_analysis.datasets refresh`.
 The demo starts from this series (see "Static data for the frontend").
@@ -162,6 +200,9 @@ Each validator whose file is given gets a section; without a file its section is
 | Model output for the demo | every offered option with its water risk and drops |
 | What happens if a crop is sown on a given date | for soybean (1st and 2nd), maize, wheat and barley, the default sowing date and four shifted by 15 and 30 days: seasons ending in ok / tight / out, median stress and water at sowing, the season-by-season result for one run and the sensitivity to the (simulated) sensor reading |
 | Water balance with and without a (simulated) sensor | the simulated field, the sensor readings and the model with and without them, the error of each run |
+| The sensor experiment over every one-year window | how the sensor's gain depends on the month the series starts (473 windows) |
+| Fitting the soil to the sensor series | the soil fitted to the first half of the series and tested on the second, with and without a reference measurement |
+| Decision: POWER rain for the demo, IMERG tested | the monthly rain, the stress of every season, the seasons by class and the rotations under each rain source |
 | One section per experiment | the question, the figure, the numbers behind the figure (collapsed table) and a reading with its caveat |
 | Integrity checks and Not validated | provenance and manifest status, and what the results do not support |
 
