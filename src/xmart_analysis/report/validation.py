@@ -6,6 +6,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 from xmart_analysis.engine import crops_uy  # noqa: E402
+from xmart_analysis.report import scenario_runs  # noqa: E402
 from xmart_analysis.engine.i18n import label  # noqa: E402
 
 MUTED, COLORS = "#5b6770", {"model": "#2d6a8f", "smap_l4": "#bcd5e4", "rain_index": "#e0903f"}
@@ -141,7 +142,7 @@ def plot_sowing(doc, path, lang="en"):
     fig, axes = plt.subplots(1, len(crops), figsize=(3.2 * len(crops), 4.2), dpi=130, sharey=True)
     colors = (("ok", "#9bc3a8"), ("tight", "#e0b45c"), ("out", "#b5533c"))
     for ax, (crop, entry) in zip(axes, crops.items()):
-        labels = [r["sowing"] for r in entry["dates"]]
+        labels = [scenario_runs.day_label(r["sowing"], lang) for r in entry["dates"]]
         bottom = [0] * len(labels)
         for name, color in colors:
             values = [r["counts"][name] for r in entry["dates"]]

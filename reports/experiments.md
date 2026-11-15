@@ -82,117 +82,119 @@ Risk comes from how many of the 39 historical seasons end in high deficit; the d
 
 ## 4. What happens if a crop is sown on a given date
 
-**Question.** For each crop and sowing date (the default date and four shifted by 15 and 30 days), how many of the historical seasons end in low, moderate or high deficit in the critical stage?
+**Question.** For each crop and sowing date (the default calendar day and four shifted by 15 and 30 days; each day is applied to every historical season with complete weather), how many of the historical seasons end in low, moderate or high deficit in the critical stage?
 
 ![What happens if a crop is sown on a given date](figures/sowing.en.png)
 
 <details><summary>Values plotted in this figure</summary>
 
-| crop | sowing (month-day) | ok | tight | out |
+| crop | sown on (calendar day, every season) | ok | tight | out |
 | --- | --- | --- | --- | --- |
-| soybean_1st | 10-16 | 4 | 9 | 25 |
-| soybean_1st | 10-31 | 4 | 9 | 25 |
-| soybean_1st | 11-15 | 5 | 8 | 26 |
-| soybean_1st | 11-30 | 7 | 8 | 24 |
-| soybean_1st | 12-15 | 10 | 11 | 18 |
-| soybean_2nd | 11-01 | 4 | 9 | 25 |
-| soybean_2nd | 11-16 | 5 | 8 | 26 |
-| soybean_2nd | 12-01 | 6 | 9 | 24 |
-| soybean_2nd | 12-16 | 10 | 11 | 18 |
-| soybean_2nd | 12-31 | 15 | 9 | 15 |
-| maize | 09-01 | 9 | 7 | 22 |
-| maize | 09-16 | 8 | 8 | 22 |
-| maize | 10-01 | 4 | 8 | 26 |
-| maize | 10-16 | 4 | 8 | 26 |
-| maize | 10-31 | 7 | 5 | 26 |
-| wheat | 05-16 | 32 | 5 | 1 |
-| wheat | 05-31 | 29 | 7 | 2 |
-| wheat | 06-15 | 22 | 12 | 4 |
-| wheat | 06-30 | 18 | 13 | 7 |
-| wheat | 07-15 | 16 | 11 | 11 |
-| barley | 05-13 | 34 | 4 | 0 |
-| barley | 05-28 | 32 | 5 | 1 |
-| barley | 06-12 | 29 | 6 | 3 |
-| barley | 06-27 | 25 | 8 | 5 |
-| barley | 07-12 | 20 | 11 | 7 |
+| soybean_1st | 16 Oct | 4 | 9 | 25 |
+| soybean_1st | 31 Oct | 4 | 9 | 25 |
+| soybean_1st | 15 Nov | 5 | 8 | 26 |
+| soybean_1st | 30 Nov | 7 | 8 | 24 |
+| soybean_1st | 15 Dec | 10 | 11 | 18 |
+| soybean_2nd | 1 Nov | 4 | 9 | 25 |
+| soybean_2nd | 16 Nov | 5 | 8 | 26 |
+| soybean_2nd | 1 Dec | 6 | 9 | 24 |
+| soybean_2nd | 16 Dec | 10 | 11 | 18 |
+| soybean_2nd | 31 Dec | 15 | 9 | 15 |
+| maize | 1 Sep | 9 | 7 | 22 |
+| maize | 16 Sep | 8 | 8 | 22 |
+| maize | 1 Oct | 4 | 8 | 26 |
+| maize | 16 Oct | 4 | 8 | 26 |
+| maize | 31 Oct | 7 | 5 | 26 |
+| wheat | 16 May | 32 | 5 | 1 |
+| wheat | 31 May | 29 | 7 | 2 |
+| wheat | 15 Jun | 22 | 12 | 4 |
+| wheat | 30 Jun | 18 | 13 | 7 |
+| wheat | 15 Jul | 16 | 11 | 11 |
+| barley | 13 May | 34 | 4 | 0 |
+| barley | 28 May | 32 | 5 | 1 |
+| barley | 12 Jun | 29 | 6 | 3 |
+| barley | 27 Jun | 25 | 8 | 5 |
+| barley | 12 Jul | 20 | 11 | 7 |
 
 </details>
 
 **Reading.** Each bar applies every complete historical season to a simulated reading at the chosen sowing date. soybean_1st: default date 11-15, median stress 0.27-0.436 across the dates. soybean_2nd: default date 12-01, median stress 0.169-0.428 across the dates. maize: default date 10-01, median stress 0.352-0.437 across the dates. wheat: default date 06-15, median stress 0.0-0.126 across the dates. barley: default date 06-12, median stress 0.0-0.092 across the dates.
 
+How to read the dates. A sowing date here is a calendar day without a year (for example 15 Nov). The model applies it to each of the historical seasons in turn, with that season's real weather: 15 Nov 1987, 15 Nov 1988 and so on up to the last complete season (the table gives the first and last date simulated for every run). The sensor reading is taken on 14 Nov of each year and carried to the sowing date with that year's weather. A season is named after the year of sowing (1987/88 = sown in 1987); a sowing day earlier in the calendar than the reading day, such as maize on 1 Oct, is read as the next year's, hence the `sowing_far_from_reading` warning.
+
 Median stress and water at sowing per run (every run carries the fixed-cycle warning; `sowing_far_from_reading` marks a sowing far from the reading date):
 
-| crop | sowing | shift days | median stress | median water at sowing mm | warnings |
+| crop | sown on | first to last sowing simulated | shift vs default (days) | median stress | median water at sowing mm | warnings |
+| --- | --- | --- | --- | --- | --- | --- |
+| soybean_1st | 16 Oct | 1988-10-16 to 2025-10-16 | -30 | 0.412 | 103.2 | cycle_length_fixed, sowing_far_from_reading |
+| soybean_1st | 31 Oct | 1988-10-31 to 2025-10-31 | -15 | 0.407 | 96.8 | cycle_length_fixed, sowing_far_from_reading |
+| soybean_1st | 15 Nov | 1987-11-15 to 2025-11-15 | +0 | 0.436 | 86.7 | cycle_length_fixed |
+| soybean_1st | 30 Nov | 1987-11-30 to 2025-11-30 | +15 | 0.372 | 73.9 | cycle_length_fixed |
+| soybean_1st | 15 Dec | 1987-12-15 to 2025-12-15 | +30 | 0.27 | 68.9 | cycle_length_fixed |
+| soybean_2nd | 1 Nov | 1988-11-01 to 2025-11-01 | -30 | 0.414 | 99.9 | cycle_length_fixed, sowing_far_from_reading |
+| soybean_2nd | 16 Nov | 1987-11-16 to 2025-11-16 | -15 | 0.428 | 83.9 | cycle_length_fixed |
+| soybean_2nd | 1 Dec | 1987-12-01 to 2025-12-01 | +0 | 0.371 | 72.9 | cycle_length_fixed |
+| soybean_2nd | 16 Dec | 1987-12-16 to 2025-12-16 | +15 | 0.262 | 65.9 | cycle_length_fixed |
+| soybean_2nd | 31 Dec | 1987-12-31 to 2025-12-31 | +30 | 0.169 | 72.2 | cycle_length_fixed |
+| maize | 1 Sep | 1988-09-01 to 2025-09-01 | -30 | 0.352 | 125.6 | cycle_length_fixed, sowing_far_from_reading |
+| maize | 16 Sep | 1988-09-16 to 2025-09-16 | -15 | 0.385 | 124.4 | cycle_length_fixed, sowing_far_from_reading |
+| maize | 1 Oct | 1988-10-01 to 2025-10-01 | +0 | 0.429 | 110.5 | cycle_length_fixed, sowing_far_from_reading |
+| maize | 16 Oct | 1988-10-16 to 2025-10-16 | +15 | 0.437 | 103.2 | cycle_length_fixed, sowing_far_from_reading |
+| maize | 31 Oct | 1988-10-31 to 2025-10-31 | +30 | 0.419 | 96.8 | cycle_length_fixed, sowing_far_from_reading |
+| wheat | 16 May | 1988-05-16 to 2025-05-16 | -30 | 0.0 | 124.5 | cycle_length_fixed, sowing_far_from_reading |
+| wheat | 31 May | 1988-05-31 to 2025-05-31 | -15 | 0.01 | 137.1 | cycle_length_fixed, sowing_far_from_reading |
+| wheat | 15 Jun | 1988-06-15 to 2025-06-15 | +0 | 0.066 | 133.8 | cycle_length_fixed, sowing_far_from_reading |
+| wheat | 30 Jun | 1988-06-30 to 2025-06-30 | +15 | 0.104 | 136.8 | cycle_length_fixed, sowing_far_from_reading |
+| wheat | 15 Jul | 1988-07-15 to 2025-07-15 | +30 | 0.126 | 141.4 | cycle_length_fixed, sowing_far_from_reading |
+| barley | 13 May | 1988-05-13 to 2025-05-13 | -30 | 0.0 | 126.7 | cycle_length_fixed, sowing_far_from_reading |
+| barley | 28 May | 1988-05-28 to 2025-05-28 | -15 | 0.0 | 139.2 | cycle_length_fixed, sowing_far_from_reading |
+| barley | 12 Jun | 1988-06-12 to 2025-06-12 | +0 | 0.015 | 135.6 | cycle_length_fixed, sowing_far_from_reading |
+| barley | 27 Jun | 1988-06-27 to 2025-06-27 | +15 | 0.07 | 135.8 | cycle_length_fixed, sowing_far_from_reading |
+| barley | 12 Jul | 1988-07-12 to 2025-07-12 | +30 | 0.092 | 138.0 | cycle_length_fixed, sowing_far_from_reading |
+
+<details><summary>Season by season: soybean_1st sown on 15 Nov each year</summary>
+
+| season | sown on | water at sowing mm | stress | deficit days | class |
 | --- | --- | --- | --- | --- | --- |
-| soybean_1st | 10-16 | -30 | 0.412 | 103.2 | cycle_length_fixed, sowing_far_from_reading |
-| soybean_1st | 10-31 | -15 | 0.407 | 96.8 | cycle_length_fixed, sowing_far_from_reading |
-| soybean_1st | 11-15 | 0 | 0.436 | 86.7 | cycle_length_fixed |
-| soybean_1st | 11-30 | 15 | 0.372 | 73.9 | cycle_length_fixed |
-| soybean_1st | 12-15 | 30 | 0.27 | 68.9 | cycle_length_fixed |
-| soybean_2nd | 11-01 | -30 | 0.414 | 99.9 | cycle_length_fixed, sowing_far_from_reading |
-| soybean_2nd | 11-16 | -15 | 0.428 | 83.9 | cycle_length_fixed |
-| soybean_2nd | 12-01 | 0 | 0.371 | 72.9 | cycle_length_fixed |
-| soybean_2nd | 12-16 | 15 | 0.262 | 65.9 | cycle_length_fixed |
-| soybean_2nd | 12-31 | 30 | 0.169 | 72.2 | cycle_length_fixed |
-| maize | 09-01 | -30 | 0.352 | 125.6 | cycle_length_fixed, sowing_far_from_reading |
-| maize | 09-16 | -15 | 0.385 | 124.4 | cycle_length_fixed, sowing_far_from_reading |
-| maize | 10-01 | 0 | 0.429 | 110.5 | cycle_length_fixed, sowing_far_from_reading |
-| maize | 10-16 | 15 | 0.437 | 103.2 | cycle_length_fixed, sowing_far_from_reading |
-| maize | 10-31 | 30 | 0.419 | 96.8 | cycle_length_fixed, sowing_far_from_reading |
-| wheat | 05-16 | -30 | 0.0 | 124.5 | cycle_length_fixed, sowing_far_from_reading |
-| wheat | 05-31 | -15 | 0.01 | 137.1 | cycle_length_fixed, sowing_far_from_reading |
-| wheat | 06-15 | 0 | 0.066 | 133.8 | cycle_length_fixed, sowing_far_from_reading |
-| wheat | 06-30 | 15 | 0.104 | 136.8 | cycle_length_fixed, sowing_far_from_reading |
-| wheat | 07-15 | 30 | 0.126 | 141.4 | cycle_length_fixed, sowing_far_from_reading |
-| barley | 05-13 | -30 | 0.0 | 126.7 | cycle_length_fixed, sowing_far_from_reading |
-| barley | 05-28 | -15 | 0.0 | 139.2 | cycle_length_fixed, sowing_far_from_reading |
-| barley | 06-12 | 0 | 0.015 | 135.6 | cycle_length_fixed, sowing_far_from_reading |
-| barley | 06-27 | 15 | 0.07 | 135.8 | cycle_length_fixed, sowing_far_from_reading |
-| barley | 07-12 | 30 | 0.092 | 138.0 | cycle_length_fixed, sowing_far_from_reading |
-
-<details><summary>Season by season: soybean_1st sown 11-15</summary>
-
-| season | water at sowing mm | stress | deficit days | class |
-| --- | --- | --- | --- | --- |
-| 1987/88 | 102.9 | 0.178 | 21 | tight |
-| 1988/89 | 86.6 | 0.676 | 57 | out |
-| 1989/90 | 86.4 | 0.255 | 22 | tight |
-| 1990/91 | 116.9 | 0.325 | 35 | out |
-| 1991/92 | 87.2 | 0.274 | 40 | tight |
-| 1992/93 | 122.3 | 0.185 | 26 | tight |
-| 1993/94 | 89.7 | 0.505 | 55 | out |
-| 1994/95 | 89.2 | 0.631 | 60 | out |
-| 1995/96 | 86.7 | 0.576 | 60 | out |
-| 1996/97 | 86.4 | 0.405 | 54 | out |
-| 1997/98 | 86.4 | 0.049 | 7 | ok |
-| 1998/99 | 88.7 | 0.121 | 18 | tight |
-| 1999/00 | 85.8 | 0.65 | 58 | out |
-| 2000/01 | 88.0 | 0.088 | 15 | ok |
-| 2001/02 | 87.5 | 0.419 | 49 | out |
-| 2002/03 | 86.1 | 0.145 | 18 | tight |
-| 2003/04 | 86.5 | 0.433 | 44 | out |
-| 2004/05 | 95.2 | 0.459 | 43 | out |
-| 2005/06 | 105.4 | 0.441 | 47 | out |
-| 2006/07 | 85.7 | 0.436 | 43 | out |
-| 2007/08 | 88.4 | 0.629 | 57 | out |
-| 2008/09 | 85.4 | 0.44 | 50 | out |
-| 2009/10 | 89.9 | 0.03 | 6 | ok |
-| 2010/11 | 86.8 | 0.501 | 49 | out |
-| 2011/12 | 86.3 | 0.472 | 34 | out |
-| 2012/13 | 87.1 | 0.468 | 48 | out |
-| 2013/14 | 85.8 | 0.18 | 19 | tight |
-| 2014/15 | 86.5 | 0.14 | 19 | tight |
-| 2015/16 | 86.2 | 0.391 | 33 | out |
-| 2016/17 | 86.1 | 0.091 | 14 | ok |
-| 2017/18 | 86.0 | 0.662 | 60 | out |
-| 2018/19 | 87.1 | 0.015 | 2 | ok |
-| 2019/20 | 86.7 | 0.466 | 53 | out |
-| 2020/21 | 87.0 | 0.669 | 60 | out |
-| 2021/22 | 119.7 | 0.343 | 37 | out |
-| 2022/23 | 93.0 | 0.888 | 60 | out |
-| 2023/24 | 86.3 | 0.576 | 58 | out |
-| 2024/25 | 85.5 | 0.557 | 48 | out |
-| 2025/26 | 85.7 | 0.847 | 60 | out |
+| 1987/88 | 1987-11-15 | 102.9 | 0.178 | 21 | tight |
+| 1988/89 | 1988-11-15 | 86.6 | 0.676 | 57 | out |
+| 1989/90 | 1989-11-15 | 86.4 | 0.255 | 22 | tight |
+| 1990/91 | 1990-11-15 | 116.9 | 0.325 | 35 | out |
+| 1991/92 | 1991-11-15 | 87.2 | 0.274 | 40 | tight |
+| 1992/93 | 1992-11-15 | 122.3 | 0.185 | 26 | tight |
+| 1993/94 | 1993-11-15 | 89.7 | 0.505 | 55 | out |
+| 1994/95 | 1994-11-15 | 89.2 | 0.631 | 60 | out |
+| 1995/96 | 1995-11-15 | 86.7 | 0.576 | 60 | out |
+| 1996/97 | 1996-11-15 | 86.4 | 0.405 | 54 | out |
+| 1997/98 | 1997-11-15 | 86.4 | 0.049 | 7 | ok |
+| 1998/99 | 1998-11-15 | 88.7 | 0.121 | 18 | tight |
+| 1999/00 | 1999-11-15 | 85.8 | 0.65 | 58 | out |
+| 2000/01 | 2000-11-15 | 88.0 | 0.088 | 15 | ok |
+| 2001/02 | 2001-11-15 | 87.5 | 0.419 | 49 | out |
+| 2002/03 | 2002-11-15 | 86.1 | 0.145 | 18 | tight |
+| 2003/04 | 2003-11-15 | 86.5 | 0.433 | 44 | out |
+| 2004/05 | 2004-11-15 | 95.2 | 0.459 | 43 | out |
+| 2005/06 | 2005-11-15 | 105.4 | 0.441 | 47 | out |
+| 2006/07 | 2006-11-15 | 85.7 | 0.436 | 43 | out |
+| 2007/08 | 2007-11-15 | 88.4 | 0.629 | 57 | out |
+| 2008/09 | 2008-11-15 | 85.4 | 0.44 | 50 | out |
+| 2009/10 | 2009-11-15 | 89.9 | 0.03 | 6 | ok |
+| 2010/11 | 2010-11-15 | 86.8 | 0.501 | 49 | out |
+| 2011/12 | 2011-11-15 | 86.3 | 0.472 | 34 | out |
+| 2012/13 | 2012-11-15 | 87.1 | 0.468 | 48 | out |
+| 2013/14 | 2013-11-15 | 85.8 | 0.18 | 19 | tight |
+| 2014/15 | 2014-11-15 | 86.5 | 0.14 | 19 | tight |
+| 2015/16 | 2015-11-15 | 86.2 | 0.391 | 33 | out |
+| 2016/17 | 2016-11-15 | 86.1 | 0.091 | 14 | ok |
+| 2017/18 | 2017-11-15 | 86.0 | 0.662 | 60 | out |
+| 2018/19 | 2018-11-15 | 87.1 | 0.015 | 2 | ok |
+| 2019/20 | 2019-11-15 | 86.7 | 0.466 | 53 | out |
+| 2020/21 | 2020-11-15 | 87.0 | 0.669 | 60 | out |
+| 2021/22 | 2021-11-15 | 119.7 | 0.343 | 37 | out |
+| 2022/23 | 2022-11-15 | 93.0 | 0.888 | 60 | out |
+| 2023/24 | 2023-11-15 | 86.3 | 0.576 | 58 | out |
+| 2024/25 | 2024-11-15 | 85.5 | 0.557 | 48 | out |
+| 2025/26 | 2025-11-15 | 85.7 | 0.847 | 60 | out |
 
 </details>
 

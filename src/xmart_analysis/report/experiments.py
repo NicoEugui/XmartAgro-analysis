@@ -11,6 +11,7 @@ from pathlib import Path
 
 from xmart_analysis.engine import tables
 
+from . import scenario_runs
 from . import validation as figures
 
 EXTERNAL = {"smap_l3": "SMAP L3 export", "smap_l4": "SMAP L4 export", "modis_ndvi": "MODIS NDVI export"}
@@ -52,8 +53,8 @@ def smap_table(doc):
 
 
 def sowing_table(doc):
-    return (["crop", "sowing (month-day)", "ok", "tight", "out"],
-            [[c, r["sowing"], r["counts"]["ok"], r["counts"]["tight"], r["counts"]["out"]] for c, e in doc["crops"].items() for r in e["dates"]])
+    return (["crop", "sown on (calendar day, every season)", "ok", "tight", "out"],
+            [[c, scenario_runs.day_label(r["sowing"]), r["counts"]["ok"], r["counts"]["tight"], r["counts"]["out"]] for c, e in doc["crops"].items() for r in e["dates"]])
 
 
 FIGURES = {
@@ -97,14 +98,19 @@ def _model(calibration):
 
 
 def _sowing_extras(doc):
-    dates = [[c, r["sowing"], r["shift_days"], r["median_stress"], r["median_water_at_sowing_mm"], ", ".join(r["warnings"])]
+    dates = [[c, scenario_runs.day_label(r["sowing"]), f"{r['first_sowing']} to {r['last_sowing']}", f"{r['shift_days']:+d}", r["median_stress"], r["median_water_at_sowing_mm"], ", ".join(r["warnings"])]
              for c, e in doc["crops"].items() for r in e["dates"]]
     detail = doc["detail"]
-    seasons = [[r["season"], r["water_at_sowing_mm"], r["stress"], r["deficit_days"], r["class"]] for r in detail["seasons"]]
+    seasons = [[r["season"], r["sowing_date"], r["water_at_sowing_mm"], r["stress"], r["deficit_days"], r["class"]] for r in detail["seasons"]]
     reading = [[r["volumetric_moisture"], r["counts"]["ok"], r["counts"]["tight"], r["counts"]["out"]] for r in doc["reading_sensitivity"]["readings"]]
-    return ("Median stress and water at sowing per run (every run carries the fixed-cycle warning; `sowing_far_from_reading` marks a sowing far from the reading date):\n\n"
-            + _md(["crop", "sowing", "shift days", "median stress", "median water at sowing mm", "warnings"], dates)
-            + f"\n\n{_details(f'Season by season: {detail['crop']} sown {detail['sowing']}', ['season', 'water at sowing mm', 'stress', 'deficit days', 'class'], seasons)}"
+    return ("How to read the dates. A sowing date here is a calendar day without a year (for example 15 Nov). The model applies it to each of the historical seasons "
+            "in turn, with that season's real weather: 15 Nov 1987, 15 Nov 1988 and so on up to the last complete season (the table gives the first and last date simulated "
+            f"for every run). The sensor reading is taken on {scenario_runs.day_label(doc['reading_date'])} of each year and carried to the sowing date with that year's weather. "
+            "A season is named after the year of sowing (1987/88 = sown in 1987); a sowing day earlier in the calendar than the reading day, such as maize on 1 Oct, is read as the "
+            "next year's, hence the `sowing_far_from_reading` warning.\n\n"
+            "Median stress and water at sowing per run (every run carries the fixed-cycle warning; `sowing_far_from_reading` marks a sowing far from the reading date):\n\n"
+            + _md(["crop", "sown on", "first to last sowing simulated", "shift vs default (days)", "median stress", "median water at sowing mm", "warnings"], dates)
+            + f"\n\n{_details(f'Season by season: {detail['crop']} sown on {scenario_runs.day_label(detail['sowing'])} each year', ['season', 'sown on', 'water at sowing mm', 'stress', 'deficit days', 'class'], seasons)}"
             + f"\n\nSensitivity to the sensor reading ({doc['reading_sensitivity']['crop']}, default sowing date; the reading is simulated):\n\n"
             + _md(["volumetric moisture", "ok", "tight", "out"], reading) + f"\n\n{doc['note']}.")
 
@@ -139,7 +145,7 @@ def build(validation_doc, calibration, frontend, out, files=None, lang="en"):
     n = 4
     sections = (
         ("sowing", "What happens if a crop is sown on a given date",
-         "For each crop and sowing date (the default date and four shifted by 15 and 30 days), how many of the historical seasons end in low, moderate or high deficit "
+         "For each crop and sowing date (the default calendar day and four shifted by 15 and 30 days; each day is applied to every historical season with complete weather), how many of the historical seasons end in low, moderate or high deficit "
          "in the critical stage?",
          lambda d: "Each bar applies every complete historical season to a simulated reading at the chosen sowing date. " + " ".join(
              f"{c}: default date {e['default_sowing']}, median stress {min(r['median_stress'] for r in e['dates'])}-{max(r['median_stress'] for r in e['dates'])} "
