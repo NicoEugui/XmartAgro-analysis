@@ -1,5 +1,10 @@
 # XmartAgro analysis
 
+XmartAgro's analytics prototype was developed for the 2026 NASA Space Apps Challenge, for the
+[Field Shift: Adapting Farms with NASA Data](https://www.spaceappschallenge.org/2026/challenges/field-shift-adapting-farms-with-nasa-data/)
+challenge. It combines NASA Earth observation data with local agronomic inputs to explore crop rotation
+and planting scenarios under historical climate conditions.
+
 Background service that turns what the API stored (sensor readings, producer and agronomist inputs) into the
 `results` documents the API serves. It is independent from the backend and talks to it only through MongoDB.
 
